@@ -1,7 +1,7 @@
-
+const getInfo = require('./getItemInfo');
 
 module.exports = {
-    async standardDeviation(data) {
-
+    async standardDeviation(uri) {
+        
     }
 }

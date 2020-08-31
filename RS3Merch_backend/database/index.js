@@ -1,14 +1,14 @@
-const pg = require('pg');
-const pool = new pg.Pool({
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    host: process.env.PGHOST,
-    database: process.env.PGDB,
-    port: process.env.PGPORT
+const Pool = require('pg').Pool;
+const pool = new Pool({
+    user: "postgres",
+    password: "brave99",
+    host: "localhost",
+    port: 5432,
+    database: "rs3items"
 });
 
-module.exports = {
-    query: async (text, params, callback) => {
-        return pool.query(text, params, callback);
-    }
-}
+pool.on("error", (err, client) => {
+    console.log("Error connecting to db", err);
+});
+
+module.exports = pool;
