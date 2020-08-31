@@ -13,11 +13,16 @@ const BUY_LIMITS_HIGH = ['10000', '20000', '25000', '28000', '30000'];
 module.exports = {
 
     async populateItemsByBuyLimit(buylimit) {
-        let items = await getItemInfo.chooseRandom(await getItemInfo.getBuyLimit_ItemUri(buylimit));
+        let items = await getItemInfo.chooseRandomInfo(await getItemInfo.getBuyLimit_ItemUri(buylimit));
         let chosenItems = items[1];
         items = items[0];
 
-    }, 
+        await chosenItems.foreach(async ele => {
+            let itemInfo = await getItemInfo.getItemInfo(ele);
+            console.log(itemInfo);
+            //await config.addToDatabase(itemInfo)
+        })
+    },
 
     depracated_populateItemsByBuyLimit(buylimit) {
         return new Promise((resolve, reject) => {
@@ -43,9 +48,9 @@ module.exports = {
                                         uriExtensions.push($(e).children().first().children('a').attr('href'));
 
                                         // await infoUtil.getItemInfo('https://runescape.wiki' + $(e).children().first().children('a').attr('href')).then(async values => {
-                                            // await pool.query('INSERT INTO items (item_name, price_one_day, price_three_day, price_week, price_month, price_three_months, buy_limit, item_type, deviation_month, deviation_three_months) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *'
-                                            //     , [values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]]
-                                            // );
+                                        // await pool.query('INSERT INTO items (item_name, price_one_day, price_three_day, price_week, price_month, price_three_months, buy_limit, item_type, deviation_month, deviation_three_months) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *'
+                                        //     , [values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]]
+                                        // );
                                         //     console.log(values);
                                         // });
 

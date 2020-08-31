@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 8000;
 //   console.log("Node NOT Exiting...");
 // });
 
-investHandler.findInvestments();
+// investHandler.findInvestments();
 
 // buyLimitHandler.populateItemsByBuyLimit("VERY_LOW");
 
