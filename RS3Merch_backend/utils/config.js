@@ -1,19 +1,11 @@
-const pool = require('../database');
 const https = require('https');
 
-const ITEM_BY_TYPE_URI = 'https://runescape.wiki/w/RuneScape:Grand_Exchange_Market_Watch';
-const BUY_LIMIT_URI = 'https://runescape.wiki/w/Calculator:Grand_Exchange_buying_limits';
 const BUY_LIMITS_VERY_LOW = ['1', '2', '5', '10']
 const BUY_LIMITS_LOW = ['50', '100', '120', '150', '175', '200', '240', '250', '300', '400', '480', '500']
 const BUY_LIMITS_MED = ['1000', '1500', '2000', '5000'];
 const BUY_LIMITS_HIGH = ['10000', '20000', '25000', '28000', '30000'];
-const LISTING_NUM = 25;
-
-/** 
- * Make a function that can calculate undervaluation,
- * Undervalue = value today/worth
- * Worth = average value over 3 months
- */
+const BUY_LIMIT_URI = 'https://runescape.wiki/w/Calculator:Grand_Exchange_buying_limits';
+const ITEM_BY_TYPE_URI = 'https://runescape.wiki/w/RuneScape:Grand_Exchange_Market_Watch';
 
 // Function that scrapes HTML data from a HTTPS page and returns it
 
@@ -21,16 +13,16 @@ function parseHTTPS(uri) {
     return new Promise((resolve, reject) => {
         https.get(uri, res => {
             let data = '';
-            res.on("data", chunk => {
+            res.on('data', chunk => {
                 data += chunk;
             })
 
-            res.on("close", () => {
+            res.on('close', () => {
                 return resolve(data);
             })
 
-            res.on("error", err => {
-                console.log(`Error occured when accessing this HTTPS page ${err}`);
+            res.on('error', err => {
+                return reject(`Error occured when accessing this HTTPS page ${err}`);
             })
         });
     });
@@ -40,15 +32,19 @@ function parseHTTPS(uri) {
 
 
 function extension(str) {
-    return str.replace(/\s/g, '_').replace(/&/g, '%26').replace(/'/, '%27');
+    return str.replace(/\s/g, '_').replace(/&/g, '%26').replace(/'/g, '%27').replace(/\+/g, '%2B');
 }
 
-function runescapeWikiExtension(str) {
+function runescapeWikiBaseLink(str) {
     return 'https://runescape.wiki' + str;
 }
 
 function normalToExchange(uri) {
     return uri.replace('/w/', '/w/Exchange:');
+}
+
+function exchangeToModuleData(uri) {
+    return uri.replace('Exchange:', 'Module:Exchange/') + '/Data';
 }
 
 function conditionalSlice(arr) {
@@ -62,81 +58,97 @@ function removeArrElement(arr, index) {
     return arr.slice(0, index).concat(arr.slice(index + 1));
 }
 
-// DB Functions
-
-async function addToDatabase(values) {
-    await pool.query('INSERT INTO items (item_name, price_one_day, price_three_day, price_week, price_month, price_three_months, buy_limit, item_type, deviation_month, deviation_three_months) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)'
-        , [values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9]], (err, result) => {
-            if (err) {
-                return console.log(`Ran into an error when inputting data into the database ${err}`);
-            }
-            console.log(`Information added to database`);
-        }
-    );
-}
-
-async function removeFromDatabase(values) {
-
-}
-
-// Information type listings
-
-
-const stableTypes = {
-
-}
+// Type information listings
 
 const standardTypes = {
-    base: {
-        standard: ["Herblore", "Farming", "Crafting", "Fletching", "Melee_armor", "Melee_weapons"]
+    // Custom fields
+    Archaeology: {
+        Archaeology: ['Soil', 'Materials',]
     },
+    Construction: {
+        Construction: ['Building materials', 'Nails', 'Aquarium supplies', 'Garden']
+    },
+    Crafting: {
+        Crafting: ['Materials', 'Uncut gems', 'Cut gems', 'Rings', 'Necklaces', 'Unstrung amulets', 'Amulets', 'Bracelets', 'Silver items', 'Hides', 'Leather', 'Glass items', 'Battlestaves',
+        'Urns'],
+        Fletching: ['Bolt tips', 'Gem tipped bolts']
 
-    // Custom type fields
+        // Create a custom filter for urns by price > 2000
+    },
+    Farming: {
+        Farming: ['Allotment seeds', 'Flower seeds', 'Herb seeds', 'Hops seeds', 'Bush seeds', 'Fruit tree seeds', 'Tree seeds', 'Cacti seeds', 'Mushroom spores', 'Flowers', 
+        'Hops', 'Bushes', 'Fruits', 'Cacti and mushrooms', 'Unchecked', 'Produce'],
+        Herblore: ['Clean herbs', 'Grimy herbs']
+    },
+    Summoning: {
+        Summoning: ['Pouches', 'Scrolls'],
+        Archaeology: ['Binding contracts', 'Scrolls']
+    },
+    Secondary_resources: {
+        Summoning: ['Tertiary components'],
+        Herblore: ['Secondary ingredients']
+    },
+    Wood: {
+        Woodcutting: ['Logs'],
+        Firemaking: ['Pyre Logs', 'Incense sticks'],
+        Fletching: ['Unstrung bows', 'Strung bows', 'Finished arrows', 'Crossbow limbs', 'Unstrung crossbows', 'Strung 1h crossbows', 'Strung 2h crossbows', 
+        'Unfinished bolts', 'Finished bolts']
+    },
+    Food: {
+        Cooking: ['Raw meat', 'Cooked meat', 'Raw fish', 'Cooked fish', 'Sushi', 'Snails', 'Big Game Hunter', 'Stews and soups', 'Pies', 'Potatoes', 'Drinks', 'Mature drinks'],
+        Herblore: ['Making Primal Extract']
+    },
+    Potions: {
+        Herblore: ['Unfinished standard potions', 'Standard potions', 'Combination potions', 'Unfinished juju potions', 'Juju potions', 'Bombs']
+    },
+    Hunter: {
+        Hunter: ['Meat', 'Big Game Hunter', 'Catches', 'Impling jars', 'Other drops']
+    },
+    Metals: {
+        Mining: ['Ores', 'Stone spirits', 'Other mineable items', 'Ore boxes'],
+        Smithing: ['Bars']
+    },
+    Magic_gear: {
+        Magic: ['ALL']
+    },
+    Melee_armour: {
+        Melee_armour: ['ALL'],
+    },
+    Melee_weapons: {
+        Melee_weapons: ['ALL']
+    },
+    Ranged_gear: {
+        Ranged: ['ALL']
+    },
+    Tools: {
+        Archaeology: ['Mattocks'],
+        Smithing: ['Pickaxes'],
+        Woodcutting: ['Hatchets']
+    },
+    Divination: {
+        Divination: ['Energies', 'Portents', 'Signs']
 
-    summoningPouches: {
-        Summoning: [],
-        Archaeology: ["Binding contracts"]
+        // Manually add divine charges?
     },
-    secondaryResources: {
-        Summoning: ["Tertiary components"],
-
+    Bones: {
+        Prayer: ['Bones and ashes']
     },
-    gatherable: {
-        Woodcutting: ["Logs"]
+    Rares: {
+        Archaeology: ['Artefacts', 'Ancient Invention'],
+        Fletching: ['Scrimshaws'],
+        Slayer: ['Unique drops', 'Boots', 'Order of Ascension', 'Armour and weapons'],
+        Smithing: ['Godswords', 'Dragon platebody', 'Malevolent armour'],
+        Runecrafting: ['Tectonic armour'],
+        Combat_minigames: ['Titles'],
+        Miscellaneous: ['Item shards', 'Keys']
     },
-    food: {
-
-    },
-    weapons: {
-
-    },
-    metals: {
-
-    },
-    combatSupport: {
-        Melee_armor: ["Capes", "Amulets", "Rings",],
-        Magic: [""]
-    },
-    fortunates: {
-
-    },
-    tools: {
-
-    },
-    energyResources: {
-
-    },
-    bones: {
-
-    },
-    rares: {
-
+    Treasure_Trails: {
+        Treasure_Trails: ['ALL']
     }
 }
 
 module.exports = {
-    BUY_LIMIT_URI, ITEM_BY_TYPE_URI, BUY_LIMITS_VERY_LOW, BUY_LIMITS_LOW, BUY_LIMITS_MED, BUY_LIMITS_HIGH, LISTING_NUM,
-    extension, normalToExchange, runescapeWikiExtension, conditionalSlice, removeArrElement,
-    parseHTTPS, addToDatabase, removeFromDatabase,
-    standardTypes, stableTypes
+    BUY_LIMITS_VERY_LOW, BUY_LIMITS_LOW, BUY_LIMITS_MED, BUY_LIMITS_HIGH, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, standardTypes,
+    extension, normalToExchange, exchangeToModuleData, runescapeWikiBaseLink, conditionalSlice, removeArrElement,
+    parseHTTPS
 };
