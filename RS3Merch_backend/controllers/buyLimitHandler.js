@@ -1,5 +1,5 @@
-const commands = require('../database/commands');
 const infoParser = require('../utils/infoParser');
+const commands = require('../database/commands');
 const dataManipulator = require('../utils/priceDataManipulator');
 
 module.exports = {

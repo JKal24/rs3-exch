@@ -4,7 +4,7 @@ module.exports = {
         const index = table.length;
         return {
             price_today: table[index - 1],
-            average_month: average(table.slice(index - 31)),
+            average: average(table.slice(index - 31)),
             average_three_months: average(table),
             undervaluation: undervaluation(table),
             cvar_month: cvar(table.slice(index - 31)),
@@ -13,8 +13,6 @@ module.exports = {
             lowest_price_week: lowest(table.slice(index - 8)),
             highest_price_month: highest(table.slice(index - 31)),
             lowest_price_month: lowest(table.slice(index - 31)),
-            highest_price_three_months: highest(table.slice(index - 91)),
-            lowest_price_three_months: lowest(table.slice(index - 91)), 
         };
     },
 }

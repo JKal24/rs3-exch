@@ -74,10 +74,17 @@ module.exports = {
 
     async getByType_item_uris(type) {
         try {
-            const data = config.parseHTTPS(config.ITEM_BY_TYPE_URI);
+            const data = await config.parseHTTPS(config.ITEM_BY_TYPE_URI);
             const $ = cheerio.load(data);
 
-            console.log($('tbody'));
+            $('tr').each(async (i, row) => {
+                if (config.standardTypes[type].hasOwnProperty($(row).children().first().children('a').attr('title'))) {
+                    await compile_type_uris(config.runescapeWikiBaseLink($(row).children('td:nth-child(2)').children('a').attr('href')),
+                        // Array of columns 
+                        config.standardTypes[type][$(row).children().first().children('a').attr('title')],
+                        type);
+                }
+            })
         } catch (err) {
             throw Error(`Error occured when attempting to gather type uris ${err}`);
         }
@@ -89,7 +96,7 @@ module.exports = {
             let values = await getName(data);
 
             await getBaseValues(config.exchangeToModuleData(uri)).then(async res => {
-                Object.assign(values, await getItem_img_uri(data),  await getBuyLimit(data), res);
+                Object.assign(values, await getItem_img_uri(data), await getBuyLimit(data), res);
             });
             return values;
         } catch (err) {
@@ -135,9 +142,9 @@ async function getItem_img_uri(data) {
         const $ = cheerio.load(data);
         const node_src = $('p[class="gemw-image inventory-image"]').children('a').children('img').attr('src');
         if (node_src) {
-            return { item_image_uri: config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('src'))}
+            return { item_image_uri: config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('src')) }
         }
-        return { item_image_uri: config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('data-cfsrc'))}
+        return { item_image_uri: config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('data-cfsrc')) }
     } catch (err) {
         throw Error(`Could not find image for the respective item ${err}`);
     }
@@ -155,6 +162,8 @@ async function getBaseValues(uri) {
 
 async function getTable(data) {
     try {
+
+        // Scrapes data module website for a long list of prices
         const $ = cheerio.load(data);
         let node = $('pre', 'div[id=mw-content-text]');
 
@@ -176,5 +185,46 @@ async function getTable(data) {
         }
     } catch (err) {
         throw Error(`Could not access the data table for the selected item ${err}`);
+    }
+}
+
+async function compile_type_uris(uri, columns, type) {
+    try {
+        const data = await config.parseHTTPS(uri);
+        const $ = cheerio.load(data);
+
+        /**
+         * Parses through a type page by looking at the table titles or table subtitles
+         * and then matches the title to the ones listed in the standard types contained
+         * in config. Will then extract all valid item uris.
+         */
+
+        $('h3').each((i, ele) => {
+            if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
+                const tr = $(ele).next('table').children('tbody').children('tr');
+                $(tr).each(async (i, row) => {
+                    const uriExtension = $(row).children('td:nth-child(9)').children('a').attr('href');
+                    if (uriExtension) {
+                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(row).children('td:nth-child(9)').children('a').attr('href')), type);
+                    }
+                })
+            }
+        })
+
+        $('h2').each((i, ele) => {
+            if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
+                const tr = $(ele).next('table>tbody').children('tr');
+                // Parse through the children rows to get each item
+                $(tr).each(async (i, row) => {
+                    const uriExtension = $(row).children('td:nth-child(9)').children('a').attr('href');
+                    if (uriExtension) {
+                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(row).children('td:nth-child(9)').children('a').attr('href')), type);
+                    }
+                })
+            }
+        })
+        
+    } catch (err) {
+        throw Error(`Could not find the requested type of items ${err}`);
     }
 }

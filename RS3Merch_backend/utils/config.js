@@ -71,7 +71,7 @@ const standardTypes = {
     Crafting: {
         Crafting: ['Materials', 'Uncut gems', 'Cut gems', 'Rings', 'Necklaces', 'Unstrung amulets', 'Amulets', 'Bracelets', 'Silver items', 'Hides', 'Leather', 'Glass items', 'Battlestaves',
         'Urns'],
-        Fletching: ['Bolt tips', 'Gem tipped bolts']
+        Fletching: ['Bolts tips', 'Gem-tipped bolts']
 
         // Create a custom filter for urns by price > 2000
     },

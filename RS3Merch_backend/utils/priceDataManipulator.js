@@ -3,10 +3,10 @@ const infoParser = require('./infoParser');
 const ITEMS_PER_PAGE = 25;
 
 module.exports = {
-    async populateItems(evaluator) {
+    async populateItems(identifier = 'BLANK') {
         // Select a number of uris based on the defined limit per page.
         let ids = await commands.getAllID_item_uris();
-        const len = ITEMS_PER_PAGE < ids.length ? ITEMS_PER_PAGE : ids.length;
+        const max_length = ITEMS_PER_PAGE < ids.length ? ITEMS_PER_PAGE : ids.length;
 
         /**
          * Before adding in our items, make sure that the item table is empty
@@ -15,49 +15,43 @@ module.exports = {
         await commands.clearTable('items');
 
         /**
-         * For each uri, add the respective item to the items table,
-         * then return this value.
+         * For each uri, add the respective item to the items table
+         * by using an evaluator
          */
-        let populate = 0;
-        switch (evaluator) {
-            case 'STABLE':
-                while (populate < len) {
-                    const info = await infoParser.getItemInfo(await commands.consume_item_uris(ids[Math.floor(Math.random() * ids.length)]));
-                    if (evaluateStable(info)) {
-                        await commands.addToTable_items(trimData(info));
-                        populate++;
-                    }
-                }
-                break;
 
-            case 'INVEST':
-                while (populate < len) {
-                    const info = await infoParser.getItemInfo(await commands.consume_item_uris(ids[Math.floor(Math.random() * ids.length)]));
-                    if (evaluateInvest(info)) {
-                        await commands.addToTable_items(trimData(info));
-                        populate++;
-                    }
-                }
-                break;
-
-            case 'ORDINARY':
-                while (populate < len) {
-                    const info = await infoParser.getItemInfo(await commands.consume_item_uris(ids[Math.floor(Math.random() * ids.length)]));
-                    if (evaluateOrdinary(info)) {
-                        await commands.addToTable_items(trimData(info));
-                        populate++;
-                    }
-                }
-                break;
-
-            default:
-                return [];
-        }
+        addItems(evaluate(identifier), max_length);
 
         return await commands.getAll_items();
     }
 }
 
+async function addItems(evaluatorFunction, max_len) {
+    let populate = 0;
+    while (populate < max_len) {
+        const info = await infoParser.getItemInfo(await commands.consume_item_uris(ids[Math.floor(Math.random() * ids.length)]));
+        if (evaluatorFunction(info)) {
+            console.log(info, trimData(info));
+            await commands.addToTable_items(trimData(info));
+            populate++;
+        }
+    }
+}
+
+function evaluate(identifier) {
+    switch (identifier) {
+        case 'STABLE':
+            return evaluateStable;
+ 
+        case 'INVEST':
+            return evaluateInvest;
+        
+        case 'ORDINARY':
+            return evaluateOrdinary;
+
+        default:
+            return (param) => {return param;};
+    }
+}
 
 function evaluateStable(info) {
     // Passed in as an object with the entries contained in the database

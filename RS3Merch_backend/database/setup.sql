@@ -10,6 +10,7 @@ CREATE TABLE items (
     item_image_uri VARCHAR(255),
     buy_limit float(2),
     price_today float(4),
+    average float(4),
     undervaluation float(2),
     cvar_month float(2),
     highest_price_week float(4),

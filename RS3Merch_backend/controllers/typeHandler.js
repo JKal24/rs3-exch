@@ -1,46 +1,26 @@
-const config = require('../utils/config');
+const infoParser = require('../utils/infoParser');
+const commands = require('../database/commands');
 const dataManipulator = require('../utils/priceDataManipulator');
+const config = require('../utils/config');
 
 module.exports = {
 
-    async initializeTypeRequests(req, res) {
+    async populateItems(req, res) {
+        /**
+         * Before adding in our items, make sure that the item_uris table is empty
+         * and does not have any data from a previous instance
+         */
+
+        await commands.clearTable('item_uris');
+
         if (config.standardTypes.hasOwnProperty(req.params.type)) {
-            return res.status(400).json({ message: 'Type not found!' });
+            infoParser.getByType_item_uris(req.params.type);
         }
 
+        return res.json(dataManipulator.populateItems());
     },
 
     async nextPage(req, res) {
-
+        return res.json(dataManipulator.populateItems());
     },
-
-    async populateItems() {
-
-        // Under construction
-
-        // Select a number of uris based on the defined limit per page.
-        let ids = await commands.getAllID_item_uris();
-        const len = dataManipulator.ITEMS_PER_PAGE < ids.length ? dataManipulator.ITEMS_PER_PAGE : ids.length;
-
-        /**
-         * Before adding in our items, make sure that the item table is empty
-         * and does not have any data from a previous instance.
-         */
-        await commands.clearTable('items');
-
-        /**
-         * For each uri, add the respective item to the items table,
-         * then return this value.
-         */
-        let populate = 0;
-        while (populate < len) {
-            const info = await infoParser.getItemInfo(await commands.consume_item_uris(ids[Math.floor(Math.random() * ids.length)]));
-            if (dataManipulator.evaluateOrdinary(info)) {
-                await commands.addToTable_items(dataManipulator.trimData(info));
-                populate++;
-            }
-        }
-
-        return await commands.getAll_items();
-    }
 } 
