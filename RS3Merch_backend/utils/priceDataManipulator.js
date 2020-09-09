@@ -1,39 +1,41 @@
 const commands = require('../database/commands');
 const infoParser = require('./infoParser');
-const ITEMS_PER_PAGE = 25;
+const config = require('./config');
+const ITEMS_PER_PAGE = 10;
 
 module.exports = {
     async populateItems(identifier = 'BLANK') {
-        // Select a number of uris based on the defined limit per page.
-        let ids = await commands.getAllID_item_uris();
-        const max_length = ITEMS_PER_PAGE < ids.length ? ITEMS_PER_PAGE : ids.length;
+        try {
+            /**
+             * Before adding in our items, make sure that the item table is empty
+             * and does not have any data from a previous instance.
+             */
+            await commands.clearTable_items();
 
-        /**
-         * Before adding in our items, make sure that the item table is empty
-         * and does not have any data from a previous instance.
-         */
-        await commands.clearTable('items');
+            // Select a number of uris based on the defined limit per page.
+            let ids = await commands.getAllID_item_uris();
+            const max_length = ITEMS_PER_PAGE < ids.length ? ITEMS_PER_PAGE : ids.length;
 
-        /**
-         * For each uri, add the respective item to the items table
-         * by using an evaluator
-         */
+            let populate = 0;
+            while (populate < max_length) {
+                const index = Math.floor(Math.random() * ids.length);
 
-        addItems(evaluate(identifier), max_length);
+                // Info is contained in an array that has one entry which is
+                // an object containing its respective uri element.
+                const uri = (await commands.consume_item_uris(ids[index])).rows[0].uri;
+                const info = await infoParser.getItemInfo(uri);
+                ids = config.removeArrElement(ids, index);
+
+                if (evaluate(identifier)(info)) {
+                    await commands.addToTable_items(trimData(info));
+                    populate++;
+                }
+            }
+        } catch {
+            throw Error(`Could not add items`);
+        }
 
         return await commands.getAll_items();
-    }
-}
-
-async function addItems(evaluatorFunction, max_len) {
-    let populate = 0;
-    while (populate < max_len) {
-        const info = await infoParser.getItemInfo(await commands.consume_item_uris(ids[Math.floor(Math.random() * ids.length)]));
-        if (evaluatorFunction(info)) {
-            console.log(info, trimData(info));
-            await commands.addToTable_items(trimData(info));
-            populate++;
-        }
     }
 }
 
@@ -41,15 +43,15 @@ function evaluate(identifier) {
     switch (identifier) {
         case 'STABLE':
             return evaluateStable;
- 
+
         case 'INVEST':
             return evaluateInvest;
-        
+
         case 'ORDINARY':
             return evaluateOrdinary;
 
         default:
-            return (param) => {return param;};
+            return (param) => { return param; };
     }
 }
 
@@ -97,8 +99,8 @@ function evaluateOrdinary(info) {
 }
 
 function trimData(info) {
-    // Transform the data to be put into the SQL table, removes 3 month co-eff of variation and average.
 
+    // Transform the data to be put into the SQL table, removes 3 month co-eff of variation and average.
     delete info.cvar_three_months;
     delete info.average_three_months;
     return info;

@@ -9,7 +9,7 @@ module.exports = {
         * Before adding in our items, make sure that the item_uris table is empty
         * and does not have any data from a previous instance
         */
-        await commands.clearTable('item_uris');
+        await commands.clearTable_item_uris();
 
         await infoParser.getBuyLimit_item_uris('STABLE');
 

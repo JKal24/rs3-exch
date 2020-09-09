@@ -10,7 +10,7 @@ module.exports = {
          * and does not have any data from a previous instance
          */
 
-        await commands.clearTable('item_uris');
+        await commands.clearTable_item_uris();
 
         await infoParser.getBuyLimit_item_uris('ALL');
 

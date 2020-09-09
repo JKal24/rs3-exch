@@ -92,7 +92,7 @@ module.exports = {
 
     async getItemInfo(uri) {
         try {
-            const data = await config.parseHTTPS(uri)
+            const data = await config.parseHTTPS(uri);
             let values = await getName(data);
 
             await getBaseValues(config.exchangeToModuleData(uri)).then(async res => {

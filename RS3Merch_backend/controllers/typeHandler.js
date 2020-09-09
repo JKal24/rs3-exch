@@ -5,13 +5,13 @@ const config = require('../utils/config');
 
 module.exports = {
 
-    async populateItems(req, res) {
+    async initializeType(req, res) {
         /**
          * Before adding in our items, make sure that the item_uris table is empty
          * and does not have any data from a previous instance
          */
 
-        await commands.clearTable('item_uris');
+        await commands.clearTable_item_uris();
 
         if (config.standardTypes.hasOwnProperty(req.params.type)) {
             infoParser.getByType_item_uris(req.params.type);

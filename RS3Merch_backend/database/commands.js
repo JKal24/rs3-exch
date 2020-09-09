@@ -10,11 +10,14 @@ module.exports = {
     },
 
     async getAllID_item_uris() {
-        return await pool.query('SELECT id FROM item_uris');
+        const ids = await pool.query('SELECT id FROM item_uris');
+        return ids.rows.map(item => {
+            return item.id;
+        })
     },
 
     async consume_item_uris(id) {
-        return await pool.query('DELETE FROM item_uris WHERE id = $1 RETURNING *', [id]);
+        return await pool.query('DELETE FROM item_uris WHERE id = $1 RETURNING uri', [id]);
     },
 
     async addToTable_items(values) {
@@ -34,11 +37,11 @@ module.exports = {
         return await pool.query('SELECT * FROM items');
     },
 
-    async count(tblName) {
-        return await pool.query('SELECT COUNT(id) FROM $1', [tblName]);
+    async clearTable_item_uris() {
+        await pool.query('TRUNCATE item_uris');
     },
 
-    async clearTable(tblName) {
-        await pool.query('TRUNCATE $1', [tblName]);
-    },
+    async clearTable_items() {
+        await pool.query('TRUNCATE items');
+    }
 }
