@@ -13,14 +13,9 @@ module.exports = {
         await commands.clearTable_item_uris();
 
         await infoParser.getByBuyLimit_item_uris(req.body.buy_limit);
-
-        return res.json(await dataManipulator.populateItems('ORDINARY'));
     },
 
-    async nextPage(req, res) {
-        if (commands.count('item_uris') > 0) {
-            return res.json(await dataManipulator.populateItems('ORDINARY'));
-        }
-        return res.status(400).json({ message: 'Reached the end' });
+    async createPage(req, res) {
+        return res.json(await dataManipulator.populateItems('ORDINARY'));
     },
 }

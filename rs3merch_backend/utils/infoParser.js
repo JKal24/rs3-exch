@@ -11,59 +11,58 @@ module.exports = {
             const $ = cheerio.load(data);
 
             switch (buylimit) {
-                case 'VERY_LOW':
-                    ($('table[class="wikitable sortable"]').each((i, ele) => {
-                        $(ele).children('tbody').children().each(async (i, childEle) => {
-                            if (config.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) !== -1) {
-                                await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(childEle).children().first().children('a').attr('href')));
-                            }
-                        })
-                    }));
-                    break;
-                case 'LOW':
-                    ($('table[class="wikitable sortable"]').each((i, ele) => {
-                        $(ele).children('tbody').children().each(async (i, childEle) => {
-                            if (config.BUY_LIMITS_LOW.indexOf($(childEle).children().last().text()) !== -1) {
-                                await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(childEle).children().first().children('a').attr('href')));
-                            }
-                        })
-                    }));
-                    break;
-                case 'MED':
-                    ($('table[class="wikitable sortable"]').each((i, ele) => {
-                        $(ele).children('tbody').children().each(async (i, childEle) => {
-                            if (config.BUY_LIMITS_MED.indexOf($(childEle).children().last().text()) !== -1) {
-                                await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(childEle).children().first().children('a').attr('href')));
-                            }
-                        })
-                    }));
-                    break;
-                case 'HIGH':
-                    ($('table[class="wikitable sortable"]').each((i, ele) => {
-                        $(ele).children('tbody').children().each(async (i, childEle) => {
-                            if (config.BUY_LIMITS_HIGH.indexOf($(childEle).children().last().text()) !== -1) {
-                                await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(childEle).children().first().children('a').attr('href')));
-                            }
-                        })
-                    }));
-                    break;
-                case 'ALL':
-                    ($('table[class="wikitable sortable"]').each((i, ele) => {
-                        $(ele).children('tbody').children().each(async (i, childEle) => {
-                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(childEle).children().first().children('a').attr('href')));
+                /**
+                 * Each case extracts the element that contains the name of the item
+                 * and the buy limit of the item and tests it against the required
+                 * buy limit and adds it to the database if it is acceptable.
+                 */
 
-                        })
+                case 'VERY_LOW':
+                    ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
+                        if (config.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        }
                     }));
                     break;
+
+                case 'LOW':
+                    ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
+                        if (config.BUY_LIMITS_LOW.indexOf($(ele).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        }
+                    }));
+                    break;
+
+                case 'MED':
+                    ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
+                        if (config.BUY_LIMITS_MED.indexOf($(childEle).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        }
+                    }));
+                    break;
+
+                case 'HIGH':
+                    ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
+                        if (config.BUY_LIMITS_HIGH.indexOf($(childEle).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        }
+                    }));
+                    break;
+
+                case 'ALL':
+                    ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
+                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                    }));
+                    break;
+
                 case 'STABLE':
-                    ($('table[class="wikitable sortable"]').each((i, ele) => {
-                        $(ele).children('tbody').children().each(async (i, childEle) => {
-                            if (config.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) === -1) {
-                                await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(childEle).children().first().children('a').attr('href')));
-                            }
-                        })
+                    ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
+                        if (config.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) === -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        }
                     }));
                     break;
+
                 default:
                     throw Error('Please enter a valid buy-limit (Very low, low, med, high)');
             }
@@ -80,15 +79,37 @@ module.exports = {
             $('tr').each(async (i, row) => {
                 if (config.standardTypes[type].hasOwnProperty($(row).children().first().children('a').attr('title'))) {
                     await compile_type_uris(config.runescapeWikiBaseLink($(row).children('td:nth-child(2)').children('a').attr('href')),
-                        // Array of columns 
-                        config.standardTypes[type][$(row).children().first().children('a').attr('title')],
-                        type);
+                        // Array of columns that represent each subsection for the item type 
+                        config.standardTypes[type][$(row).children().first().children('a').attr('title')]);
                 }
             })
         } catch (err) {
             throw Error(`Error occured when attempting to gather type uris ${err}`);
         }
     },
+
+    async getBySearch_item_uris(keyword) {
+        try {
+            const data = await config.parseHTTPS(config.BUY_LIMIT_URI);
+            const $ = cheerio.load(data);
+            const keywordRegex = new RegExp(keyword);
+
+            ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, tr) => {
+                if ($(tr).children('td').first().text().match(keywordRegex)) {
+                    await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(tr).children().first().children('a').attr('href')));
+                }
+            }));
+        } catch (err) {
+            throw new Error(`Could not find any items related to the specified keyword`);
+        }
+    },
+
+    /** 
+     * Creates an object for each item that has
+     * the following attributes: item name, buy limit,
+     * averages, co-efficient of variation, undervaluation
+     * historic highs and lows and a uri to the item image.
+     */
 
     async getItemInfo(uri) {
         try {
@@ -188,7 +209,7 @@ async function getTable(data) {
     }
 }
 
-async function compile_type_uris(uri, columns, type) {
+async function compile_type_uris(uri, columns) {
     try {
         const data = await config.parseHTTPS(uri);
         const $ = cheerio.load(data);
@@ -201,11 +222,11 @@ async function compile_type_uris(uri, columns, type) {
 
         $('h3').each((i, ele) => {
             if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
-                const tr = $(ele).next('table').children('tbody').children('tr');
-                $(tr).each(async (i, row) => {
-                    const uriExtension = $(row).children('td:nth-child(9)').children('a').attr('href');
+                // Parse through the children rows to get each item
+                $(ele).next().children('tbody').children('tr').each(async (i, tr) => {
+                    const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
                     if (uriExtension) {
-                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(row).children('td:nth-child(9)').children('a').attr('href')), type);
+                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(tr).children('td:nth-child(9)').children('a').attr('href')));
                     }
                 })
             }
@@ -213,17 +234,16 @@ async function compile_type_uris(uri, columns, type) {
 
         $('h2').each((i, ele) => {
             if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
-                const tr = $(ele).next('table>tbody').children('tr');
                 // Parse through the children rows to get each item
-                $(tr).each(async (i, row) => {
-                    const uriExtension = $(row).children('td:nth-child(9)').children('a').attr('href');
+                $(ele).next().children('tbody').children('tr').each(async (i, tr) => {
+                    const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
                     if (uriExtension) {
-                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(row).children('td:nth-child(9)').children('a').attr('href')), type);
+                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(tr).children('td:nth-child(9)').children('a').attr('href')));
                     }
                 })
             }
         })
-        
+
     } catch (err) {
         throw Error(`Could not find the requested type of items ${err}`);
     }

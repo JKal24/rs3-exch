@@ -6,11 +6,7 @@ const ITEMS_PER_PAGE = 10;
 module.exports = {
     async populateItems(identifier = 'BLANK') {
         try {
-            /**
-             * Before adding in our items, make sure that the item table is empty
-             * and does not have any data from a previous instance.
-             */
-            await commands.clearTable_items();
+            const items = [];
 
             // Select a number of uris based on the defined limit per page.
             let ids = await commands.getAllID_item_uris();
@@ -27,15 +23,24 @@ module.exports = {
                 ids = config.removeArrElement(ids, index);
 
                 if (evaluate(identifier)(info)) {
-                    await commands.addToTable_items(trimData(info));
+                    items.push(this.trimData(info));
                     populate++;
                 }
             }
+            console.log(items);
+            return items;
         } catch {
             throw Error(`Could not add items`);
         }
+    },
 
-        return await commands.getAll_items();
+    trimData(info) {
+
+        // Reduces the data made and compiled in infoParser and dataParser
+        // to be returned to the client
+        delete info.cvar_three_months;
+        delete info.average_three_months;
+        return info;
     }
 }
 
@@ -96,14 +101,6 @@ function evaluateOrdinary(info) {
     } else {
         return (info.average >= 150 && (hasVariation || info.cvar_three_months >= 0.2));
     }
-}
-
-function trimData(info) {
-
-    // Transform the data to be put into the SQL table, removes 3 month co-eff of variation and average.
-    delete info.cvar_three_months;
-    delete info.average_three_months;
-    return info;
 }
 
 function priceChange(newValue, oldValue) {

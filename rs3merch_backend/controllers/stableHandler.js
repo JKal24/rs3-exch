@@ -12,11 +12,9 @@ module.exports = {
         await commands.clearTable_item_uris();
 
         await infoParser.getBuyLimit_item_uris('STABLE');
-
-        return res.json(await dataManipulator.populateItems('STABLE'));
     },
 
-    async nextPage(req, res) {
+    async createPage(req, res) {
         return res.json(await dataManipulator.populateItems('STABLE'));
     }
 }

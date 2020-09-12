@@ -13,14 +13,12 @@ module.exports = {
 
         await commands.clearTable_item_uris();
 
-        if (config.standardTypes.hasOwnProperty(req.params.type)) {
-            infoParser.getByType_item_uris(req.params.type);
+        if (config.standardTypes.hasOwnProperty(req.body.type)) {
+            infoParser.getByType_item_uris(req.body.type);
         }
-
-        return res.json(dataManipulator.populateItems());
     },
 
-    async nextPage(req, res) {
+    async createPage(req, res) {
         return res.json(dataManipulator.populateItems());
     },
 } 
