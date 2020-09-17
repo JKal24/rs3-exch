@@ -1,13 +1,12 @@
-import { BrowserRouter } from "react-router-dom";
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Navbar from './components/navbar';
 import Searchbar from './components/searchbar';
-import SelectBuyLimit from './pages/SearchBuyLimit';
-import SelectInvestments from './pages/SelectInvestments';
-import SelectSearchBar from './pages/SelectSearchBar';
-import SelectStable from './pages/SelectStable';
-import SelectType from './pages/SelectType';
+import SearchBuyLimit from './pages/SearchBuyLimit';
+import SearchInvestments from './pages/SearchInvestments';
+import SearchByInput from './pages/SearchByInput';
+import SearchStable from './pages/SearchStable';
+import SearchType from './pages/SearchType';
 
 export default function Routes() {
     return (
@@ -15,14 +14,14 @@ export default function Routes() {
             <div class="container">
                 <Searchbar></Searchbar>
                 <Navbar></Navbar>
+                <Switch>
+                    <Route path='/buylimit/:buy_limit' component={SearchBuyLimit}></Route>
+                    <Route path='/invest' component={SearchInvestments}></Route>
+                    <Route path='/stable' component={SearchStable}></Route>
+                    <Route path='/type/:type' component={SearchType}></Route>
+                    <Route path='/search/:keyword' component={SearchByInput}></Route>
+                </Switch>
             </div>
-            <Switch>
-                <Route path='/buy_limit/search/:buy_limit' component={SelectBuyLimit}></Route>
-                <Route path='/invest/search' component={SelectInvestments}></Route>
-                <Route path='/stable/search' component={SelectStable}></Route>
-                <Route path='/type/search/:type' component={SelectType}></Route>
-                <Route path='/search/:keyword' component={SelectSearchBar}></Route>
-            </Switch>
         </BrowserRouter>
     )
 }

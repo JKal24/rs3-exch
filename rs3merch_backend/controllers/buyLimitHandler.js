@@ -1,8 +1,13 @@
 const infoParser = require('../utils/infoParser');
 const commands = require('../database/commands');
 const dataManipulator = require('../utils/priceDataManipulator');
+const config = require('../utils/config');
 
 module.exports = {
+
+    async showBuyLimits(req, res) {
+        return res.json(Object.keys(config.buyLimits));
+    },
 
     async initializeBuyLimit(req, res) {
         /**
@@ -12,7 +17,7 @@ module.exports = {
 
         await commands.clearTable_item_uris();
 
-        await infoParser.getByBuyLimit_item_uris(req.body.buy_limit);
+        await infoParser.getByBuyLimit_item_uris(req.params.buy_limit);
     },
 
     async createPage(req, res) {

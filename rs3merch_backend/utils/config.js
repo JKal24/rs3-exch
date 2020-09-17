@@ -1,9 +1,5 @@
 const https = require('https');
 
-const BUY_LIMITS_VERY_LOW = ['1', '2', '5', '10']
-const BUY_LIMITS_LOW = ['50', '100', '120', '150', '175', '200', '240', '250', '300', '400', '480', '500']
-const BUY_LIMITS_MED = ['1000', '1500', '2000', '5000'];
-const BUY_LIMITS_HIGH = ['10000', '20000', '25000', '28000', '30000'];
 const BUY_LIMIT_URI = 'https://runescape.wiki/w/Calculator:Grand_Exchange_buying_limits';
 const ITEM_BY_TYPE_URI = 'https://runescape.wiki/w/RuneScape:Grand_Exchange_Market_Watch';
 
@@ -59,6 +55,13 @@ function removeArrElement(arr, index) {
 }
 
 // Type information listings
+
+const buyLimits = {
+    BUY_LIMITS_VERY_LOW: ['1', '2', '5', '10'],
+    BUY_LIMITS_LOW: ['50', '100', '120', '150', '175', '200', '240', '250', '300', '400', '480', '500'],
+    BUY_LIMITS_MED: ['1000', '1500', '2000', '5000'],
+    BUY_LIMITS_HIGH: ['10000', '20000', '25000', '28000', '30000']
+}
 
 const standardTypes = {
     // Custom fields
@@ -148,7 +151,6 @@ const standardTypes = {
 }
 
 module.exports = {
-    BUY_LIMITS_VERY_LOW, BUY_LIMITS_LOW, BUY_LIMITS_MED, BUY_LIMITS_HIGH, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, standardTypes,
-    extension, normalToExchange, exchangeToModuleData, runescapeWikiBaseLink, conditionalSlice, removeArrElement,
-    parseHTTPS
+    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS,
+    extension, normalToExchange, exchangeToModuleData, runescapeWikiBaseLink, conditionalSlice, removeArrElement
 };

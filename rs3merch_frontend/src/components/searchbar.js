@@ -15,7 +15,7 @@ export default function Searchbar() {
     const handleItemSearched = async (e) => {
         e.preventDefault();
         // Implement a blanket search on backend
-        await api.post('/SearchByKeyword', { keyword: searchText })
+        await api.get(`/SearchByKeyword/${searchText}`)
         history.push(`/search/${searchText}`);
     }
 

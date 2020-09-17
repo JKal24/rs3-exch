@@ -3,9 +3,6 @@ const cors = require('cors');
 const app = express();
 require('dotenv').config()
 const routes = require('./routes');
-const singleItemHandler = require('./controllers/searchItemHandler');
-const infoParser = require('./utils/infoParser');
-const priceDataManipulator = require('./utils/priceDataManipulator');
 
 const PORT = process.env.PORT || 8000;
 
@@ -14,9 +11,5 @@ app.use(express.json());
 app.use(routes);
 
 app.listen(PORT, () => {
-    console.log('listening');   
+    console.log(`Listening on PORT ${PORT}`);
 });
-
-infoParser.getBySearch_item_uris('blue');
-
-priceDataManipulator.populateItems();

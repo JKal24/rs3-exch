@@ -7,19 +7,21 @@ const stableHandler = require('./controllers/stableHandler');
 const typeHandler = require('./controllers/typeHandler');
 const searchHandler = require('./controllers/searchItemHandler');
 
-routes.get('/BuyLimitSearch', buyLimitHandler.initializeBuyLimit);
-routes.get('/BuyLimitSearch/:page', buyLimitHandler.createPage);
+routes.get('/BuyLimitListing', buyLimitHandler.showBuyLimits);
+routes.get('/BuyLimitInit/:buy_limit', buyLimitHandler.initializeBuyLimit);
+routes.get('/BuyLimitSearch', buyLimitHandler.createPage);
 
-routes.get('/InvestmentSearch', investHandler.initializeInvest);
-routes.get('/InvestmentSearch/:page', investHandler.createPage);
+routes.get('/InvestmentInit', investHandler.initializeInvest);
+routes.get('/InvestmentSearch', investHandler.createPage);
 
-routes.get('/StableItemSearch', stableHandler.initializeStable);
-routes.get('/StableItemSearch/:page', stableHandler.createPage);
+routes.get('/StableItemInit', stableHandler.initializeStable);
+routes.get('/StableItemSearch', stableHandler.createPage);
 
-routes.get('/SearchByType', typeHandler.initializeType);
-routes.get('/SearchByTypes/:page', typeHandler.createPage);
+routes.get('/TypeListing', typeHandler.showTypes);
+routes.get('/InitByType/:type', typeHandler.initializeType);
+routes.get('/SearchByTypes', typeHandler.createPage);
 
-routes.get('/SearchByKeyword', searchHandler.initializeSearch);
-routes.get('/SearcByKeyword/:page', searchHandler.createPage);
+routes.get('/InitByKeyword/:keyword', searchHandler.initializeSearch);
+routes.get('/SearchByKeyword', searchHandler.createPage);
 
 module.exports = routes;

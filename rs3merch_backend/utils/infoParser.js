@@ -19,7 +19,7 @@ module.exports = {
 
                 case 'VERY_LOW':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) !== -1) {
+                        if (config.buyLimits.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) !== -1) {
                             await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
                         }
                     }));
@@ -27,7 +27,7 @@ module.exports = {
 
                 case 'LOW':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.BUY_LIMITS_LOW.indexOf($(ele).children().last().text()) !== -1) {
+                        if (config.buyLimits.BUY_LIMITS_LOW.indexOf($(ele).children().last().text()) !== -1) {
                             await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
                         }
                     }));
@@ -35,7 +35,7 @@ module.exports = {
 
                 case 'MED':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.BUY_LIMITS_MED.indexOf($(childEle).children().last().text()) !== -1) {
+                        if (config.buyLimits.BUY_LIMITS_MED.indexOf($(childEle).children().last().text()) !== -1) {
                             await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
                         }
                     }));
@@ -43,7 +43,7 @@ module.exports = {
 
                 case 'HIGH':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.BUY_LIMITS_HIGH.indexOf($(childEle).children().last().text()) !== -1) {
+                        if (config.buyLimits.BUY_LIMITS_HIGH.indexOf($(childEle).children().last().text()) !== -1) {
                             await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
                         }
                     }));
@@ -57,7 +57,7 @@ module.exports = {
 
                 case 'STABLE':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) === -1) {
+                        if (config.buyLimits.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) === -1) {
                             await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
                         }
                     }));
