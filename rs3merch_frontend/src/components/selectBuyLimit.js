@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Fade } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import api from '../config/api';
@@ -8,9 +8,15 @@ export default function SelectBuyLimit() {
     const [buyLimits, setBuyLimits] = useState([]);
     const [collapsed, setCollapsed] = useState(true);
 
-    useEffect(async () => {
-        setBuyLimits(await api.get('/BuyLimitListing'));
+    useEffect(() => {
+        async function handleBuyLimits() {
+            setBuyLimits(await api.get('/BuyLimitListing'));
+        }
+        
+        handleBuyLimits();
     }, [])
+
+
 
     return (
         <div>
@@ -20,7 +26,7 @@ export default function SelectBuyLimit() {
                 {
                     buyLimits.map((buyLimit, index) => {
                         return (
-                        <Link to={ { pathname: `/buylimit/${buyLimit}`} }></Link>
+                            <Link to={{ pathname: `/buylimit/${buyLimit}` }}></Link>
                         )
                     })
                 }

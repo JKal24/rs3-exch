@@ -1,12 +1,12 @@
-import { React, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import api from '../config/api';
 
 export default function Searchbar() {
 
     const history = useHistory();
-    [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState('');
 
     const handleSearchText = (e) => {
         setSearchText(e.target.value);

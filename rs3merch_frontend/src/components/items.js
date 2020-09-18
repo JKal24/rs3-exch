@@ -1,46 +1,56 @@
-import { React, useEffect, useState, useParams } from 'react';
-import api from '../../config/api';
+import React, { useEffect, useState } from 'react';
+import { Container, Button, Row, Col, Image } from 'react-bootstrap';
+import api from '../config/api';
 
 export default function Items(props) {
 
     // Items are initialized by their respective page (uris are loaded in)
     // Then the items are parsed and displayed here
+
     const [items, setItems] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
     // Previous items will be a collection of arrays for each corresponding page
     // Index 0 will represent page 1 and so on...
+
     const [previousItems, setPreviousItems] = useState([]);
     const [page, setPage] = useState(1);
 
-    useEffect(async () => {
-        setItems(await api.getInfo(props.filter));
-        setLoaded(true);
-    }, [])
+    // Items will be loaded in through useEffect the first time, afterwards they will
+    // be loaded in through handleNextPage
 
-    async function handleFirstPage() {
+    useEffect(() => {
+        async function setData() {
+            setItems(await getInfo(props.filter));
+        }
+
+        setData();
+        setLoaded(true);
+    }, [props.filter])
+
+    function copyPage() {
         if (page >= previousItems.length) {
             setPreviousItems(previousItems.push(items));
         }
+    }
+
+    function handleFirstPage() {
+        copyPage();
 
         setPage(1);
         setItems(previousItems[0]);
     }
 
-    async function handlePreviousPage() {
-        if (page >= previousItems.length) {
-            setPreviousItems(previousItems.push(items));
-        }
+    function handlePreviousPage() {
+        copyPage();
 
         setPage(page - 1);
         setItems(previousItems[page - 1]);
     }
 
-    async function handlePageChange(e) {
-        if (e.key == 'Enter' && e.target.value < previousItems.length) {
-            if (page >= previousItems.length) {
-                setPreviousItems(previousItems.push(items));
-            }
+    function handlePageChange(e) {
+        if (e.key === 'Enter' && e.target.value < previousItems.length) {
+            copyPage();
 
             setPage(e.target.value);
             setItems(previousItems[page - 1]);
@@ -52,7 +62,7 @@ export default function Items(props) {
         if (previousItems.length < page) {
             setPreviousItems(previousItems.push(items));
 
-            setItems(await api.getInfo(props.filter));
+            setItems(await getInfo(props.filter));
         }
     }
 
@@ -109,4 +119,19 @@ export default function Items(props) {
                 )}
         </>
     );
+}
+
+async function getInfo(filter) {
+    switch(filter) {
+        case 'buylimit':
+            return await api.get('/BuyLimitSearch')
+        case 'type':
+            return await api.get('/SearchByTypes');
+        case 'invest':
+            return await api.get('/InvestmentSearch');
+        case 'stable':
+            return await api.get('/StableItemSearch');
+        case 'input':
+            return await api.get('/SearchByKeyword')
+    }
 }

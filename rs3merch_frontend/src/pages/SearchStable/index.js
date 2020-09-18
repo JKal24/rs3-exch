@@ -1,26 +1,25 @@
-import React, { useState, useEffect, useParams } from 'react';
-import Items from '../../components/items';
+import React, { useState, useEffect } from 'react';
 import api from '../../config/api';
+import Items from '../../components/items';
 
-export default function SearchType() {
+export default function SearchByInput() {
 
-    let { type } = useParams();
-    const filter = "type";
+    const filter = "stable";
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         async function handleInit() {
-            await api.get(`/InitByType/${type}`)
+            await api.get(`/StableItemInit`)
     
             setLoaded(true);
         }
     
         handleInit();
-    }, [type])
+    }, [])
 
     return (
         <div>
-            <h2 class="title">Type: {type}</h2>
+            <h2 class="title">Stable Items</h2>
             {
                 loaded ?
                     <Items filter={filter} />
@@ -29,5 +28,4 @@ export default function SearchType() {
             }
         </div>
     );
-
 }
