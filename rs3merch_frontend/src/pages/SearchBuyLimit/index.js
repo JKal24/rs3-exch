@@ -19,12 +19,12 @@ export default function SearchBuyLimit() {
 
     return (
         <div>
-            <h2 class="title">Buy Limit: {buy_limit}</h2>
+            <h2 className="title">Buy Limit: {buy_limit}</h2>
             {
                 loaded ?
                     <Items filter={filter} />
                     :
-                    <h4>Loading...</h4>
+                    <h4>Getting Items...</h4>
             }
         </div>
     );

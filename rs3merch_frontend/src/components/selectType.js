@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Fade } from 'react-bootstrap';
-import { Link } from  'react-router-dom';
+import { Link } from 'react-router-dom';
 import api from '../config/api';
 
 export default function SelectType() {
@@ -16,19 +16,24 @@ export default function SelectType() {
         handleTypes();
     }, [])
 
+    const Types = () => {
+        return (
+            types.map((type, index) => {
+                return (
+                    <Link to={`/type/${type}`} className="type">{type}</Link>
+                );
+            })
+        )
+    }
+
     return (
         <div>
-            <Button onClick={setCollapsed("false")} variant="primary" value="Types">
-            </Button>
+            <Button onClick={() => setCollapsed(!collapsed)} variant="light">
+                Types
             <Fade in={!collapsed}>
-                {
-                    types.map((type, index) => {
-                        return (
-                            <Link to={`/type/${type}`} className="type">{type}</Link>
-                        );
-                    })
-                }
-            </Fade>
+                    <Types />
+                </Fade>
+            </Button>
         </div>
     )
 

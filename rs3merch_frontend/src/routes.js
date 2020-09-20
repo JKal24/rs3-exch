@@ -12,16 +12,16 @@ import LandingPage from './pages/LandingPage';
 export default function Routes() {
     return (
         <BrowserRouter>
-            <div class="container">
-                <Searchbar></Searchbar>
+            <div className="container">
                 <Navigation></Navigation>
+                <Searchbar></Searchbar>
                 <Switch>
                     <Route exact path='/' component={LandingPage}></Route>
-                    <Route path='/buylimit/:buy_limit' component={SearchBuyLimit}></Route>
-                    <Route path='/invest' component={SearchInvestments}></Route>
-                    <Route path='/stable' component={SearchStable}></Route>
-                    <Route path='/type/:type' component={SearchType}></Route>
-                    <Route path='/search/:keyword' component={SearchByInput}></Route>
+                    <Route exact path='/buylimit/:buy_limit' component={SearchBuyLimit}></Route>
+                    <Route exact path='/invest' component={SearchInvestments}></Route>
+                    <Route exact path='/stable' component={SearchStable}></Route>
+                    <Route exact path='/type/:type' component={SearchType}></Route>
+                    <Route exact path='/search/:keyword' component={SearchByInput}></Route>
                 </Switch>
             </div>
         </BrowserRouter>

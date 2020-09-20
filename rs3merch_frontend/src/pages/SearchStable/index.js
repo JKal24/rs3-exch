@@ -19,12 +19,12 @@ export default function SearchByInput() {
 
     return (
         <div>
-            <h2 class="title">Stable Items</h2>
+            <h2 className="title">Stable Items</h2>
             {
                 loaded ?
                     <Items filter={filter} />
                     :
-                    <h4>Loading...</h4>
+                    <h4>Getting Items...</h4>
             }
         </div>
     );

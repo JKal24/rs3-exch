@@ -20,12 +20,12 @@ export default function SearchType() {
 
     return (
         <div>
-            <h2 class="title">Type: {type}</h2>
+            <h2 className="title">Type: {type}</h2>
             {
                 loaded ?
                     <Items filter={filter} />
                     :
-                    <h4>Loading...</h4>
+                    <h4>Getting Items...</h4>
             }
         </div>
     );
