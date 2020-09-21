@@ -29,8 +29,8 @@ module.exports = {
             }
             console.log(items);
             return items;
-        } catch {
-            throw Error(`Could not add items`);
+        } catch (err) {
+            throw Error(`Could not add items ${err}`);
         }
     },
 

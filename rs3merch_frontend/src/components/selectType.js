@@ -1,39 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Fade } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { DropdownButton, Dropdown } from 'react-bootstrap';
 import api from '../config/api';
 
 export default function SelectType() {
 
     const [types, setTypes] = useState([]);
-    const [collapsed, setCollapsed] = useState(true);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         async function handleTypes() {
-            setTypes(await api.get('/TypeListing'));
+            setTypes((await api.get('/TypeListing')).data);
         }
 
         handleTypes();
+        setLoaded(true);
     }, [])
 
     const Types = () => {
         return (
-            types.map((type, index) => {
-                return (
-                    <Link to={`/type/${type}`} className="type">{type}</Link>
-                );
-            })
+            <>
+                {
+                    loaded ?
+                        types.map((type, index) => {
+                            return (
+                                <Dropdown.Item href={`/type/${type}`} className="type" key={index}>
+                                    {type}
+                                </Dropdown.Item>
+                            );
+                        })
+                        :
+                        <h3>Loading...</h3>
+                }
+            </>
         )
     }
 
     return (
         <div>
-            <Button onClick={() => setCollapsed(!collapsed)} variant="light">
-                Types
-            <Fade in={!collapsed}>
-                    <Types />
-                </Fade>
-            </Button>
+            <DropdownButton title="Types">
+                <Types />
+            </DropdownButton>
         </div>
     )
 

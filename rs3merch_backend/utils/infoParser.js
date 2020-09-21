@@ -57,7 +57,7 @@ module.exports = {
 
                 case 'STABLE':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.buyLimits.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) === -1) {
+                        if (config.buyLimits.BUY_LIMITS_VERY_LOW.indexOf($(ele).children().last().text()) === -1) {
                             await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
                         }
                     }));

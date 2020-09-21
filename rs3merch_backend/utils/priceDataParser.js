@@ -46,7 +46,7 @@ function lowest(table) {
 }
 
 function average(arr) {
-    return threeDecimals(arr.reduce((acc, val) => { return acc + val; })) / arr.length;
+    return threeDecimals(arr.reduce((acc, val) => { return acc + val; }) / arr.length);
 }
 
 function threeDecimals(value) {

@@ -21,7 +21,8 @@ export default function Items(props) {
 
     useEffect(() => {
         async function setData() {
-            setItems(await getInfo(props.filter));
+            console.log('getting the items');
+            setItems((await getInfo(props.filter)).data);
         }
 
         setData();
@@ -62,7 +63,7 @@ export default function Items(props) {
         if (previousItems.length < page) {
             setPreviousItems(previousItems.push(items));
 
-            setItems(await getInfo(props.filter));
+            setItems((await getInfo(props.filter)).data);
         }
     }
 
@@ -87,7 +88,7 @@ export default function Items(props) {
                             <Col>Monthly Lows</Col>
                         </Row>
                         {
-                            props.items.map((item, index) => {
+                            items.map((item, index) => {
                                 return (
                                     <Row>
                                         <Col>{index}</Col>
@@ -107,10 +108,10 @@ export default function Items(props) {
                         }
                     </Container>
                     <div class="navigation">
-                        <Button variant="secondary" value="<<" class="navButton" onClick={handleFirstPage}></Button>
-                        <Button variant="secondary" value="<" class="navButton" onClick={handlePreviousPage}></Button>
+                        <Button variant="secondary" value="<<" className="navButton" onClick={handleFirstPage}></Button>
+                        <Button variant="secondary" value="<" className="navButton" onClick={handlePreviousPage}></Button>
                         <input placeholder={page} onKeyDown={handlePageChange}></input>
-                        <Button variant="secondary" value=">" class="navButton" onClick={handleNextPage}></Button>
+                        <Button variant="secondary" value=">" className="navButton" onClick={handleNextPage}></Button>
                     </div>
                 </>
             ) : (

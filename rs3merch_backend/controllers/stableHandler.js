@@ -11,7 +11,7 @@ module.exports = {
         */
         await commands.clearTable_item_uris();
 
-        await infoParser.getBuyLimit_item_uris('STABLE');
+        await infoParser.getByBuyLimit_item_uris('STABLE');
     },
 
     async createPage(req, res) {
