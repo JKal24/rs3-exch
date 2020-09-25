@@ -2,6 +2,9 @@ const https = require('https');
 
 const BUY_LIMIT_URI = 'https://runescape.wiki/w/Calculator:Grand_Exchange_buying_limits';
 const ITEM_BY_TYPE_URI = 'https://runescape.wiki/w/RuneScape:Grand_Exchange_Market_Watch';
+const DETAIL_URI = 'https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=';
+const GRAPH_URI = 'https://secure.runescape.com/m=itemdb_rs/api/graph/';
+
 
 // Function that scrapes HTML data from a HTTPS page and returns it
 
@@ -43,6 +46,10 @@ function exchangeToModuleData(uri) {
     return uri.replace('Exchange:', 'Module:Exchange/') + '/Data';
 }
 
+function moduleToBaseName(name) {
+    return name.replace(/Module:Exchange\//, '').replace(/\/Data/, '');
+}
+
 function conditionalSlice(arr) {
     if (arr.length > 91) {
         return arr.slice(arr.length - 91, arr.length);
@@ -75,8 +82,6 @@ const standardTypes = {
         Crafting: ['Materials', 'Uncut gems', 'Cut gems', 'Rings', 'Necklaces', 'Unstrung amulets', 'Amulets', 'Bracelets', 'Silver items', 'Hides', 'Leather', 'Glass items', 'Battlestaves',
         'Urns'],
         Fletching: ['Bolts tips', 'Gem-tipped bolts']
-
-        // Create a custom filter for urns by price > 2000
     },
     Farming: {
         Farming: ['Allotment seeds', 'Flower seeds', 'Herb seeds', 'Hops seeds', 'Bush seeds', 'Fruit tree seeds', 'Tree seeds', 'Cacti seeds', 'Mushroom spores', 'Flowers', 
@@ -130,8 +135,6 @@ const standardTypes = {
     },
     Divination: {
         Divination: ['Energies', 'Portents', 'Signs']
-
-        // Manually add divine charges?
     },
     Bones: {
         Prayer: ['Bones and ashes']
@@ -151,6 +154,6 @@ const standardTypes = {
 }
 
 module.exports = {
-    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS,
-    extension, normalToExchange, exchangeToModuleData, runescapeWikiBaseLink, conditionalSlice, removeArrElement
+    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, DETAIL_URI, GRAPH_URI, parseHTTPS,
+    extension, normalToExchange, exchangeToModuleData, moduleToBaseName, runescapeWikiBaseLink, conditionalSlice, removeArrElement
 };

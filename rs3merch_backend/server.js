@@ -1,9 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-require('dotenv').config()
 const routes = require('./routes');
-const priceDataManipulator = require('./utils/priceDataManipulator');
+require('dotenv').config();
+const infoParser = require('./utils/infoParser');
 
 const PORT = process.env.PORT || 8000;
 
@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(routes);
 
 app.listen(PORT, () => {
-    console.log(`Listening on PORT ${PORT}`);
+    
 });
 
-priceDataManipulator.populateItems();
+infoParser.getByType_item_uris('Archaeology');

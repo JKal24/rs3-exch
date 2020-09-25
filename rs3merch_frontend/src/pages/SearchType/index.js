@@ -1,33 +1,16 @@
-import React, { useState, useEffect, useParams } from 'react';
+import React from 'react';
+import { useParams } from 'react-router-dom'
 import Items from '../../components/items';
-import api from '../../config/api';
 
 export default function SearchType() {
 
     let { type } = useParams();
     const filter = "type";
-    const [loaded, setLoaded] = useState(false);
-
-    useEffect(() => {
-        async function handleInit() {
-            await api.get(`/InitByType/${type}`)
-    
-            setLoaded(true);
-        }
-    
-        handleInit();
-    }, [type])
 
     return (
         <div>
-            <h2 className="title">Type: {type}</h2>
-            {
-                loaded ?
-                    <Items filter={filter} />
-                    :
-                    <h4>Getting Items...</h4>
-            }
+            <h2 className="title">{type} Items</h2>
+            <Items filter={filter} keyword={type} />
         </div>
     );
-
 }

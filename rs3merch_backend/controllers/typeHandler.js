@@ -20,6 +20,8 @@ module.exports = {
         if (config.standardTypes.hasOwnProperty(req.params.type)) {
             infoParser.getByType_item_uris(req.params.type);
         }
+        
+        return res.json(true);
     },
 
     async createPage(req, res) {

@@ -66,6 +66,7 @@ module.exports = {
                 default:
                     throw Error('Please enter a valid buy-limit (Very low, low, med, high)');
             }
+            await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
             throw Error(`Error occured when attempting to gather buy limit uris ${err}`);
         }
@@ -115,6 +116,7 @@ module.exports = {
         try {
             const data = await config.parseHTTPS(uri);
             let values = await getName(data);
+            const id = await getID(data);
 
             await getBaseValues(config.exchangeToModuleData(uri)).then(async res => {
                 Object.assign(values, await getItem_img_uri(data), await getBuyLimit(data), res);
@@ -135,10 +137,38 @@ module.exports = {
         } catch (err) {
             throw Error(`Could not get the information pertaining to the given element ${err}`);
         }
-    },
+    }
 }
 
 // Information gathering functions
+
+async function getID(data) {
+    try {
+        const $ = cheerio.load(data);
+        return { id: $('#exchange-itemid').text() };
+    } catch (err) {
+        throw Error(`Could not find requested name ${err}`);
+    }
+}
+
+async function getDetails(id) {
+    try {
+        const details = config.parseHTTPS(config.DETAIL_URI + id);
+        return {
+
+        }
+    } catch (err) {
+        throw Error(`Could not find requested details ${err}`);
+    }
+}
+
+async function getGraphPoints(id) {
+    try {
+        const points = config.parseHTTPS(config.GRAPH_URI + id + '.json');
+    } catch (err) {
+        throw Error(`Could not find requested graph points ${err}`);
+    }
+}
 
 async function getName(data) {
     try {
@@ -220,28 +250,25 @@ async function compile_type_uris(uri, columns) {
          * in config. Will then extract all valid item uris.
          */
 
-        $('h3').each((i, ele) => {
+        function parse(ele) {
             if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
                 // Parse through the children rows to get each item
                 $(ele).next().children('tbody').children('tr').each(async (i, tr) => {
                     const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
+                    const buy_limit = $(tr).children('td:nth-child(7)').text();
                     if (uriExtension) {
-                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(tr).children('td:nth-child(9)').children('a').attr('href')));
+                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink(uriExtension), buy_limit);
                     }
                 })
             }
+        }
+
+        $('h3').each((i, ele) => {
+            parse(ele);
         })
 
         $('h2').each((i, ele) => {
-            if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
-                // Parse through the children rows to get each item
-                $(ele).next().children('tbody').children('tr').each(async (i, tr) => {
-                    const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
-                    if (uriExtension) {
-                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(tr).children('td:nth-child(9)').children('a').attr('href')));
-                    }
-                })
-            }
+            parse(ele);
         })
 
     } catch (err) {

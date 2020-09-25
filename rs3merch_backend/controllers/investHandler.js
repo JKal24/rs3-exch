@@ -13,6 +13,7 @@ module.exports = {
         await commands.clearTable_item_uris();
 
         await infoParser.getByBuyLimit_item_uris('ALL');
+        return res.json(true);
     },
 
     async createPage(req, res) {

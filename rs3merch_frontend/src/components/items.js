@@ -21,13 +21,13 @@ export default function Items(props) {
 
     useEffect(() => {
         async function setData() {
-            console.log('getting the items');
+            await initInfo(props.filter, props.keyword);
             setItems((await getInfo(props.filter)).data);
+            setLoaded(true);
         }
 
         setData();
-        setLoaded(true);
-    }, [props.filter])
+    }, [props.filter, props.keyword])
 
     function copyPage() {
         if (page >= previousItems.length) {
@@ -73,7 +73,7 @@ export default function Items(props) {
                 <>
                     <Container>
 
-                        { /* Make a header for the table of items */}
+                        { /* Makes a header for the table of items */}
                         <Row>
                             <Col></Col>
                             <Col>Item Name</Col>
@@ -90,7 +90,7 @@ export default function Items(props) {
                         {
                             items.map((item, index) => {
                                 return (
-                                    <Row>
+                                    <Row key={index}>
                                         <Col>{index}</Col>
                                         <Col><Image src={item.item_image_uri} thumbnail></Image>{item.item_name}</Col>
                                         <Col>{item.buy_limit}</Col>
@@ -107,7 +107,7 @@ export default function Items(props) {
                             })
                         }
                     </Container>
-                    <div class="navigation">
+                    <div className="navigation">
                         <Button variant="secondary" value="<<" className="navButton" onClick={handleFirstPage}></Button>
                         <Button variant="secondary" value="<" className="navButton" onClick={handlePreviousPage}></Button>
                         <input placeholder={page} onKeyDown={handlePageChange}></input>
@@ -122,8 +122,30 @@ export default function Items(props) {
     );
 }
 
+// Commands functions for inputting and retrieving data from the database
+
+async function initInfo(filter, keyword) {
+    switch (filter) {
+        case 'buylimit':
+            await api.get(`/BuyLimitInit/${keyword}`);
+            return;
+        case 'type':
+            await api.get(`/InitByType/${keyword}`);
+            return;
+        case 'invest':
+            await api.get('/InvestmentInit');
+            return;
+        case 'stable':
+            await api.get('/StableItemInit');
+            return;
+        case 'input':
+            await api.get(`/InitByKeyword/${keyword}`);
+            return;
+    }
+}
+
 async function getInfo(filter) {
-    switch(filter) {
+    switch (filter) {
         case 'buylimit':
             return await api.get('/BuyLimitSearch')
         case 'type':

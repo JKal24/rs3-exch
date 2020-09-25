@@ -18,6 +18,7 @@ module.exports = {
         await commands.clearTable_item_uris();
 
         await infoParser.getByBuyLimit_item_uris(req.params.buy_limit);
+        return res.json(true);
     },
 
     async createPage(req, res) {

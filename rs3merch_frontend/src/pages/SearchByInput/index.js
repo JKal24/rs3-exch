@@ -1,32 +1,16 @@
-import React, { useState, useEffect, useParams } from 'react';
-import api from '../../config/api';
+import React from 'react';
+import { useParams } from 'react-router-dom'
 import Items from '../../components/items';
 
 export default function SearchByInput() {
 
     let { keyword } = useParams();
-    const [loaded, setLoaded] = useState(false);
     const filter = "input";
-
-    useEffect(() => {
-        async function handleInit() {
-            await api.get(`/InitByKeyword/${keyword}`);
-    
-            setLoaded(true);
-        }
-
-        handleInit();
-    }, [keyword])
 
     return (
         <div>
             <h2 className="title">Keyword: {keyword}</h2>
-            {
-                loaded ?
-                    <Items filter={filter} />
-                    :
-                    <h4>Getting Items...</h4>
-            }
+            <Items filter={filter} keyword={keyword} />
         </div>
     );
 }
