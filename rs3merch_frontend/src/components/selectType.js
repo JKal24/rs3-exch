@@ -16,6 +16,8 @@ export default function SelectType() {
         setLoaded(true);
     }, [])
 
+    // Listing of each type
+
     const Types = () => {
         return (
             <>
@@ -37,7 +39,7 @@ export default function SelectType() {
 
     return (
         <div>
-            <DropdownButton title="Types">
+            <DropdownButton title="Types" variant="dark">
                 <Types />
             </DropdownButton>
         </div>

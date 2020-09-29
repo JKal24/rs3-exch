@@ -9,7 +9,7 @@ export default function SearchBuyLimit() {
 
     return (
         <div>
-            <h2 className="title">{buy_limit} Items</h2>
+            <h2 className="title">{buy_limit.replace('_', ' ')} Buy Limit Items</h2>
             <Items filter={filter} keyword={buy_limit} />
         </div>
     );

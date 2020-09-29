@@ -15,7 +15,9 @@ export default function Searchbar() {
     const handleItemSearched = async (e) => {
         e.preventDefault();
         // Implement a blanket search on backend
-        await api.get(`/SearchByKeyword/${searchText}`)
+        await api.get(`/SearchByKeyword/${searchText}`, { params : {
+            keyword: searchText
+        }})
         history.push(`/search/${searchText}`);
     }
 
@@ -28,7 +30,7 @@ export default function Searchbar() {
                             <Form.Control type="text" placeholder="Search for an item..." onChange={handleSearchText}></Form.Control>
                         </Col>
                         <Col>
-                            <Button onSubmit={handleItemSearched} type="submit" value="Search"></Button>
+                            <Button onSubmit={handleItemSearched} type="submit">Search</Button>
                         </Col>
                     </Row>
                 </Container>

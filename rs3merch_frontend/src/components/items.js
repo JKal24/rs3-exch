@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Row, Col, Image } from 'react-bootstrap';
-import api from '../config/api';
+import { initInfo, getInfo } from '../config/commands';
+import './items.css';
 
 export default function Items(props) {
 
@@ -15,6 +16,7 @@ export default function Items(props) {
 
     const [previousItems, setPreviousItems] = useState([]);
     const [page, setPage] = useState(1);
+    const [disableNav, setDisableNav] = useState(false);
 
     // Items will be loaded in through useEffect the first time, afterwards they will
     // be loaded in through handleNextPage
@@ -29,6 +31,10 @@ export default function Items(props) {
         setData();
     }, [props.filter, props.keyword])
 
+    useEffect(() => {
+        setDisableNav(false);
+    }, [items])
+
     function copyPage() {
         if (page >= previousItems.length) {
             setPreviousItems(previousItems.push(items));
@@ -36,6 +42,7 @@ export default function Items(props) {
     }
 
     function handleFirstPage() {
+        setDisableNav(true);
         copyPage();
 
         setPage(1);
@@ -43,6 +50,7 @@ export default function Items(props) {
     }
 
     function handlePreviousPage() {
+        setDisableNav(true);
         copyPage();
 
         setPage(page - 1);
@@ -59,6 +67,7 @@ export default function Items(props) {
     }
 
     async function handleNextPage() {
+        setDisableNav(true);
         setPage(page + 1);
         if (previousItems.length < page) {
             setPreviousItems(previousItems.push(items));
@@ -91,7 +100,7 @@ export default function Items(props) {
                             items.map((item, index) => {
                                 return (
                                     <Row key={index}>
-                                        <Col>{index}</Col>
+                                        <Col>{index + 1}</Col>
                                         <Col><Image src={item.item_image_uri} thumbnail></Image>{item.item_name}</Col>
                                         <Col>{item.buy_limit}</Col>
                                         <Col>{item.price_today}</Col>
@@ -107,12 +116,12 @@ export default function Items(props) {
                             })
                         }
                     </Container>
-                    <div className="navigation">
-                        <Button variant="secondary" value="<<" className="navButton" onClick={handleFirstPage}></Button>
-                        <Button variant="secondary" value="<" className="navButton" onClick={handlePreviousPage}></Button>
-                        <input placeholder={page} onKeyDown={handlePageChange}></input>
-                        <Button variant="secondary" value=">" className="navButton" onClick={handleNextPage}></Button>
-                    </div>
+                    <Container className="navigation">
+                        <Button variant="secondary" className="navButton" onClick={handleFirstPage} disabled={disableNav}>{'<<'}</Button>
+                        <Button variant="secondary" className="navButton" onClick={handlePreviousPage} disabled={disableNav}>{'<'}</Button>
+                        <input placeholder='Page' onKeyDown={handlePageChange} className="navInput"></input>
+                        <Button variant="secondary" className="navButton" onClick={handleNextPage} disabled={disableNav}>{'>'}</Button>
+                    </Container>
                 </>
             ) : (
                     <h4>Loading...</h4>
@@ -120,41 +129,4 @@ export default function Items(props) {
                 )}
         </>
     );
-}
-
-// Commands functions for inputting and retrieving data from the database
-
-async function initInfo(filter, keyword) {
-    switch (filter) {
-        case 'buylimit':
-            await api.get(`/BuyLimitInit/${keyword}`);
-            return;
-        case 'type':
-            await api.get(`/InitByType/${keyword}`);
-            return;
-        case 'invest':
-            await api.get('/InvestmentInit');
-            return;
-        case 'stable':
-            await api.get('/StableItemInit');
-            return;
-        case 'input':
-            await api.get(`/InitByKeyword/${keyword}`);
-            return;
-    }
-}
-
-async function getInfo(filter) {
-    switch (filter) {
-        case 'buylimit':
-            return await api.get('/BuyLimitSearch')
-        case 'type':
-            return await api.get('/SearchByTypes');
-        case 'invest':
-            return await api.get('/InvestmentSearch');
-        case 'stable':
-            return await api.get('/StableItemSearch');
-        case 'input':
-            return await api.get('/SearchByKeyword')
-    }
 }

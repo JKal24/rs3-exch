@@ -10,13 +10,13 @@ export default function Navigation() {
         <Navbar>
             <Container>
                 <Link to='/'>
-                    <Image src="../assets/rs3merch_logo.png" fluid />
+                    <Image src="assets/rs3merch_logo.png" fluid />
                 </Link>
                 <SelectBuyLimit />
-                <Button variant="light">
+                <Button variant="dark">
                     <Link to='/invest'>Investments</Link>
                 </Button>
-                <Button variant="light">
+                <Button variant="dark">
                     <Link to='/stable'>Stable Items</Link>
                 </Button>
                 <SelectType />

@@ -16,6 +16,8 @@ export default function SelectBuyLimit() {
         setLoaded(true);
     }, [])
 
+    // Listing of each buy limit
+
     const BuyLimits = () => {
         return (
             <>
@@ -37,7 +39,7 @@ export default function SelectBuyLimit() {
 
     return (
         <div>
-        <DropdownButton title="Buy Limits">
+        <DropdownButton title="Buy Limits" variant="dark">
             <BuyLimits />
         </DropdownButton>
     </div>

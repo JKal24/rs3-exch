@@ -17,48 +17,51 @@ module.exports = {
                  * buy limit and adds it to the database if it is acceptable.
                  */
 
-                case 'VERY_LOW':
+                case 'Very_Low':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.buyLimits.BUY_LIMITS_VERY_LOW.indexOf($(childEle).children().last().text()) !== -1) {
-                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        if (config.buyLimits.Very_Low.indexOf($(ele).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(
+                                config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')),
+                                $(ele).children().last().text()
+                            );
                         }
                     }));
                     break;
 
-                case 'LOW':
+                case 'Low':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.buyLimits.BUY_LIMITS_LOW.indexOf($(ele).children().last().text()) !== -1) {
-                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        if (config.buyLimits.Low.indexOf($(ele).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')), $(ele).children().last().text());
                         }
                     }));
                     break;
 
-                case 'MED':
+                case 'Medium':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.buyLimits.BUY_LIMITS_MED.indexOf($(childEle).children().last().text()) !== -1) {
-                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        if (config.buyLimits.Medium.indexOf($(ele).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')), $(ele).children().last().text());
                         }
                     }));
                     break;
 
-                case 'HIGH':
+                case 'High':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.buyLimits.BUY_LIMITS_HIGH.indexOf($(childEle).children().last().text()) !== -1) {
-                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        if (config.buyLimits.High.indexOf($(ele).children().last().text()) !== -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')), $(ele).children().last().text());
                         }
                     }));
                     break;
 
                 case 'ALL':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')), $(ele).children().last().text());
                     }));
                     break;
 
                 case 'STABLE':
                     ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, ele) => {
-                        if (config.buyLimits.BUY_LIMITS_VERY_LOW.indexOf($(ele).children().last().text()) === -1) {
-                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')));
+                        if (config.buyLimits.Very_Low.indexOf($(ele).children().last().text()) === -1) {
+                            await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(ele).children().first().children('a').attr('href')), $(ele).children().last().text());
                         }
                     }));
                     break;
@@ -66,6 +69,7 @@ module.exports = {
                 default:
                     throw Error('Please enter a valid buy-limit (Very low, low, med, high)');
             }
+
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
             throw Error(`Error occured when attempting to gather buy limit uris ${err}`);
@@ -84,6 +88,8 @@ module.exports = {
                         config.standardTypes[type][$(row).children().first().children('a').attr('title')]);
                 }
             })
+
+            await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
             throw Error(`Error occured when attempting to gather type uris ${err}`);
         }
@@ -97,9 +103,11 @@ module.exports = {
 
             ($('table[class="wikitable sortable"]>tbody>tr').each(async (index, tr) => {
                 if ($(tr).children('td').first().text().match(keywordRegex)) {
-                    await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(tr).children().first().children('a').attr('href')));
+                    await commands.addToTable_item_uris(config.runescapeWikiBaseLink($(tr).children().first().children('a').attr('href')), $(tr).children().last().text());
                 }
             }));
+
+            await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
             throw new Error(`Could not find any items related to the specified keyword`);
         }
@@ -112,14 +120,13 @@ module.exports = {
      * historic highs and lows and a uri to the item image.
      */
 
-    async getItemInfo(uri) {
+    async getItemInfo(uri, buylimit) {
         try {
             const data = await config.parseHTTPS(uri);
             let values = await getName(data);
-            const id = await getID(data);
 
             await getBaseValues(config.exchangeToModuleData(uri)).then(async res => {
-                Object.assign(values, await getItem_img_uri(data), await getBuyLimit(data), res);
+                Object.assign(values, { buy_limit: buylimit }, res);
             });
             return values;
         } catch (err) {
@@ -151,53 +158,23 @@ async function getID(data) {
     }
 }
 
-async function getDetails(id) {
-    try {
-        const details = config.parseHTTPS(config.DETAIL_URI + id);
-        return {
-
-        }
-    } catch (err) {
-        throw Error(`Could not find requested details ${err}`);
-    }
-}
-
-async function getGraphPoints(id) {
-    try {
-        const points = config.parseHTTPS(config.GRAPH_URI + id + '.json');
-    } catch (err) {
-        throw Error(`Could not find requested graph points ${err}`);
-    }
-}
-
 async function getName(data) {
     try {
         const $ = cheerio.load(data);
-        return { item_name: $('.gemw-name').text() };
-    } catch (err) {
-        throw Error(`Could not find requested name ${err}`);
-    }
-}
+        const image_src = $('p[class="gemw-image inventory-image"]').children('a').children('img').attr('src');
+        let item_image_uri;
 
-async function getBuyLimit(data) {
-    try {
-        const $ = cheerio.load(data);
-        return { buy_limit: parseInt($('#exchange-limit').text()) }
-    } catch (err) {
-        throw Error(`Could not find requested buy limit information ${err}`);
-    }
-}
-
-async function getItem_img_uri(data) {
-    try {
-        const $ = cheerio.load(data);
-        const node_src = $('p[class="gemw-image inventory-image"]').children('a').children('img').attr('src');
-        if (node_src) {
-            return { item_image_uri: config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('src')) }
+        // Get the image src
+        if (image_src) {
+            item_image_uri = config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('src'));
+        } else {
+            item_image_uri = config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('data-cfsrc'))
         }
-        return { item_image_uri: config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('data-cfsrc')) }
+
+        // Return the name and image src bundled together
+        return { item_name: $('.gemw-name').text(), item_image_uri };
     } catch (err) {
-        throw Error(`Could not find image for the respective item ${err}`);
+        throw Error(`Could not find requested name or image ${err}`);
     }
 }
 

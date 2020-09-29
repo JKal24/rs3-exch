@@ -1,7 +1,7 @@
 const commands = require('../database/commands');
 const infoParser = require('./infoParser');
 const config = require('./config');
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 module.exports = {
     async populateItems(identifier = 'BLANK') {
@@ -20,8 +20,8 @@ module.exports = {
 
                 // Info is contained in an array that has one entry which is
                 // an object containing its respective uri element.
-                const uri = await commands.consume_item_uris(ids[index]);
-                const info = await infoParser.getItemInfo(uri);
+                const { uri, buy_limit } = await commands.consume_item_uris(ids[index]);
+                const info = await infoParser.getItemInfo(uri, buy_limit);
 
                 ids = config.removeArrElement(ids, index);
 
