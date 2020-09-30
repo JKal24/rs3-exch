@@ -16,6 +16,6 @@ module.exports = {
     },
 
     async createPage(req, res) {
-        return res.json(await dataManipulator.populateInvestments('INVEST'));
+        return res.json(await dataManipulator.populateItems('INVEST'));
     }
 }

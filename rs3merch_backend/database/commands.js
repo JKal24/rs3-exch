@@ -11,7 +11,7 @@ module.exports = {
 
     async getAllID_item_uris() {
         try {
-            return pool.query("SELECT id FROM item_uris" ).then(ids => {
+            return pool.query("SELECT id FROM item_uris").then(ids => {
                 return ids.rows.map(item => {
                     return item.id;
                 })
@@ -23,7 +23,7 @@ module.exports = {
 
     async consume_item_uris(id) {
         try {
-            const consumedID = await pool.query('SELECT * FROM item_uris WHERE id = $1', [id]);
+            let consumedID = await pool.query('SELECT * FROM item_uris WHERE id = $1', [id]);
             await pool.query('DELETE FROM item_uris WHERE id = $1', [id]);
             return { uri: consumedID.rows[0].uri, buy_limit: consumedID.rows[0].buylimit };
         } catch (err) {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Collapse, Dropdown, DropdownButton } from 'react-bootstrap';
 import api from '../config/api';
 
-export default function SelectBuyLimit() {
+export default function SelectBuyLimit(props) {
 
     const [buyLimits, setBuyLimits] = useState([]);
     const [loaded, setLoaded] = useState(false);
@@ -25,7 +25,7 @@ export default function SelectBuyLimit() {
                     loaded ?
                         buyLimits.map((buyLimit, index) => {
                             return (
-                                <Dropdown.Item href={`/buylimit/${buyLimit}`} className="buylimit" key={index}>
+                                <Dropdown.Item href={`/buylimit/${buyLimit}`} key={index}>
                                     {buyLimit}
                                 </Dropdown.Item>
                             )
@@ -38,11 +38,11 @@ export default function SelectBuyLimit() {
     }
 
     return (
-        <div>
-        <DropdownButton title="Buy Limits" variant="dark">
-            <BuyLimits />
-        </DropdownButton>
-    </div>
+        <>
+            <DropdownButton title="Buy Limits" variant="dark" className={props.className}>
+                <BuyLimits />
+            </DropdownButton>
+        </>
     )
 
 }

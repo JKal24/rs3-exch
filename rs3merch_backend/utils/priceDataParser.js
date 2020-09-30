@@ -1,4 +1,3 @@
-
 module.exports = {
     compileData(table) {
         const index = table.length;

@@ -119,7 +119,7 @@ export default function Items(props) {
                     <Container className="navigation">
                         <Button variant="secondary" className="navButton" onClick={handleFirstPage} disabled={disableNav}>{'<<'}</Button>
                         <Button variant="secondary" className="navButton" onClick={handlePreviousPage} disabled={disableNav}>{'<'}</Button>
-                        <input placeholder='Page' onKeyDown={handlePageChange} className="navInput"></input>
+                        <input placeholder={page} onKeyDown={handlePageChange} className="navInput"></input>
                         <Button variant="secondary" className="navButton" onClick={handleNextPage} disabled={disableNav}>{'>'}</Button>
                     </Container>
                 </>

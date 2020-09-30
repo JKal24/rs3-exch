@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import api from '../config/api';
 
-export default function SelectType() {
+export default function SelectType(props) {
 
     const [types, setTypes] = useState([]);
     const [loaded, setLoaded] = useState(false);
@@ -25,7 +25,7 @@ export default function SelectType() {
                     loaded ?
                         types.map((type, index) => {
                             return (
-                                <Dropdown.Item href={`/type/${type}`} className="type" key={index}>
+                                <Dropdown.Item href={`/type/${type}`} key={index}>
                                     {type}
                                 </Dropdown.Item>
                             );
@@ -39,7 +39,7 @@ export default function SelectType() {
 
     return (
         <div>
-            <DropdownButton title="Types" variant="dark">
+            <DropdownButton title="Types" variant="dark" className={props.className}>
                 <Types />
             </DropdownButton>
         </div>

@@ -1,7 +1,7 @@
 const commands = require('../database/commands');
 const infoParser = require('./infoParser');
 const config = require('./config');
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 7;
 
 module.exports = {
     async populateItems(identifier = 'BLANK') {
@@ -27,7 +27,7 @@ module.exports = {
 
                 const evaluator = evaluate(identifier);
                 if (evaluator(info)) {
-                    items.push(this.trimData(info));
+                    items.push(trimData(info));
                     populate++;
                 }
             }
@@ -35,16 +35,16 @@ module.exports = {
         } catch (err) {
             throw Error(`Could not add items ${err}`);
         }
-    },
-
-    trimData(info) {
-
-        // Reduces the data made and compiled in infoParser and dataParser
-        // to be returned to the client
-        delete info.cvar_three_months;
-        delete info.average_three_months;
-        return info;
     }
+}
+
+function trimData(info) {
+
+    // Reduces the data made and compiled in infoParser and dataParser
+    // to be returned to the client
+    delete info.cvar_three_months;
+    delete info.average_three_months;
+    return info;
 }
 
 function evaluate(identifier) {

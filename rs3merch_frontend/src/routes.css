@@ -1,0 +1,11 @@
+.content {
+    display: flex;
+    flex-flow: row nowrap;
+    height: 100%;
+}
+
+.body {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+}

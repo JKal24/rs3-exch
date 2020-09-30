@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Container, Col, Row } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import api from '../config/api';
+import './searchbar.css';
 
 export default function Searchbar() {
 
@@ -22,7 +23,7 @@ export default function Searchbar() {
     }
 
     return (
-        <Form>
+        <Form className='search'>
             <Form.Group controlId='formSearch'>
                 <Container>
                     <Row>
