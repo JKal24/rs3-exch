@@ -72,7 +72,7 @@ module.exports = {
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
-            throw Error(`Error occured when attempting to gather buy limit uris ${err}`);
+            throw Error(`Error occured when attempting to gather uris ${err}`);
         }
     },
 
@@ -91,7 +91,29 @@ module.exports = {
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
-            throw Error(`Error occured when attempting to gather type uris ${err}`);
+            throw Error(`Error occured when attempting to gather uris ${err}`);
+        }
+    },
+
+    async getConditionalType_item_uris(filter) {
+        try {
+            const data = await config.parseHTTPS(config.ITEM_BY_TYPE_URI);
+            const $ = cheerio.load(data);
+
+            $('h3').each((i, ele) => {
+                if ($(ele).children().first().attr('id') === config.ALL_ITEM_TYPES_ID) {
+                    $(ele).next().children('dd').children('table').children('tbody').children('tr').each(async (index, tr) => {
+                        const uri = $(tr).children('td:nth-child(2)').children('a').attr('href');
+                        if (uri) {
+                            await compile_invest_stable_uris(config.runescapeWikiBaseLink($(tr).children('td:nth-child(2)').children('a').attr('href')), filter);
+                        }
+                    })
+                }
+            })
+
+            await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
+        } catch (err) {
+            throw Error(`Error occured when attempting to gather uris ${err}`);
         }
     },
 
@@ -148,15 +170,6 @@ module.exports = {
 }
 
 // Information gathering functions
-
-async function getID(data) {
-    try {
-        const $ = cheerio.load(data);
-        return { id: $('#exchange-itemid').text() };
-    } catch (err) {
-        throw Error(`Could not find requested name ${err}`);
-    }
-}
 
 async function getName(data) {
     try {
@@ -216,18 +229,18 @@ async function getTable(data) {
     }
 }
 
-async function compile_type_uris(uri, columns) {
+async function compile_type_uris(uri, columns = null) {
     try {
         const data = await config.parseHTTPS(uri);
         const $ = cheerio.load(data);
 
         /**
-         * Parses through a type page by looking at the table titles or table subtitles
-         * and then matches the title to the ones listed in the standard types contained
-         * in config. Will then extract all valid item uris.
-         */
+        * Parses through a type page by looking at the table titles or table subtitles
+        * and then matches the title to the ones listed in the standard types contained
+        * in config. Will then extract all valid item uris.
+        */
 
-        function parse(ele) {
+        const parse = async (ele) => {
             if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
                 // Parse through the children rows to get each item
                 $(ele).next().children('tbody').children('tr').each(async (i, tr) => {
@@ -240,15 +253,57 @@ async function compile_type_uris(uri, columns) {
             }
         }
 
-        $('h3').each((i, ele) => {
-            parse(ele);
+        $('h3').each(async (i, ele) => {
+            await parse(ele);
         })
 
-        $('h2').each((i, ele) => {
-            parse(ele);
+        $('h2').each(async (i, ele) => {
+            await parse(ele);
         })
-
+        return;
     } catch (err) {
         throw Error(`Could not find the requested type of items ${err}`);
+    }
+}
+
+async function compile_invest_stable_uris(uri, filter) {
+    const data = await config.parseHTTPS(uri);
+    const $ = cheerio.load(data);
+
+    gatherInfo = async (evaluator) => {
+        $('table[class="wikitable sortable"]>tbody>tr').each(async (index, tr) => {
+            const price = stringToFloat($(tr).children('td:nth-child(3)').text());
+            const buylimit = $(tr).children('td:nth-child(7)').text();
+            const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
+
+            if (uriExtension) {
+                if (evaluator(price, stringToFloat(buylimit))) { await commands.addToTable_item_uris(config.runescapeWikiBaseLink(uriExtension), buylimit) }
+            }
+        })
+    }
+
+    stringToFloat = (value) => {
+        return parseFloat(value.replace(/,/g, ''));
+    }
+
+    invest_condition = (price, buylimit) => {
+        return (price > 1500 && buylimit <= 5000 && buylimit >= 1000 ||
+            price > 2500 && buylimit < 1000 && buylimit >= 400 ||
+            price > 5000 && buylimit < 400);
+    }
+
+    stable_condition = (price, buylimit) => {
+        return (price > 300 && price <= 5000 && buylimit >= 10000 ||
+            price > 600 && buylimit < 10000 && buylimit >= 5000)
+    }
+
+    switch (filter) {
+        case 'INVEST':
+            await gatherInfo(invest_condition);
+            return;
+
+        case 'STABLE':
+            await gatherInfo(stable_condition);
+            return;
     }
 }

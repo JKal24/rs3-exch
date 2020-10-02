@@ -1,3 +1,13 @@
+/* Table contents */
+.section {
+    margin: 0.2vh;
+}
+
+.val {
+    border: rgb(16, 28, 65) 1px solid;
+}
+
+/* Navigation for manipulating pages */
 .navigation {
     display: flex;
     flex-flow: row wrap;

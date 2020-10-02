@@ -1,7 +1,7 @@
 const commands = require('../database/commands');
 const infoParser = require('./infoParser');
 const config = require('./config');
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 5;
 
 module.exports = {
     async populateItems(identifier = 'BLANK') {
@@ -67,6 +67,8 @@ function evaluateStable(info) {
     // Passed in as an object with the entries contained in the database
 
     // Create some simple tests to filter out unsatisfactory items from all evaluation functions
+
+    // Will be properly set up once more tests are done..
 
     if (((0.2 <= info.cvar_month <= 0.0015) && 0.025 <= info.cvar_three_months) ||
         ((0.025 <= info.cvar_three_months <= 0.003) && 0.02 <= info.cvar_month) ||

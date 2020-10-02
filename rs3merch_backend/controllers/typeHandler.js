@@ -18,7 +18,7 @@ module.exports = {
         await commands.clearTable_item_uris();
 
         if (config.standardTypes.hasOwnProperty(req.params.type)) {
-            infoParser.getByType_item_uris(req.params.type);
+            await infoParser.getByType_item_uris(req.params.type);
         }
         
         return res.json(true);

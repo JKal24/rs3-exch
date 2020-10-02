@@ -9,7 +9,7 @@ export default function SearchType() {
 
     return (
         <div>
-            <h2 className="title">{type} Items</h2>
+            <h2 className="title">{type.replace('_', ' ')} Items</h2>
             <Items filter={filter} keyword={type} />
         </div>
     );

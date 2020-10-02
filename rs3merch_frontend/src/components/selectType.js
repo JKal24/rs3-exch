@@ -26,7 +26,7 @@ export default function SelectType(props) {
                         types.map((type, index) => {
                             return (
                                 <Dropdown.Item href={`/type/${type}`} key={index}>
-                                    {type}
+                                    {type.replace('_', ' ')}
                                 </Dropdown.Item>
                             );
                         })

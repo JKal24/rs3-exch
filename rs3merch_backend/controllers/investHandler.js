@@ -11,7 +11,7 @@ module.exports = {
          */
         await commands.clearTable_item_uris();
 
-        await infoParser.getByBuyLimit_item_uris('ALL');
+        await infoParser.getConditionalType_item_uris('INVEST');
         return res.json(true);
     },
 

@@ -153,7 +153,9 @@ const standardTypes = {
     }
 }
 
+const ALL_ITEM_TYPES_ID = 'Items_by_skill';
+
 module.exports = {
-    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, DETAIL_URI, GRAPH_URI, parseHTTPS,
+    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, ALL_ITEM_TYPES_ID, DETAIL_URI, GRAPH_URI, parseHTTPS,
     extension, normalToExchange, exchangeToModuleData, moduleToBaseName, runescapeWikiBaseLink, conditionalSlice, removeArrElement
 };

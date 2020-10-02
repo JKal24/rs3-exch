@@ -13,9 +13,9 @@ import './routes.css';
 export default function Routes() {
     return (
         <BrowserRouter>
-            <div className="content">
+            <div className="view">
                 <Navigation></Navigation>
-                <div className="body">
+                <div className="right-container">
                     <Searchbar></Searchbar>
                     <Switch>
                         <Route exact path='/' component={LandingPage}></Route>

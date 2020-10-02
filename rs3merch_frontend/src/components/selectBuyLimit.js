@@ -26,7 +26,7 @@ export default function SelectBuyLimit(props) {
                         buyLimits.map((buyLimit, index) => {
                             return (
                                 <Dropdown.Item href={`/buylimit/${buyLimit}`} key={index}>
-                                    {buyLimit}
+                                    {buyLimit.replace('_', ' ')}
                                 </Dropdown.Item>
                             )
                         })
@@ -39,7 +39,7 @@ export default function SelectBuyLimit(props) {
 
     return (
         <>
-            <DropdownButton title="Buy Limits" variant="dark" className={props.className}>
+            <DropdownButton title="Buy Limits" variant="dark" className='nav'>
                 <BuyLimits />
             </DropdownButton>
         </>

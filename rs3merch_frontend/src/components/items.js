@@ -83,34 +83,34 @@ export default function Items(props) {
                     <Container>
 
                         { /* Makes a header for the table of items */}
-                        <Row>
-                            <Col></Col>
-                            <Col>Item Name</Col>
-                            <Col>Buy Limit</Col>
-                            <Col>Price</Col>
-                            <Col>Monthly Average</Col>
-                            <Col>Undervaluation</Col>
-                            <Col>Monthly Variation</Col>
-                            <Col>Weekly Highs</Col>
-                            <Col>Weekly Lows</Col>
-                            <Col>Monthly Highs</Col>
-                            <Col>Monthly Lows</Col>
+                        <Row className="section">
+                            <Col className="val"></Col>
+                            <Col className="val">Item Name</Col>
+                            <Col className="val">Buy Limit</Col>
+                            <Col className="val">Price</Col>
+                            <Col className="val">Monthly Average</Col>
+                            <Col className="val">Undervaluation</Col>
+                            <Col className="val">Monthly Variation</Col>
+                            <Col className="val">Weekly Highs</Col>
+                            <Col className="val">Weekly Lows</Col>
+                            <Col className="val">Monthly Highs</Col>
+                            <Col className="val">Monthly Lows</Col>
                         </Row>
                         {
                             items.map((item, index) => {
                                 return (
-                                    <Row key={index}>
-                                        <Col>{index + 1}</Col>
-                                        <Col><Image src={item.item_image_uri} thumbnail></Image>{item.item_name}</Col>
-                                        <Col>{item.buy_limit}</Col>
-                                        <Col>{item.price_today}</Col>
-                                        <Col>{item.average}</Col>
-                                        <Col>{item.undervaluation}</Col>
-                                        <Col>{item.cvar_month}</Col>
-                                        <Col>{item.highest_price_week}</Col>
-                                        <Col>{item.lowest_price_week}</Col>
-                                        <Col>{item.highest_price_month}</Col>
-                                        <Col>{item.lowest_price_month}</Col>
+                                    <Row key={index} className="section">
+                                        <Col className="val">{index + 1}</Col>
+                                        <Col className="val"><Image src={item.item_image_uri} thumbnail></Image>{item.item_name}</Col>
+                                        <Col className="val">{item.buy_limit}</Col>
+                                        <Col className="val">{item.price_today}</Col>
+                                        <Col className="val">{item.average}</Col>
+                                        <Col className="val">{item.undervaluation}</Col>
+                                        <Col className="val">{item.cvar_month}</Col>
+                                        <Col className="val">{item.highest_price_week}</Col>
+                                        <Col className="val">{item.lowest_price_week}</Col>
+                                        <Col className="val">{item.highest_price_month}</Col>
+                                        <Col className="val">{item.lowest_price_month}</Col>
                                     </Row>
                                 )
                             })
