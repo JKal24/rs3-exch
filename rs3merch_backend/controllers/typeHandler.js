@@ -25,6 +25,6 @@ module.exports = {
     },
 
     async createPage(req, res) {
-        return res.json(dataManipulator.populateItems());
+        return res.json(await dataManipulator.populateItems());
     },
 } 

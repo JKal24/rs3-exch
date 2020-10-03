@@ -25,7 +25,7 @@ export async function initInfo(filter, keyword) {
 export async function getInfo(filter) {
     switch (filter) {
         case 'buylimit':
-            return await api.get('/BuyLimitSearch')
+            return await api.get('/BuyLimitSearch');
         case 'type':
             return await api.get('/SearchByTypes');
         case 'invest':
@@ -33,6 +33,6 @@ export async function getInfo(filter) {
         case 'stable':
             return await api.get('/StableItemSearch');
         case 'input':
-            return await api.get('/SearchByKeyword')
+            return await api.get('/SearchByKeyword');
     }
 }

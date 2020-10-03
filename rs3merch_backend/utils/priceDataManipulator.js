@@ -78,8 +78,6 @@ function evaluateStable(info) {
         return true;
     }
 
-    // return false;
-
     return true;
 }
 
@@ -91,7 +89,7 @@ function evaluateInvest(info) {
         return true;
     }
 
-    return false;
+    return true;
 }
 
 function evaluateOrdinary(info) {

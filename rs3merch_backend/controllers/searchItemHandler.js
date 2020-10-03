@@ -9,7 +9,7 @@ module.exports = {
          */
         await commands.clearTable_item_uris();
 
-        infoParser.getBySearch_item_uris(req.params.keyword);
+        await infoParser.getBySearch_item_uris(req.params.keyword);
         return res.json(true);
     },
 

@@ -80,14 +80,15 @@ module.exports = {
         try {
             const data = await config.parseHTTPS(config.ITEM_BY_TYPE_URI);
             const $ = cheerio.load(data);
+            const data_uris = [];
 
-            $('tr').each(async (i, row) => {
-                if (config.standardTypes[type].hasOwnProperty($(row).children().first().children('a').attr('title'))) {
-                    await compile_type_uris(config.runescapeWikiBaseLink($(row).children('td:nth-child(2)').children('a').attr('href')),
-                        // Array of columns that represent each subsection for the item type 
-                        config.standardTypes[type][$(row).children().first().children('a').attr('title')]);
+            $('tr').each((i, row) => {
+                const property = config.standardTypeColumn($(row).children('td').first().children('a').attr('href'));
+                if (config.standardTypes[type][property]) {
+                    data_uris.push(config.runescapeWikiBaseLink(config.baseToMarketExchange(property)));
                 }
             })
+            await compile_type_uris(data_uris, type);
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
@@ -99,17 +100,19 @@ module.exports = {
         try {
             const data = await config.parseHTTPS(config.ITEM_BY_TYPE_URI);
             const $ = cheerio.load(data);
+            const data_uris = [];
 
             $('h3').each((i, ele) => {
                 if ($(ele).children().first().attr('id') === config.ALL_ITEM_TYPES_ID) {
-                    $(ele).next().children('dd').children('table').children('tbody').children('tr').each(async (index, tr) => {
+                    $(ele).next().children('dd').children('table').children('tbody').children('tr').each((index, tr) => {
                         const uri = $(tr).children('td:nth-child(2)').children('a').attr('href');
                         if (uri) {
-                            await compile_invest_stable_uris(config.runescapeWikiBaseLink($(tr).children('td:nth-child(2)').children('a').attr('href')), filter);
+                            data_uris.push(config.runescapeWikiBaseLink(uri));
                         }
                     })
                 }
             })
+            await compile_invest_stable_uris(data_uris, filter);
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
@@ -229,10 +232,11 @@ async function getTable(data) {
     }
 }
 
-async function compile_type_uris(uri, columns = null) {
-    try {
+async function compile_type_uris(uris, type) {
+    await Promise.all(uris.map(async (uri) => {
         const data = await config.parseHTTPS(uri);
         const $ = cheerio.load(data);
+        const columns = config.standardTypes[type][config.standardTypeColumn(uri)];
 
         /**
         * Parses through a type page by looking at the table titles or table subtitles
@@ -241,69 +245,77 @@ async function compile_type_uris(uri, columns = null) {
         */
 
         const parse = async (ele) => {
-            if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
-                // Parse through the children rows to get each item
-                $(ele).next().children('tbody').children('tr').each(async (i, tr) => {
-                    const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
-                    const buy_limit = $(tr).children('td:nth-child(7)').text();
-                    if (uriExtension) {
-                        await commands.addToTable_item_uris(config.runescapeWikiBaseLink(uriExtension), buy_limit);
+            // Parse through the children rows to get each item
+            $(ele).next().children('tbody').children('tr').each(async (i, tr) => {
+                const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
+                const buy_limit = $(tr).children('td:nth-child(7)').text();
+                if (uriExtension) {
+                    await commands.addToTable_item_uris(config.runescapeWikiBaseLink(uriExtension), buy_limit);
+                }
+            })
+        };
+
+        const checkAll_parse =
+            columns[0] === 'ALL' ?
+                async (ele) => {
+                    await parse(ele);
+                }
+                :
+                async (ele) => {
+                    if (columns.indexOf($(ele).children('span').first().text()) !== -1) {
+                        await parse(ele);
                     }
-                })
-            }
-        }
+                };
 
         $('h3').each(async (i, ele) => {
-            await parse(ele);
+            await checkAll_parse(ele);
         })
 
         $('h2').each(async (i, ele) => {
-            await parse(ele);
+            await checkAll_parse(ele);
         })
-        return;
-    } catch (err) {
-        throw Error(`Could not find the requested type of items ${err}`);
-    }
+    }));
 }
 
-async function compile_invest_stable_uris(uri, filter) {
-    const data = await config.parseHTTPS(uri);
-    const $ = cheerio.load(data);
+async function compile_invest_stable_uris(uris, filter) {
+    await Promise.all(uris.map(async (uri) => {
+        const data = await config.parseHTTPS(uri);
+        const $ = cheerio.load(data);
 
-    gatherInfo = async (evaluator) => {
-        $('table[class="wikitable sortable"]>tbody>tr').each(async (index, tr) => {
-            const price = stringToFloat($(tr).children('td:nth-child(3)').text());
-            const buylimit = $(tr).children('td:nth-child(7)').text();
-            const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
+        gatherInfo = async (evaluator) => {
+            $('table[class="wikitable sortable"]>tbody>tr').each(async (index, tr) => {
+                const price = stringToFloat($(tr).children('td:nth-child(3)').text());
+                const buylimit = $(tr).children('td:nth-child(7)').text();
+                const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
+                if (uriExtension) {
+                    if (evaluator(price, stringToFloat(buylimit))) { await commands.addToTable_item_uris(config.runescapeWikiBaseLink(uriExtension), buylimit) }
+                }
+            })
+        }
 
-            if (uriExtension) {
-                if (evaluator(price, stringToFloat(buylimit))) { await commands.addToTable_item_uris(config.runescapeWikiBaseLink(uriExtension), buylimit) }
-            }
-        })
-    }
+        stringToFloat = (value) => {
+            return parseFloat(value.replace(/,/g, ''));
+        }
 
-    stringToFloat = (value) => {
-        return parseFloat(value.replace(/,/g, ''));
-    }
+        invest_condition = (price, buylimit) => {
+            return (price > 1500 && buylimit <= 5000 && buylimit >= 1000 ||
+                price > 2500 && buylimit < 1000 && buylimit >= 400 ||
+                price > 5000 && buylimit < 400);
+        }
 
-    invest_condition = (price, buylimit) => {
-        return (price > 1500 && buylimit <= 5000 && buylimit >= 1000 ||
-            price > 2500 && buylimit < 1000 && buylimit >= 400 ||
-            price > 5000 && buylimit < 400);
-    }
+        stable_condition = (price, buylimit) => {
+            return (price > 300 && price <= 5000 && buylimit >= 10000 ||
+                price > 600 && buylimit < 10000 && buylimit >= 5000);
+        }
 
-    stable_condition = (price, buylimit) => {
-        return (price > 300 && price <= 5000 && buylimit >= 10000 ||
-            price > 600 && buylimit < 10000 && buylimit >= 5000)
-    }
+        switch (filter) {
+            case 'INVEST':
+                await gatherInfo(invest_condition);
+                return;
 
-    switch (filter) {
-        case 'INVEST':
-            await gatherInfo(invest_condition);
-            return;
-
-        case 'STABLE':
-            await gatherInfo(stable_condition);
-            return;
-    }
+            case 'STABLE':
+                await gatherInfo(stable_condition);
+                return;
+        }
+    }));
 }

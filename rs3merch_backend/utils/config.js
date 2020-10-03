@@ -2,9 +2,6 @@ const https = require('https');
 
 const BUY_LIMIT_URI = 'https://runescape.wiki/w/Calculator:Grand_Exchange_buying_limits';
 const ITEM_BY_TYPE_URI = 'https://runescape.wiki/w/RuneScape:Grand_Exchange_Market_Watch';
-const DETAIL_URI = 'https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=';
-const GRAPH_URI = 'https://secure.runescape.com/m=itemdb_rs/api/graph/';
-
 
 // Function that scrapes HTML data from a HTTPS page and returns it
 
@@ -50,6 +47,14 @@ function moduleToBaseName(name) {
     return name.replace(/Module:Exchange\//, '').replace(/\/Data/, '');
 }
 
+function baseToMarketExchange(uri) {
+    return '/w/RuneScape:Grand_Exchange_Market_Watch/' + uri;
+}
+
+function standardTypeColumn(uri) {
+    return (uri ? uri.match(/\w+$/)[0] : null);
+}
+
 function conditionalSlice(arr) {
     if (arr.length > 91) {
         return arr.slice(arr.length - 91, arr.length);
@@ -80,12 +85,12 @@ const standardTypes = {
     },
     Crafting: {
         Crafting: ['Materials', 'Uncut gems', 'Cut gems', 'Rings', 'Necklaces', 'Unstrung amulets', 'Amulets', 'Bracelets', 'Silver items', 'Hides', 'Leather', 'Glass items', 'Battlestaves',
-        'Urns'],
+            'Urns'],
         Fletching: ['Bolts tips', 'Gem-tipped bolts']
     },
     Farming: {
-        Farming: ['Allotment seeds', 'Flower seeds', 'Herb seeds', 'Hops seeds', 'Bush seeds', 'Fruit tree seeds', 'Tree seeds', 'Cacti seeds', 'Mushroom spores', 'Flowers', 
-        'Hops', 'Bushes', 'Fruits', 'Cacti and mushrooms', 'Unchecked', 'Produce'],
+        Farming: ['Allotment seeds', 'Flower seeds', 'Herb seeds', 'Hops seeds', 'Bush seeds', 'Fruit tree seeds', 'Tree seeds', 'Cacti seeds', 'Mushroom spores', 'Flowers',
+            'Hops', 'Bushes', 'Fruits', 'Cacti and mushrooms', 'Unchecked', 'Produce'],
         Herblore: ['Clean herbs', 'Grimy herbs']
     },
     Summoning: {
@@ -99,8 +104,8 @@ const standardTypes = {
     Wood: {
         Woodcutting: ['Logs'],
         Firemaking: ['Pyre Logs', 'Incense sticks'],
-        Fletching: ['Unstrung bows', 'Strung bows', 'Finished arrows', 'Crossbow limbs', 'Unstrung crossbows', 'Strung 1h crossbows', 'Strung 2h crossbows', 
-        'Unfinished bolts', 'Finished bolts']
+        Fletching: ['Unstrung bows', 'Strung bows', 'Finished arrows', 'Crossbow limbs', 'Unstrung crossbows', 'Strung 1h crossbows', 'Strung 2h crossbows',
+            'Unfinished bolts', 'Finished bolts']
     },
     Food: {
         Cooking: ['Raw meat', 'Cooked meat', 'Raw fish', 'Cooked fish', 'Sushi', 'Snails', 'Big Game Hunter', 'Stews and soups', 'Pies', 'Potatoes', 'Drinks', 'Mature drinks'],
@@ -156,6 +161,7 @@ const standardTypes = {
 const ALL_ITEM_TYPES_ID = 'Items_by_skill';
 
 module.exports = {
-    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, ALL_ITEM_TYPES_ID, DETAIL_URI, GRAPH_URI, parseHTTPS,
-    extension, normalToExchange, exchangeToModuleData, moduleToBaseName, runescapeWikiBaseLink, conditionalSlice, removeArrElement
+    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, ALL_ITEM_TYPES_ID, parseHTTPS,
+    extension, normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink,
+    conditionalSlice, removeArrElement
 };
