@@ -106,3 +106,4 @@ dist
 files/
 
 .DS_Store
+.vscode
