@@ -1,40 +1,29 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Col, Row } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
-import api from '../config/api';
+import { Link } from 'react-router-dom';
 
 export default function Searchbar() {
 
-    const history = useHistory();
-    const [searchText, setSearchText] = useState('');
+    const [keyword, setKeyword] = useState('');
 
     const handleSearchText = (e) => {
-        setSearchText(e.target.value);
-    }
-
-    const handleItemSearched = async (e) => {
-        e.preventDefault();
-        // Implement a blanket search on backend
-        await api.get(`/SearchByKeyword/${searchText}`, { params : {
-            keyword: searchText
-        }})
-        history.push(`/search/${searchText}`);
+        setKeyword(e.target.value);
     }
 
     return (
         <Form className='search'>
-            <Form.Group controlId='formSearch'>
-                <Container>
-                    <Row>
-                        <Col>
+            <Container>
+                <Row>
+                    <Col>
+                        <Form.Group controlId='formSearch'>
                             <Form.Control type="text" placeholder="Search for an item..." onChange={handleSearchText}></Form.Control>
-                        </Col>
-                        <Col>
-                            <Button onSubmit={handleItemSearched} type="submit">Search</Button>
-                        </Col>
-                    </Row>
-                </Container>
-            </Form.Group>
+                        </Form.Group>
+                    </Col>
+                    <Col>
+                        <Button variant="dark"><Link className='searchText' to={{ pathname: `/search/${keyword}`}}>Search</Link></Button>
+                    </Col>
+                </Row>
+            </Container>
         </Form>
     )
 

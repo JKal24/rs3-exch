@@ -17,7 +17,7 @@ export async function initInfo(filter, keyword) {
             await api.get('/StableItemInit');
             return;
         case 'input':
-            await api.get(`/InitByKeyword/${keyword}`);
+            await api.get(`/SearchText/${keyword.trim()}`);
             return;
     }
 }

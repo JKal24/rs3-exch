@@ -36,44 +36,55 @@ export default function Items(props) {
     }, [items])
 
     function copyPage() {
-        if (page >= previousItems.length) {
-            setPreviousItems(previousItems.push(items));
+        if (previousItems.length < page) {
+            // Copies current items as an array on to the total items
+            const currentItems = previousItems.concat([items]);
+            setPreviousItems(currentItems);
+            return true;
         }
+        return false;
     }
 
     function handleFirstPage() {
-        setDisableNav(true);
-        copyPage();
-
-        setPage(1);
-        setItems(previousItems[0]);
+        if (page > 1) {
+            setDisableNav(true);
+            copyPage();
+            setItems(previousItems[0]);
+            setPage(1);
+        }
     }
 
     function handlePreviousPage() {
-        setDisableNav(true);
-        copyPage();
-
-        setPage(page - 1);
-        setItems(previousItems[page - 1]);
+        if (page > 1) {
+            setDisableNav(true);
+            copyPage();
+            setItems(previousItems[page - 2]);
+            setPage(page - 1);
+        }
     }
 
     function handlePageChange(e) {
         if (e.key === 'Enter' && e.target.value < previousItems.length) {
-            copyPage();
+            const newPage = parseInt(e.target.value);
 
-            setPage(e.target.value);
-            setItems(previousItems[page - 1]);
+            if (newPage <= previousItems.length && newPage > 0) {
+                copyPage();
+                setItems(previousItems[newPage - 1]);
+                setPage(newPage);
+            }
         }
     }
 
     async function handleNextPage() {
         setDisableNav(true);
-        setPage(page + 1);
-        if (previousItems.length < page) {
-            setPreviousItems(previousItems.push(items));
-
-            setItems((await getInfo(props.filter)).data);
+        if (copyPage()) {
+            // Gets a new set of items to replace the ones on display
+            const newItems = (await getInfo(props.filter)).data
+            setItems(newItems);
+        } else {
+            setItems(previousItems[page])
         }
+        setPage(page + 1);
     }
 
     return (

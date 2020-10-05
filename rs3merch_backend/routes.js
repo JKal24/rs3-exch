@@ -21,7 +21,7 @@ routes.get('/TypeListing', typeHandler.showTypes);
 routes.get('/InitByType/:type', typeHandler.initializeType);
 routes.get('/SearchByTypes', typeHandler.createPage);
 
-routes.get('/InitByKeyword/:keyword', searchHandler.initializeSearch);
+routes.get('/SearchText/:text', searchHandler.initializeSearch);
 routes.get('/SearchByKeyword', searchHandler.createPage);
 
 module.exports = routes;

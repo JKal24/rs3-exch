@@ -47,7 +47,7 @@ html, body, body>div {
     width: 100%;
 }
 
-.nav>button, .nav>a {
+.nav>button, .nav>a, .searchText {
     justify-content: center;
     margin-bottom: 0.5vh;
     width: 100%;
