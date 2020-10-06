@@ -36,3 +36,11 @@ export async function getInfo(filter) {
             return await api.get('/SearchByKeyword');
     }
 }
+
+export async function getFavoriteSize() {
+    return await api.get('/FavoritesInit');
+}
+
+export async function addFavorite(item) {
+    return await api.post('/FavoritesInsert', item);
+}

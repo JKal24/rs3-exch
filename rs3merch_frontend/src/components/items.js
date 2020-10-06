@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Row, Col, Image } from 'react-bootstrap';
-import { initInfo, getInfo } from '../config/commands';
+import { initInfo, getInfo, getFavoriteSize, addFavorite } from '../config/commands';
+import starIcon from '../assets/star.png';
 import './items.css';
 
 export default function Items(props) {
@@ -18,6 +19,12 @@ export default function Items(props) {
     const [page, setPage] = useState(1);
     const [disableNav, setDisableNav] = useState(false);
 
+    // Controls the administration of favorites
+
+    const [favoritesSize, setFavoritesSize] = useState(10);
+    const [favoritesFull, setFavoritesFull] = useState(false);
+    const buttonColours = ['light', 'success'];
+
     // Items will be loaded in through useEffect the first time, afterwards they will
     // be loaded in through handleNextPage
 
@@ -26,6 +33,12 @@ export default function Items(props) {
             await initInfo(props.filter, props.keyword);
             setItems((await getInfo(props.filter)).data);
             setLoaded(true);
+
+            const currentSize = await getFavoriteSize();
+            if (currentSize >= 10) {
+                setFavoritesFull(true);
+            }
+            setFavoritesSize(currentSize);
         }
 
         setData();
@@ -87,6 +100,16 @@ export default function Items(props) {
         setPage(page + 1);
     }
 
+    async function handleFavorite(e) {
+        if (favoritesSize + 1 >= 10) {
+            setFavoritesFull(true);
+            return;
+        }
+        await addFavorite(items[e.target.value]);
+        setFavoritesSize(favoritesSize + 1);
+        
+    }
+
     return (
         <>
             {loaded ? (
@@ -106,6 +129,7 @@ export default function Items(props) {
                             <Col className="val">Weekly Lows</Col>
                             <Col className="val">Monthly Highs</Col>
                             <Col className="val">Monthly Lows</Col>
+                            <Col className="val">Favorite</Col>
                         </Row>
                         {
                             items.map((item, index) => {
@@ -122,6 +146,7 @@ export default function Items(props) {
                                         <Col className="val">{item.lowest_price_week}</Col>
                                         <Col className="val">{item.highest_price_month}</Col>
                                         <Col className="val">{item.lowest_price_month}</Col>
+                                        <Col className="val"><Button variant="light" onClick={handleFavorite} value={index} disabled={favoritesFull}><Image src={starIcon} fluid /></Button></Col>
                                     </Row>
                                 )
                             })

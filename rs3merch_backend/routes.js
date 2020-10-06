@@ -6,6 +6,7 @@ const investHandler = require('./controllers/investHandler');
 const stableHandler = require('./controllers/stableHandler');
 const typeHandler = require('./controllers/typeHandler');
 const searchHandler = require('./controllers/searchItemHandler');
+const favoriteHandler = require('./controllers/favoritesHandler');
 
 routes.get('/BuyLimitListing', buyLimitHandler.showBuyLimits);
 routes.get('/BuyLimitInit/:buy_limit', buyLimitHandler.initializeBuyLimit);
@@ -23,5 +24,9 @@ routes.get('/SearchByTypes', typeHandler.createPage);
 
 routes.get('/SearchText/:text', searchHandler.initializeSearch);
 routes.get('/SearchByKeyword', searchHandler.createPage);
+
+routes.get('/FavoritesInit', favoriteHandler.showFavorites);
+routes.post('/FavoritesInsert', favoriteHandler.addFavorite);
+routes.post('/FavoritesDelete', favoriteHandler.removeFavorite);
 
 module.exports = routes;
