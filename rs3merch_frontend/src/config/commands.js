@@ -19,6 +19,8 @@ export async function initInfo(filter, keyword) {
         case 'input':
             await api.get(`/SearchText/${keyword.trim()}`);
             return;
+        default:
+            return;
     }
 }
 
@@ -34,13 +36,19 @@ export async function getInfo(filter) {
             return await api.get('/StableItemSearch');
         case 'input':
             return await api.get('/SearchByKeyword');
+        default:
+            return await api.get('/FavoritesInit');
     }
 }
 
-export async function getFavoriteSize() {
+export async function getFavorites() {
     return await api.get('/FavoritesInit');
 }
 
 export async function addFavorite(item) {
     return await api.post('/FavoritesInsert', item);
+}
+
+export async function removeFavorite(item) {
+    return await api.post('/FavoritesDelete', item.item_name);
 }

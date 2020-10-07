@@ -16,12 +16,6 @@ html, body, body>div {
 }
 
 /* Nav components */
-.search {
-    width: 100%;
-    background: lavender;
-    padding-top: 0.5vh;
-    height: 5vh;
-}
 
 .left-container {
     display: flex;
@@ -60,4 +54,17 @@ html, body, body>div {
     border-bottom: gainsboro 1px solid;
     border-left: gainsboro 1px solid;
     border-right: gainsboro 1px solid;
+}
+
+.search {
+    width: 100%;
+    height: 5vh;
+    background: lavender;
+    padding-top: 0.5vh;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.searchCol {
+    width: 80%;
 }

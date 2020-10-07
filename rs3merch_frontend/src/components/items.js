@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Row, Col, Image } from 'react-bootstrap';
-import { initInfo, getInfo, getFavoriteSize, addFavorite } from '../config/commands';
+import { initInfo, getInfo, getFavorites, addFavorite, removeFavorite } from '../config/commands';
 import starIcon from '../assets/star.png';
 import './items.css';
 
@@ -10,23 +10,26 @@ export default function Items(props) {
     // Then the items are parsed and displayed here
 
     const [items, setItems] = useState([]);
+    const [previousItems, setPreviousItems] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
     // Previous items will be a collection of arrays for each corresponding page
     // Index 0 will represent page 1 and so on...
 
-    const [previousItems, setPreviousItems] = useState([]);
     const [page, setPage] = useState(1);
     const [disableNav, setDisableNav] = useState(false);
 
-    // Controls the administration of favorites
+    // Controls the administration of favorites, will be updating on the landing page
 
+    const [pageFavorites, setPageFavorites] = useState([]);
     const [favoritesSize, setFavoritesSize] = useState(10);
     const [favoritesFull, setFavoritesFull] = useState(false);
-    const buttonColours = ['light', 'success'];
 
-    // Items will be loaded in through useEffect the first time, afterwards they will
-    // be loaded in through handleNextPage
+    /** 
+     * Items will be loaded in through useEffect the first time, 
+     * afterwards they will be loaded in through handleNextPage
+     * Favorites will be tracked and disabled if the limit is met
+     */
 
     useEffect(() => {
         async function setData() {
@@ -34,7 +37,7 @@ export default function Items(props) {
             setItems((await getInfo(props.filter)).data);
             setLoaded(true);
 
-            const currentSize = await getFavoriteSize();
+            const currentSize = (await getFavorites()).data.length;
             if (currentSize >= 10) {
                 setFavoritesFull(true);
             }
@@ -46,7 +49,16 @@ export default function Items(props) {
 
     useEffect(() => {
         setDisableNav(false);
-    }, [items])
+        if (props.landingPage) {
+            let landingPageFavories = []
+
+            // If this is the landing page, copy all of the item names into the favorites list
+            items.forEach((item) => {
+                landingPageFavories = landingPageFavories.concat(item);
+            })
+            setPageFavorites(landingPageFavories);
+        }
+    }, [items, props.landingPage])
 
     function copyPage() {
         if (previousItems.length < page) {
@@ -100,14 +112,26 @@ export default function Items(props) {
         setPage(page + 1);
     }
 
-    async function handleFavorite(e) {
-        if (favoritesSize + 1 >= 10) {
-            setFavoritesFull(true);
-            return;
+    async function handleFavorite(item_name, index) {
+        if (isFavorited(item_name)) {
+            await removeFavorite(items[index]);
+        } else {
+            // Sets the other buttons to disabled
+            if (favoritesSize + 1 >= 10) {
+                setFavoritesFull(true);
+                return;
+            }
+            await addFavorite(items[index]);
+
+            // Records the item that was favorited on the current page by its index
+            const newFavorites = pageFavorites.concat(item_name);
+            setPageFavorites(newFavorites);
+            setFavoritesSize(favoritesSize + 1);
         }
-        await addFavorite(items[e.target.value]);
-        setFavoritesSize(favoritesSize + 1);
-        
+    }
+
+    function isFavorited(item_name) {
+        return (pageFavorites.indexOf(item_name) !== -1);
     }
 
     return (
@@ -146,7 +170,11 @@ export default function Items(props) {
                                         <Col className="val">{item.lowest_price_week}</Col>
                                         <Col className="val">{item.highest_price_month}</Col>
                                         <Col className="val">{item.lowest_price_month}</Col>
-                                        <Col className="val"><Button variant="light" onClick={handleFavorite} value={index} disabled={favoritesFull}><Image src={starIcon} fluid /></Button></Col>
+                                        <Col className="val">
+                                            <Button variant={isFavorited(item.item_name) ? 'success' : 'dark'} onClick={() => handleFavorite(index)} disabled={favoritesFull && !isFavorited(item.item_name)}>
+                                                <Image src={starIcon} fluid />
+                                            </Button>
+                                        </Col>
                                     </Row>
                                 )
                             })

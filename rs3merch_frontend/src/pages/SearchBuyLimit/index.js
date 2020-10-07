@@ -5,7 +5,6 @@ import Items from '../../components/items';
 export default function SearchBuyLimit() {
 
     let { buy_limit } = useParams();
-    console.log('search: ', buy_limit);
     const filter = "buylimit";
 
     return (

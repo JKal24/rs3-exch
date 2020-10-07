@@ -8,9 +8,7 @@ module.exports = {
          * this is based on the user's database
          */
 
-        const items = commands.getFavorites();
-        console.log(items);
-        // return res.json(await commands.getFavorites());
+        return res.json(await commands.getFavorites());
     },
 
     async addFavorite(req, res) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Collapse, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import api from '../config/api';
 
 export default function SelectBuyLimit(props) {
