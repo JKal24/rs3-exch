@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import api from '../config/api';
 
-export default function SelectType(props) {
+export default function SelectType() {
 
     const [types, setTypes] = useState([]);
     const [loaded, setLoaded] = useState(false);
@@ -39,7 +39,7 @@ export default function SelectType(props) {
 
     return (
         <div>
-            <DropdownButton title="Types" variant="dark" className={props.className}>
+            <DropdownButton title="Types" variant="dark" className='nav'>
                 <Types />
             </DropdownButton>
         </div>

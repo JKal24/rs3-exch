@@ -6,8 +6,8 @@ export default function SearchInvestments() {
     const filter = "invest";
 
     return (
-        <div>
-            <h2 className="title">Investment Items</h2>
+        <div className="contents">
+            <h2  className="contents-title">Investment Items</h2>
             <Items filter={filter} />
         </div>
     );

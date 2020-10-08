@@ -6,8 +6,8 @@ export default function SearchStable() {
     const filter = "stable";
 
     return (
-        <div>
-            <h2 className="title">Stable Items</h2>
+        <div className="contents">
+            <h2  className="contents-title">Stable Items</h2>
             <Items filter={filter} />
         </div>
     );

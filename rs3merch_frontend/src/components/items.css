@@ -1,10 +1,39 @@
 /* Table contents */
+.table {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
 .section {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-right: -15px;
+    margin-left: -15px;
     margin: 0.2vh;
 }
 
 .val {
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+    position: relative;
+    width: 100%;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
     border: rgb(16, 28, 65) 1px solid;
+}
+
+.loading {
+    display: block;
+    margin: auto auto;
+    animation-name: fade;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+.loading-contents {
+    height: 20rem;
+    width: 100%;
 }
 
 /* Navigation for manipulating pages */
@@ -24,4 +53,12 @@
 .navInput {
     margin: 0px 0.2em 0px;
     width: 3em;
+}
+
+/* Animation */
+
+@keyframes fade {
+    0% {opacity: 1;}
+    50% {opacity: 0.1;}
+    100% {opacity: 1;}
 }

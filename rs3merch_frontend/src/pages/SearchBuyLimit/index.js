@@ -8,8 +8,8 @@ export default function SearchBuyLimit() {
     const filter = "buylimit";
 
     return (
-        <div>
-            <h2 className="title">{buy_limit.replace('_', ' ')} Buy Limit Items</h2>
+        <div className="contents">
+            <h2 className="contents-title">{buy_limit.replace('_', ' ')} Buy Limit Items</h2>
             <Items filter={filter} keyword={buy_limit} />
         </div>
     );

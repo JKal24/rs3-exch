@@ -8,8 +8,8 @@ export default function SearchType() {
     const filter = "type";
 
     return (
-        <div>
-            <h2 className="title">{type.replace('_', ' ')} Items</h2>
+        <div className="contents">
+            <h2  className="contents-title">{type.replace('_', ' ')} Items</h2>
             <Items filter={filter} keyword={type} />
         </div>
     );

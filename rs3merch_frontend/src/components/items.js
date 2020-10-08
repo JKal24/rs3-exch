@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Row, Col, Image } from 'react-bootstrap';
+import { Container, Button, Image } from 'react-bootstrap';
 import { initInfo, getInfo, getFavorites, addFavorite, removeFavorite } from '../config/commands';
 import starIcon from '../assets/star.png';
+import loadingIcon from '../assets/rs3merch_logo_big.png';
 import './items.css';
 
 export default function Items(props) {
@@ -13,7 +14,7 @@ export default function Items(props) {
     const [previousItems, setPreviousItems] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
-    // Previous items will be a collection of arrays for each corresponding page
+    // Previous items will be a divlection of arrays for each corresponding page
     // Index 0 will represent page 1 and so on...
 
     const [page, setPage] = useState(1);
@@ -138,58 +139,65 @@ export default function Items(props) {
         <>
             {loaded ? (
                 <>
-                    <Container>
+                    { items.length > 0 ? (
+                        <>
+                            <Container className='table'>
 
-                        { /* Makes a header for the table of items */}
-                        <Row className="section">
-                            <Col className="val"></Col>
-                            <Col className="val">Item Name</Col>
-                            <Col className="val">Buy Limit</Col>
-                            <Col className="val">Price</Col>
-                            <Col className="val">Monthly Average</Col>
-                            <Col className="val">Undervaluation</Col>
-                            <Col className="val">Monthly Variation</Col>
-                            <Col className="val">Weekly Highs</Col>
-                            <Col className="val">Weekly Lows</Col>
-                            <Col className="val">Monthly Highs</Col>
-                            <Col className="val">Monthly Lows</Col>
-                            <Col className="val">Favorite</Col>
-                        </Row>
-                        {
-                            items.map((item, index) => {
-                                return (
-                                    <Row key={index} className="section">
-                                        <Col className="val">{index + 1}</Col>
-                                        <Col className="val"><Image src={item.item_image_uri} thumbnail></Image>{item.item_name}</Col>
-                                        <Col className="val">{item.buy_limit}</Col>
-                                        <Col className="val">{item.price_today}</Col>
-                                        <Col className="val">{item.average}</Col>
-                                        <Col className="val">{item.undervaluation}</Col>
-                                        <Col className="val">{item.cvar_month}</Col>
-                                        <Col className="val">{item.highest_price_week}</Col>
-                                        <Col className="val">{item.lowest_price_week}</Col>
-                                        <Col className="val">{item.highest_price_month}</Col>
-                                        <Col className="val">{item.lowest_price_month}</Col>
-                                        <Col className="val">
-                                            <Button variant={isFavorited(item.item_name) ? 'success' : 'dark'} onClick={() => handleFavorite(index)} disabled={favoritesFull && !isFavorited(item.item_name)}>
-                                                <Image src={starIcon} fluid />
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                )
-                            })
-                        }
-                    </Container>
-                    <Container className="navigation">
-                        <Button variant="secondary" className="navButton" onClick={handleFirstPage} disabled={disableNav}>{'<<'}</Button>
-                        <Button variant="secondary" className="navButton" onClick={handlePreviousPage} disabled={disableNav}>{'<'}</Button>
-                        <input placeholder={page} onKeyDown={handlePageChange} className="navInput"></input>
-                        <Button variant="secondary" className="navButton" onClick={handleNextPage} disabled={disableNav}>{'>'}</Button>
-                    </Container>
+                                { /* Makes a header for the table of items */}
+                                <div className="section">
+                                    <div className="val"></div>
+                                    <div className="val">Item Name</div>
+                                    <div className="val">Buy Limit</div>
+                                    <div className="val">Price</div>
+                                    <div className="val">Monthly Average</div>
+                                    <div className="val">Undervaluation</div>
+                                    <div className="val">Monthly Variation</div>
+                                    <div className="val">Weekly Highs</div>
+                                    <div className="val">Weekly Lows</div>
+                                    <div className="val">Monthly Highs</div>
+                                    <div className="val">Monthly Lows</div>
+                                    <div className="val">Favorite</div>
+                                </div>
+                                {
+                                    items.map((item, index) => {
+                                        return (
+                                            <div key={index} className="section">
+                                                <div className="val">{index + 1}</div>
+                                                <div className="val"><Image src={item.item_image_uri} thumbnail></Image>{item.item_name}</div>
+                                                <div className="val">{item.buy_limit}</div>
+                                                <div className="val">{item.price_today}</div>
+                                                <div className="val">{item.average}</div>
+                                                <div className="val">{item.undervaluation}</div>
+                                                <div className="val">{item.cvar_month}</div>
+                                                <div className="val">{item.highest_price_week}</div>
+                                                <div className="val">{item.lowest_price_week}</div>
+                                                <div className="val">{item.highest_price_month}</div>
+                                                <div className="val">{item.lowest_price_month}</div>
+                                                <div className="val">
+                                                    <Button variant={isFavorited(item.item_name) ? 'success' : 'dark'} onClick={() => handleFavorite(item.item_name, index)} disabled={favoritesFull && !isFavorited(item.item_name)}>
+                                                        <Image src={starIcon} fluid />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </Container>
+                            <Container className="navigation">
+                                <Button variant="secondary" className="navButton" onClick={handleFirstPage} disabled={disableNav}>{'<<'}</Button>
+                                <Button variant="secondary" className="navButton" onClick={handlePreviousPage} disabled={disableNav}>{'<'}</Button>
+                                <input placeholder={page} onKeyDown={handlePageChange} className="navInput"></input>
+                                <Button variant="secondary" className="navButton" onClick={handleNextPage} disabled={disableNav}>{'>'}</Button>
+                            </Container>
+                        </>
+                    ) : (
+                            <h4><i>There is nothing to show here</i></h4>
+                        )}
                 </>
             ) : (
-                    <h4>Loading...</h4>
-                    // Add a loading animation?
+                    <div className="loading-contents">
+                        <img src={loadingIcon} className="loading" alt="Loading..." />
+                    </div>
                 )}
         </>
     );

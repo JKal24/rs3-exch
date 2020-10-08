@@ -8,8 +8,8 @@ export default function SearchByInput() {
     const filter = "input";
 
     return (
-        <div>
-            <h2 className="title">'{keyword}' Items</h2>
+        <div className="contents">
+            <h2  className="contents-title">'{keyword}' Items</h2>
             <Items filter={filter} keyword={keyword} />
         </div>
     );

@@ -15,6 +15,17 @@ html, body, body>div {
     width: 100%;
 }
 
+.contents {
+    height: 100%;
+    width: 100%;
+}
+
+.contents-title {
+    text-align: center;
+    border-bottom: gainsboro 1px solid;
+    color: slategrey;
+}
+
 /* Nav components */
 
 .left-container {
@@ -24,14 +35,14 @@ html, body, body>div {
     left: 0px;
     width: 20vw;
     height: 100%;
-    background-color: lavender;
+    background-color: steelblue;
 }
 
 .header {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
-    height: 5vh;
+    height: 3.2em;
     border: gainsboro 1px solid;
 }
 
@@ -48,23 +59,16 @@ html, body, body>div {
     color: cornflowerblue;
 }
 
-.nav-title {
-    background: rgb(224, 224, 240);
-    text-align: center;
-    border-bottom: gainsboro 1px solid;
-    border-left: gainsboro 1px solid;
-    border-right: gainsboro 1px solid;
-}
-
 .search {
     width: 100%;
-    height: 5vh;
+    height: 3.2em;
     background: lavender;
     padding-top: 0.5vh;
     margin-right: 0px !important;
     margin-left: 0px !important;
 }
 
-.searchCol {
-    width: 80%;
+.search-box {
+    width: 100%;
+    margin-top: 0.3vh;
 }

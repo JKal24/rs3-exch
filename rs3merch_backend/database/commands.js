@@ -49,8 +49,6 @@ module.exports = {
 
     async getFavorites() {
         try {
-            const favs = (await pool.query('SELECT * FROM favorite_items')).rows;
-            console.log(favs)
             return (await pool.query('SELECT * FROM favorite_items')).rows;
         } catch (err) {
             throw Error(`Could not get favorite items, check to see if database is hooked up properly ${err}`);

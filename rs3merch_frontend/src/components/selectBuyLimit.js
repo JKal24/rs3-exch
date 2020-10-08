@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import api from '../config/api';
 
-export default function SelectBuyLimit(props) {
+export default function SelectBuyLimit() {
 
     const [buyLimits, setBuyLimits] = useState([]);
     const [loaded, setLoaded] = useState(false);
