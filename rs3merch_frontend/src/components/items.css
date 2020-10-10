@@ -5,16 +5,12 @@
 }
 
 .section {
-    display: flex;
-    flex-wrap: nowrap;
     margin-right: -15px;
     margin-left: -15px;
     margin: 0.2vh;
 }
 
 .val {
-    flex-basis: 0;
-    flex-grow: 1;
     max-width: 100%;
     position: relative;
     width: 100%;
@@ -34,12 +30,20 @@
 .loading-contents {
     height: 20rem;
     width: 100%;
+    text-align: center;
+}
+
+.fav-button {
+    height: min-content;
+    width: 4vw;
+    border-radius: 50% !important;
 }
 
 /* Navigation for manipulating pages */
 .navigation {
     display: flex;
     flex-flow: row wrap;
+    justify-content: center;
     background-color: azure;
     border: 2px solid black;
     padding: 5px;

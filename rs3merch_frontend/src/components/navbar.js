@@ -14,10 +14,10 @@ export default function Navigation() {
                     <Image src={logoIcon} fluid />
                 </Link>
             </div>
-            <Button variant="dark" className='nav'>
+            <Button variant="dark" className='link-nav'>
                 <Link to='/invest'>Investments</Link>
             </Button>
-            <Button variant="dark" className='nav'>
+            <Button variant="dark" className='link-nav'>
                 <Link to='/stable'>Stable Items</Link>
             </Button>
             <SelectBuyLimit />

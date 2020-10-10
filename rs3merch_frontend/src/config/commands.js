@@ -49,6 +49,6 @@ export async function addFavorite(item) {
     return await api.post('/FavoritesInsert', item);
 }
 
-export async function removeFavorite(item) {
-    return await api.post('/FavoritesDelete', item.item_name);
+export async function removeFavorite(item_name) {
+    return await api.post('/FavoritesDelete', { item_name });
 }

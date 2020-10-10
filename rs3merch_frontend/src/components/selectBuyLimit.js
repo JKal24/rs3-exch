@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Collapse, Button } from 'react-bootstrap';
 import api from '../config/api';
 
 export default function SelectBuyLimit() {
 
     const [buyLimits, setBuyLimits] = useState([]);
-    const [loaded, setLoaded] = useState(false);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         async function handleBuyLimits() {
@@ -13,35 +13,30 @@ export default function SelectBuyLimit() {
         }
 
         handleBuyLimits();
-        setLoaded(true);
     }, [])
-
-    // Listing of each buy limit
-
-    const BuyLimits = () => {
-        return (
-            <>
-                {
-                    loaded ?
-                        buyLimits.map((buyLimit, index) => {
-                            return (
-                                <Dropdown.Item href={`/buylimit/${buyLimit}`} key={index}>
-                                    {buyLimit.replace('_', ' ')}
-                                </Dropdown.Item>
-                            )
-                        })
-                        :
-                        <h3>Loading...</h3>
-                }
-            </>
-        )
-    }
 
     return (
         <>
-            <DropdownButton title="Buy Limits" variant="dark" className='nav'>
-                <BuyLimits />
-            </DropdownButton>
+            <Button className='link-nav' variant="dark" onClick={() => setOpen(!open)} aria-controls="buy-limits" aria-expanded={open}>
+                Buy Limits
+            </Button>
+            <Collapse in={open}>
+                <div id="buy-limits">
+                    {
+                        // Listing of each buy limit
+
+                        buyLimits.map((buyLimit, index) => {
+                            return (
+                                <div key={index} className='link-nav-container'>
+                                    <a href={`/buylimit/${buyLimit}`} className='link-nav-text'>
+                                        {buyLimit.replace('_', ' ')}
+                                    </a>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </Collapse>
         </>
     )
 

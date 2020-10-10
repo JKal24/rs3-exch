@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Image } from 'react-bootstrap';
+import { Container, Button, Image, Col, Row } from 'react-bootstrap';
 import { initInfo, getInfo, getFavorites, addFavorite, removeFavorite } from '../config/commands';
 import starIcon from '../assets/star.png';
 import loadingIcon from '../assets/rs3merch_logo_big.png';
@@ -49,15 +49,17 @@ export default function Items(props) {
     }, [props.filter, props.keyword])
 
     useEffect(() => {
-        setDisableNav(false);
         if (props.landingPage) {
             let landingPageFavories = []
 
             // If this is the landing page, copy all of the item names into the favorites list
             items.forEach((item) => {
-                landingPageFavories = landingPageFavories.concat(item);
+                landingPageFavories = landingPageFavories.concat(item.item_name);
             })
             setPageFavorites(landingPageFavories);
+            setDisableNav(true);
+        } else {
+            setDisableNav(false);
         }
     }, [items, props.landingPage])
 
@@ -115,16 +117,22 @@ export default function Items(props) {
 
     async function handleFavorite(item_name, index) {
         if (isFavorited(item_name)) {
-            await removeFavorite(items[index]);
+            await removeFavorite(item_name);
+
+            // Removes the item that was favorites on the current page
+            const removeIndex = pageFavorites.indexOf(item_name);
+            pageFavorites.splice(removeIndex, 1);
+            setPageFavorites(pageFavorites);
+            setFavoritesSize(favoritesSize - 1);
         } else {
             // Sets the other buttons to disabled
-            if (favoritesSize + 1 >= 10) {
+            if (favoritesSize + 1 > 10) {
                 setFavoritesFull(true);
                 return;
             }
             await addFavorite(items[index]);
 
-            // Records the item that was favorited on the current page by its index
+            // Records the item that was favorited on the current page
             const newFavorites = pageFavorites.concat(item_name);
             setPageFavorites(newFavorites);
             setFavoritesSize(favoritesSize + 1);
@@ -141,44 +149,45 @@ export default function Items(props) {
                 <>
                     { items.length > 0 ? (
                         <>
-                            <Container className='table'>
+                            <Container className='table' fluid>
 
                                 { /* Makes a header for the table of items */}
-                                <div className="section">
-                                    <div className="val"></div>
-                                    <div className="val">Item Name</div>
-                                    <div className="val">Buy Limit</div>
-                                    <div className="val">Price</div>
-                                    <div className="val">Monthly Average</div>
-                                    <div className="val">Undervaluation</div>
-                                    <div className="val">Monthly Variation</div>
-                                    <div className="val">Weekly Highs</div>
-                                    <div className="val">Weekly Lows</div>
-                                    <div className="val">Monthly Highs</div>
-                                    <div className="val">Monthly Lows</div>
-                                    <div className="val">Favorite</div>
-                                </div>
+                                <Row className="section">
+                                    <Col className="val"></Col>
+                                    <Col className="val">Item Name</Col>
+                                    <Col className="val">Buy Limit</Col>
+                                    <Col className="val">Price</Col>
+                                    <Col className="val">Monthly Average</Col>
+                                    <Col className="val">Undervaluation</Col>
+                                    <Col className="val">Monthly Variation</Col>
+                                    <Col className="val">Weekly Highs</Col>
+                                    <Col className="val">Weekly Lows</Col>
+                                    <Col className="val">Monthly Highs</Col>
+                                    <Col className="val">Monthly Lows</Col>
+                                    <Col className="val">Favorite</Col>
+                                </Row>
                                 {
                                     items.map((item, index) => {
                                         return (
-                                            <div key={index} className="section">
-                                                <div className="val">{index + 1}</div>
-                                                <div className="val"><Image src={item.item_image_uri} thumbnail></Image>{item.item_name}</div>
-                                                <div className="val">{item.buy_limit}</div>
-                                                <div className="val">{item.price_today}</div>
-                                                <div className="val">{item.average}</div>
-                                                <div className="val">{item.undervaluation}</div>
-                                                <div className="val">{item.cvar_month}</div>
-                                                <div className="val">{item.highest_price_week}</div>
-                                                <div className="val">{item.lowest_price_week}</div>
-                                                <div className="val">{item.highest_price_month}</div>
-                                                <div className="val">{item.lowest_price_month}</div>
-                                                <div className="val">
-                                                    <Button variant={isFavorited(item.item_name) ? 'success' : 'dark'} onClick={() => handleFavorite(item.item_name, index)} disabled={favoritesFull && !isFavorited(item.item_name)}>
-                                                        <Image src={starIcon} fluid />
+                                            <Row key={index} className="section">
+                                                <Col className="val"><Image src={item.item_image_uri} thumbnail></Image></Col>
+                                                <Col className="val">{item.item_name}</Col>
+                                                <Col className="val">{item.buy_limit}</Col>
+                                                <Col className="val">{item.price_today}</Col>
+                                                <Col className="val">{item.average}</Col>
+                                                <Col className="val">{item.undervaluation}</Col>
+                                                <Col className="val">{item.cvar_month}</Col>
+                                                <Col className="val">{item.highest_price_week}</Col>
+                                                <Col className="val">{item.lowest_price_week}</Col>
+                                                <Col className="val">{item.highest_price_month}</Col>
+                                                <Col className="val">{item.lowest_price_month}</Col>
+                                                <Col className="val">
+                                                    <Button className="fav-button" variant={isFavorited(item.item_name) ? 'success' : 'light'} 
+                                                    onClick={() => handleFavorite(item.item_name, index)} disabled={favoritesFull && !isFavorited(item.item_name) && !props.landingPage}>
+                                                        <Image className="fav-star" src={starIcon} fluid />
                                                     </Button>
-                                                </div>
-                                            </div>
+                                                </Col>
+                                            </Row>
                                         )
                                     })
                                 }
@@ -186,12 +195,12 @@ export default function Items(props) {
                             <Container className="navigation">
                                 <Button variant="secondary" className="navButton" onClick={handleFirstPage} disabled={disableNav}>{'<<'}</Button>
                                 <Button variant="secondary" className="navButton" onClick={handlePreviousPage} disabled={disableNav}>{'<'}</Button>
-                                <input placeholder={page} onKeyDown={handlePageChange} className="navInput"></input>
+                                <input placeholder={page} onKeyDown={handlePageChange} className="navInput" disabled={disableNav ? "disabled" : ""}></input>
                                 <Button variant="secondary" className="navButton" onClick={handleNextPage} disabled={disableNav}>{'>'}</Button>
                             </Container>
                         </>
                     ) : (
-                            <h4><i>There is nothing to show here</i></h4>
+                            <h4 className="loading-contents" ><i>There is nothing to show here</i></h4>
                         )}
                 </>
             ) : (

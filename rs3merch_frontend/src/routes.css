@@ -34,11 +34,15 @@ html, body, body>div {
     top: 0px;
     left: 0px;
     width: 20vw;
-    height: 100%;
+    padding: 0%;
+    max-height: 100%;
+    height: auto;
+    overflow: auto;
     background-color: steelblue;
+    float: left;
 }
 
-.header {
+.header { 
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -46,17 +50,24 @@ html, body, body>div {
     border: gainsboro 1px solid;
 }
 
-.nav {
-    justify-content: center;
+.link-nav, .link-nav>a, .searchText {
+    text-align: center  ;
     margin-bottom: 0.5vh !important;
     width: 100%;
+    color: cornflowerblue !important;
 }
 
-.nav>button, .nav>a, .searchText {
-    justify-content: center;
-    margin-bottom: 0.5vh;
+.link-nav-container {
+    background: rgb(142, 166, 211);
     width: 100%;
-    color: cornflowerblue;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    border: rgb(35, 51, 80) 2px solid;
+}
+
+.link-nav-text {
+    color: black;
 }
 
 .search {
@@ -64,8 +75,6 @@ html, body, body>div {
     height: 3.2em;
     background: lavender;
     padding-top: 0.5vh;
-    margin-right: 0px !important;
-    margin-left: 0px !important;
 }
 
 .search-box {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import { Button, Collapse } from 'react-bootstrap';
 import api from '../config/api';
 
 export default function SelectType() {
 
     const [types, setTypes] = useState([]);
-    const [loaded, setLoaded] = useState(false);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         async function handleTypes() {
@@ -13,36 +13,33 @@ export default function SelectType() {
         }
 
         handleTypes();
-        setLoaded(true);
     }, [])
 
-    // Listing of each type
-
-    const Types = () => {
-        return (
-            <>
-                {
-                    loaded ?
-                        types.map((type, index) => {
-                            return (
-                                <Dropdown.Item href={`/type/${type}`} key={index}>
-                                    {type.replace('_', ' ')}
-                                </Dropdown.Item>
-                            );
-                        })
-                        :
-                        <h3>Loading...</h3>
-                }
-            </>
-        )
-    }
-
     return (
-        <div>
-            <DropdownButton title="Types" variant="dark" className='nav'>
-                <Types />
-            </DropdownButton>
-        </div>
+        <>
+            <Button className='link-nav' variant="dark" onClick={() => setOpen(!open)} aria-controls="types" aria-expanded={open}>
+                Types
+            </Button>
+            <Collapse in={open}>
+                <div id="types">
+                    <>
+                        {
+                            // Listing of each type
+
+                            types.map((type, index) => {
+                                return (
+                                    <div key={index} className='link-nav-container'>
+                                        <a href={`/type/${type}`} key={index} className='link-nav-text'>
+                                            {type.replace('_', ' ')}
+                                        </a>
+                                    </div>
+                                );
+                            })
+                        }
+                    </>
+                </div>
+            </Collapse>
+        </>
     )
 
 }
