@@ -1,7 +1,7 @@
 const commands = require('../database/commands');
 const infoParser = require('./infoParser');
 const config = require('./config');
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 1;
 
 module.exports = {
     async populateItems(identifier = 'BLANK') {
@@ -27,7 +27,7 @@ module.exports = {
 
                 const evaluator = evaluate(identifier);
                 if (evaluator(info)) {
-                    items.push(trimData(info));
+                    items.push(info);
                     populate++;
                 }
             }
@@ -36,15 +36,6 @@ module.exports = {
             throw Error(`Could not add items ${err}`);
         }
     }
-}
-
-function trimData(info) {
-
-    // Reduces the data made and compiled in infoParser and dataParser
-    // to be returned to the client
-    delete info.cvar_three_months;
-    delete info.average_three_months;
-    return info;
 }
 
 function evaluate(identifier) {
@@ -68,44 +59,16 @@ function evaluateStable(info) {
 
     // Create some simple tests to filter out unsatisfactory items from all evaluation functions
 
-    // Will be properly set up once more tests are done..
-
-    if (((0.2 <= info.cvar_month <= 0.0015) && 0.025 <= info.cvar_three_months) ||
-        ((0.025 <= info.cvar_three_months <= 0.003) && 0.02 <= info.cvar_month) ||
-        Math.min(priceChange(info.price_one_day, info.highest_price_week), priceChange(info.price_one_day, info.lowest_price_week)) >= 0.002 ||
-        Math.min(priceChange(info.price_one_day, info.highest_price_month), priceChange(info.price_one_day, info.lowest_price_month)) >= 0.004) {
-
-        return true;
-    }
-
-    return true;
+    return ((info.cvar_month != 0 || 
+    Math.min(priceChange(info.price_one_day, info.highest_price_month), priceChange(info.price_one_day, info.lowest_price_month)) >= 0.004) ? true : false);
 }
 
 function evaluateInvest(info) {
-    if ((info.average_three_months <= 1500 && info.undervaluation <= 0.95 && info.cvar_month <= 0.1 && info.cvar_three_months <= 0.15) ||
-        (1500 < info.average_three_months <= 15000 && info.undervaluation <= 0.98 && info.cvar_month <= 0.07 && info.cvar_three_months <= 0.1) ||
-        (15000 < info.average_three_months && info.undervaluation <= 1.0 && info.cvar_month <= 0.01 && info.cvar_three_months <= 0.03)) {
-
-        return true;
-    }
-
-    return true;
+    return (info.undervaluation <= 1.1 && info.cvar_month != 0 ? true : false);
 }
 
 function evaluateOrdinary(info) {
-    const hasVariation = info.cvar_month >= 0.01;
-
-    if (info.buy_limit <= 5000) {
-        if (info.buy_limit <= 500) {
-            if (info.buy_limit <= 100) {
-                return (info.price_today >= 2500 || info.average_three_months >= 2200) && hasVariation;
-            }
-            return (info.price_today >= 850 || info.average_three_months >= 700) && hasVariation;
-        }
-        return (info.price_today >= 400 || info.average_three_months >= 320) && hasVariation;
-    } else {
-        return (info.average >= 150 && (hasVariation || info.cvar_three_months >= 0.2));
-    }
+    return ((info.average >= 250 && info.cvar_month != 0) ? true : false);
 }
 
 function priceChange(newValue, oldValue) {

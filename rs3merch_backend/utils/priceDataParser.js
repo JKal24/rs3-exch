@@ -4,10 +4,8 @@ module.exports = {
         return {
             price_today: table[index - 1],
             average: average(table.slice(index - 31)),
-            average_three_months: average(table),
             undervaluation: undervaluation(table),
             cvar_month: cvar(table.slice(index - 31)),
-            cvar_three_months: cvar(table),
             highest_price_week: highest(table.slice(index - 8)),
             lowest_price_week: lowest(table.slice(index - 8)),
             highest_price_month: highest(table.slice(index - 31)),
