@@ -137,7 +137,7 @@ export default function Items(props) {
                                                 <Col className="val">{item.lowest_price_month}</Col>
                                                 <Col className="val">
                                                     <Button className="fav-button" variant={isFavorited(item.item_name) ? 'success' : 'light'} 
-                                                    onClick={() => handleFavorite(item.item_name, index)} disabled={favoritesFull && !isFavorited(item.item_name) && !props.landingPage}>
+                                                    onClick={() => handleFavorite(item.item_name, item)} disabled={favoritesFull() && !props.landingPage}>
                                                         <Image className="fav-star" src={starIcon} fluid />
                                                     </Button>
                                                 </Col>

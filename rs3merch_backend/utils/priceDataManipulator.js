@@ -1,7 +1,7 @@
 const commands = require('../database/commands');
 const infoParser = require('./infoParser');
 const config = require('./config');
-const ITEMS_PER_PAGE = 1;
+const ITEMS_PER_PAGE = 2;
 
 module.exports = {
     async populateItems(identifier = 'BLANK') {

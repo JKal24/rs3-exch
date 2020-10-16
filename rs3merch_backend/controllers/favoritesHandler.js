@@ -4,10 +4,10 @@ module.exports = {
 
     async showFavorites(req, res) {
         /**
-         * Grab a list of items that are favorited,
-         * this is based on the user's database
-         */
-
+        * Grab a list of items that are favorited,
+        * this is based on the user's database
+        */
+       
         return res.json(await commands.getFavorites());
     },
 

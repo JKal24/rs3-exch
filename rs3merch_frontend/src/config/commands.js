@@ -48,7 +48,7 @@ export async function initInfo(filter, keyword) {
     }
 }
 
-export async function getInfo(filter) {
+export async function getInfo(filter='N/A') {
     try {
         if (source) { source.cancel() };
         source = axios.CancelToken.source()
