@@ -148,7 +148,7 @@ module.exports = {
     async getItemInfo(uri, buylimit) {
         try {
             const data = await config.parseHTTPS(uri);
-            let values = await getName(data);
+            let values = await getIdentifiers(data);
 
             await getBaseValues(config.exchangeToModuleData(uri)).then(async res => {
                 Object.assign(values, { buy_limit: buylimit }, res);
@@ -174,7 +174,7 @@ module.exports = {
 
 // Information gathering functions
 
-async function getName(data) {
+async function getIdentifiers(data) {
     try {
         const $ = cheerio.load(data);
         const image_src = $('p[class="gemw-image inventory-image"]').children('a').children('img').attr('src');
@@ -187,8 +187,8 @@ async function getName(data) {
             item_image_uri = config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('data-cfsrc'))
         }
 
-        // Return the name and image src bundled together
-        return { item_name: $('.gemw-name').text(), item_image_uri };
+        // Return the name, id and image src bundled together
+        return { item_name: $('.gemw-name').text(), item_id: $('.exchange-itemid').text(), item_image_uri };
     } catch (err) {
         throw Error(`Could not find requested name or image ${err}`);
     }

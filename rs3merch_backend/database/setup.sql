@@ -13,6 +13,7 @@ CREATE TABLE item_uris (
 CREATE TABLE favorite_items (
     id SERIAL PRIMARY KEY,
     item_name VARCHAR(255) UNIQUE,
+    item_id VARCHAR(255),
     item_image_uri VARCHAR(255),
     buy_limit VARCHAR(255),
     price_today FLOAT(4),

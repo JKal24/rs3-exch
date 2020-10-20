@@ -8,7 +8,7 @@ import './items.css';
 
 export default function Items(props) {
 
-    const {handleFavorite, isFavorited, favoritesFull, setPageFavorites} = useFavorites()
+    const {handleFavorite, isFavorited, favoritesFull, setFavorites} = useFavorites()
 
     // Items are initialized by their respective page (uris are loaded in)
     // Then the items are parsed and displayed here
@@ -35,15 +35,15 @@ export default function Items(props) {
             const info = await getInfo(props.filter);
             if (props.landingPage) {
                 // If this is the landing page, copy all of the item names into the favorites list
-                setPageFavorites(info.data);
+                setFavorites(info.data);
                 setDisableNav(true)
             }
-            setItems(info.data);
+            if (info) { setItems(info.data); }
             setLoaded(true);
         }
 
         setData();
-    }, [props.filter, props.keyword, props.landingPage, setPageFavorites])
+    }, [props.filter, props.keyword, props.landingPage, setFavorites])
 
     function copyPage() {
         if (previousItems.length <= page) {
@@ -103,39 +103,39 @@ export default function Items(props) {
                 <>
                     { items.length > 0 ? (
                         <>
-                            <Container className='table' fluid>
+                            <Container>
 
                                 { /* Makes a header for the table of items */}
-                                <Row className="section">
-                                    <Col className="val"></Col>
-                                    <Col className="val">Item Name</Col>
-                                    <Col className="val">Buy Limit</Col>
-                                    <Col className="val">Price</Col>
-                                    <Col className="val">Monthly Average</Col>
-                                    <Col className="val">Undervaluation</Col>
-                                    <Col className="val">Monthly Variation</Col>
-                                    <Col className="val">Weekly Highs</Col>
-                                    <Col className="val">Weekly Lows</Col>
-                                    <Col className="val">Monthly Highs</Col>
-                                    <Col className="val">Monthly Lows</Col>
-                                    <Col className="val">Favorite</Col>
+                                <Row xs="12" sm="12">
+                                    <Col className="val" sm="1"></Col>
+                                    <Col className="val" sm="1">Item Name</Col>
+                                    <Col className="val" sm="1">Buy Limit</Col>
+                                    <Col className="val" sm="1">Price</Col>
+                                    <Col className="val" sm="1">Monthly Average</Col>
+                                    <Col className="val" sm="1">Under-valuation</Col>
+                                    <Col className="val" sm="1">Monthly Variation</Col>
+                                    <Col className="val" sm="1">Weekly Highs</Col>
+                                    <Col className="val" sm="1">Weekly Lows</Col>
+                                    <Col className="val" sm="1">Monthly Highs</Col>
+                                    <Col className="val" sm="1">Monthly Lows</Col>
+                                    <Col className="val" sm="1">Favorite</Col>
                                 </Row>
                                 {
                                     items.map((item, index) => {
                                         return (
-                                            <Row key={index} className="section">
-                                                <Col className="val"><Image src={item.item_image_uri} thumbnail></Image></Col>
-                                                <Col className="val">{item.item_name}</Col>
-                                                <Col className="val">{item.buy_limit}</Col>
-                                                <Col className="val">{item.price_today}</Col>
-                                                <Col className="val">{item.average}</Col>
-                                                <Col className="val">{item.undervaluation}</Col>
-                                                <Col className="val">{item.cvar_month}</Col>
-                                                <Col className="val">{item.highest_price_week}</Col>
-                                                <Col className="val">{item.lowest_price_week}</Col>
-                                                <Col className="val">{item.highest_price_month}</Col>
-                                                <Col className="val">{item.lowest_price_month}</Col>
-                                                <Col className="val">
+                                            <Row key={index} className="section" xs="12" sm="12">
+                                                <Col className="val" sm="1"><Image src={item.item_image_uri} thumbnail></Image></Col>
+                                                <Col className="val" sm="1">{item.item_name}</Col>
+                                                <Col className="val" sm="1">{item.buy_limit}</Col>
+                                                <Col className="val" sm="1">{item.price_today}</Col>
+                                                <Col className="val" sm="1">{item.average}</Col>
+                                                <Col className="val" sm="1">{item.undervaluation}</Col>
+                                                <Col className="val" sm="1">{item.cvar_month}</Col>
+                                                <Col className="val" sm="1">{item.highest_price_week}</Col>
+                                                <Col className="val" sm="1">{item.lowest_price_week}</Col>
+                                                <Col className="val" sm="1">{item.highest_price_month}</Col>
+                                                <Col className="val" sm="1">{item.lowest_price_month}</Col>
+                                                <Col className="val" sm="1">
                                                     <Button className="fav-button" variant={isFavorited(item.item_name) ? 'success' : 'light'} 
                                                     onClick={() => handleFavorite(item.item_name, item)} disabled={favoritesFull() && !props.landingPage}>
                                                         <Image className="fav-star" src={starIcon} fluid />

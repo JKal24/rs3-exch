@@ -1,22 +1,7 @@
 /* Table contents */
-.table {
-    display: flex;
-    flex-flow: column nowrap;
-}
-
-.section {
-    margin-right: -15px;
-    margin-left: -15px;
-    margin: 0.2vh;
-}
-
 .val {
-    max-width: 100%;
-    position: relative;
-    width: 100%;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
     border: rgb(16, 28, 65) 1px solid;
+    text-align: center;
 }
 
 .loading {
@@ -46,8 +31,9 @@
     justify-content: center;
     background-color: azure;
     border: 2px solid black;
-    padding: 5px;
+    padding: 0.5rem;
     width: 500px;
+    margin: 0.5rem;
 }
 
 .navButton {

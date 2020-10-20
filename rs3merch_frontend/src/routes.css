@@ -51,7 +51,7 @@ html, body, body>div {
 }
 
 .link-nav, .link-nav>a, .searchText {
-    text-align: center  ;
+    text-align: center;
     margin-bottom: 0.5vh !important;
     width: 100%;
     color: cornflowerblue !important;

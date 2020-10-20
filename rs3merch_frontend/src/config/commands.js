@@ -3,14 +3,14 @@ import axios from 'axios'
 
 // Commands functions for inputting and retrieving data from the database
 
+const CancelToken = axios.CancelToken;
 let source;
 
 export async function initInfo(filter, keyword) {
     try {
+        // Cancels existing token
         if (source) { source.cancel() };
-
-        // Creates cancel token
-        source = axios.CancelToken.source()
+        source = CancelToken.source();
 
         // Creates the api for axios requests with the cancel token
         const apiCancellable = axios.create({
@@ -51,7 +51,7 @@ export async function initInfo(filter, keyword) {
 export async function getInfo(filter='N/A') {
     try {
         if (source) { source.cancel() };
-        source = axios.CancelToken.source()
+        source = CancelToken.source();
 
         const apiCancellable = axios.create({
             baseURL: 'http://localhost:8000',
