@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Image, Col, Row } from 'react-bootstrap';
-import { initInfo, getInfo, } from '../config/commands';
+import { initInfo, getInfo, getGraph } from '../config/commands';
 import useFavorites from './hooks/useFavorites';
 import starIcon from '../assets/star.png';
 import loadingIcon from '../assets/rs3merch_logo_big.png';
@@ -8,7 +8,7 @@ import './items.css';
 
 export default function Items(props) {
 
-    const {handleFavorite, isFavorited, favoritesFull, setFavorites} = useFavorites()
+    const { handleFavorite, isFavorited, favoritesFull, setFavorites } = useFavorites()
 
     // Items are initialized by their respective page (uris are loaded in)
     // Then the items are parsed and displayed here
@@ -33,12 +33,13 @@ export default function Items(props) {
         async function setData() {
             await initInfo(props.filter, props.keyword);
             const info = await getInfo(props.filter);
-            if (props.landingPage) {
-                // If this is the landing page, copy all of the item names into the favorites list
-                setFavorites(info.data);
-                setDisableNav(true)
+            if (info) {
+                setItems(info.data);
+                if (props.landingPage) {
+                    setFavorites(info.data)
+                    setDisableNav(true)
+                }
             }
-            if (info) { setItems(info.data); }
             setLoaded(true);
         }
 
@@ -97,6 +98,11 @@ export default function Items(props) {
         setPage(page + 1);
     }
 
+    async function handleGraph(item_id) {
+        const graph = await getGraph(item_id);
+        console.log(graph);
+    }
+
     return (
         <>
             {loaded ? (
@@ -127,7 +133,7 @@ export default function Items(props) {
                                                 <Col className="val" sm="1"><Image src={item.item_image_uri} thumbnail></Image></Col>
                                                 <Col className="val" sm="1">{item.item_name}</Col>
                                                 <Col className="val" sm="1">{item.buy_limit}</Col>
-                                                <Col className="val" sm="1">{item.price_today}</Col>
+                                                <Col className="val" sm="1">{item.price_today} <Button onClick={() => handleGraph(item.item_id)} variant="dark">{item.item_id}</Button></Col>
                                                 <Col className="val" sm="1">{item.average}</Col>
                                                 <Col className="val" sm="1">{item.undervaluation}</Col>
                                                 <Col className="val" sm="1">{item.cvar_month}</Col>
@@ -136,8 +142,8 @@ export default function Items(props) {
                                                 <Col className="val" sm="1">{item.highest_price_month}</Col>
                                                 <Col className="val" sm="1">{item.lowest_price_month}</Col>
                                                 <Col className="val" sm="1">
-                                                    <Button className="fav-button" variant={isFavorited(item.item_name) ? 'success' : 'light'} 
-                                                    onClick={() => handleFavorite(item.item_name, item)} disabled={favoritesFull() && !props.landingPage}>
+                                                    <Button className="fav-button" variant={isFavorited(item.item_name) ? 'success' : 'light'}
+                                                        onClick={() => handleFavorite(item)} disabled={favoritesFull() && !props.landingPage}>
                                                         <Image className="fav-star" src={starIcon} fluid />
                                                     </Button>
                                                 </Col>

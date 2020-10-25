@@ -188,7 +188,7 @@ async function getIdentifiers(data) {
         }
 
         // Return the name, id and image src bundled together
-        return { item_name: $('.gemw-name').text(), item_id: $('.exchange-itemid').text(), item_image_uri };
+        return { item_name: $('.gemw-name').text(), item_id: $('#exchange-itemid').text(), item_image_uri };
     } catch (err) {
         throw Error(`Could not find requested name or image ${err}`);
     }

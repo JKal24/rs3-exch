@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Collapse } from 'react-bootstrap';
-import api from '../config/api';
+import { getTypes } from '../config/commands';
 
 export default function SelectType() {
 
@@ -9,7 +9,7 @@ export default function SelectType() {
 
     useEffect(() => {
         async function handleTypes() {
-            setTypes((await api.get('/TypeListing')).data);
+            setTypes(await getTypes());
         }
 
         handleTypes();

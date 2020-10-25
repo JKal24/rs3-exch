@@ -1,4 +1,4 @@
-import api from './api';
+import { api, graph_api } from './api';
 import axios from 'axios'
 
 // Commands functions for inputting and retrieving data from the database
@@ -83,9 +83,17 @@ export async function getInfo(filter='N/A') {
     }
 }
 
-export async function getFavorites() {
-    return await api.get('/FavoritesInit');
+// Nav handlers
+
+export async function getBuyLimits() {
+    return (await api.get('/BuyLimitListing')).data;
 }
+
+export async function getTypes() {
+    return (await api.get('/TypeListing')).data;
+}
+
+// Favorite handlers
 
 export async function addFavorite(item) {
     return await api.post('/FavoritesInsert', item);
@@ -93,4 +101,10 @@ export async function addFavorite(item) {
 
 export async function removeFavorite(item_name) {
     return await api.post('/FavoritesDelete', { item_name });
+}
+
+// Graph handler
+
+export async function getGraph(item_id) {
+    return await graph_api.get(`/${item_id}`);
 }

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getFavorites, addFavorite, removeFavorite } from '../../config/commands';
+import { useState } from 'react';
+import { addFavorite, removeFavorite } from '../../config/commands';
 
 export default function useFavorites() {
 
@@ -8,20 +8,12 @@ export default function useFavorites() {
 
     const [favorites, setFavorites] = useState([]);
 
-    useEffect(() => {
-        async function initFavorites() {
-            setFavorites((await getFavorites()).data);
-        }
-
-        initFavorites();
-    }, [])
-
-    async function handleFavorite(item_name, item) {
-        if (isFavorited(item_name)) {
-            await removeFavorite(item_name);
+    async function handleFavorite(item) {
+        if (isFavorited(item.item_name)) {
+            await removeFavorite(item.item_name);
 
             // Removes the item that was favorites on the current page
-            const removedFavorite = favorites.filter(item => item.item_name === item_name);
+            const removedFavorite = favorites.filter(fav_item => fav_item.item_name !== item.item_name);
             setFavorites(removedFavorite);
         } else {
             // Buttons will be set to disabled by the function favoritesFull
@@ -31,13 +23,13 @@ export default function useFavorites() {
             await addFavorite(item);
 
             // Records the item that was favorited on the current page
-            const newFavorites = favorites.concat(item_name);
+            const newFavorites = favorites.concat(item);
             setFavorites(newFavorites);
         }
     }
 
     function isFavorited(item_name) {
-        return favorites.find(fav_item_name => fav_item_name === item_name);
+        return favorites.find(item => item.item_name === item_name);
     }
 
     function favoritesFull() {

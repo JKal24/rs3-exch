@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Collapse, Button } from 'react-bootstrap';
-import api from '../config/api';
+import { getBuyLimits } from '../config/commands'
 
 export default function SelectBuyLimit() {
 
@@ -9,7 +9,7 @@ export default function SelectBuyLimit() {
 
     useEffect(() => {
         async function handleBuyLimits() {
-            setBuyLimits((await api.get('/BuyLimitListing')).data);
+            setBuyLimits(await getBuyLimits());
         }
 
         handleBuyLimits();
