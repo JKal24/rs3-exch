@@ -72,7 +72,7 @@ module.exports = {
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
-            throw Error(`Error occured when attempting to gather uris ${err}`);
+            throw Error(`Error occured when attempting to gather uris ${err} \n`);
         }
     },
 
@@ -92,7 +92,7 @@ module.exports = {
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
-            throw Error(`Error occured when attempting to gather uris ${err}`);
+            throw Error(`Error occured when attempting to gather uris ${err} \n`);
         }
     },
 
@@ -116,7 +116,7 @@ module.exports = {
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
-            throw Error(`Error occured when attempting to gather uris ${err}`);
+            throw Error(`Error occured when attempting to gather uris ${err} \n`);
         }
     },
 
@@ -134,7 +134,7 @@ module.exports = {
 
             await commands.cleanTable_item_uris(config.runescapeWikiBaseLink('undefined'));
         } catch (err) {
-            throw new Error(`Could not find any items related to the specified keyword`);
+            throw new Error(`Could not find any items related to the specified keyword \n`);
         }
     },
 
@@ -155,7 +155,7 @@ module.exports = {
             });
             return values;
         } catch (err) {
-            throw Error(`Could not find the requested information, ${err}`);
+            throw Error(`Could not find the requested information, ${err} \n`);
         }
     },
 
@@ -167,7 +167,7 @@ module.exports = {
             }
             return values;
         } catch (err) {
-            throw Error(`Could not get the information pertaining to the given element ${err}`);
+            throw Error(`Could not get the information pertaining to the given element ${err} \n`);
         }
     }
 }
@@ -190,7 +190,7 @@ async function getIdentifiers(data) {
         // Return the name, id and image src bundled together
         return { item_name: $('.gemw-name').text(), item_id: $('#exchange-itemid').text(), item_image_uri };
     } catch (err) {
-        throw Error(`Could not find requested name or image ${err}`);
+        throw Error(`Could not find requested name or image ${err} \n`);
     }
 }
 
@@ -200,7 +200,7 @@ async function getBaseValues(uri) {
         const values = await getTable(data);
         return priceDataParser.compileData(values);
     } catch (err) {
-        throw Error(`Could not find the selected price data ${err}`);
+        throw Error(`Could not find the selected price data ${err} \n`);
     }
 }
 
@@ -228,7 +228,7 @@ async function getTable(data) {
             return valueInfo;
         }
     } catch (err) {
-        throw Error(`Could not access the data table for the selected item ${err}`);
+        throw Error(`Could not access the data table for the selected item ${err} \n`);
     }
 }
 

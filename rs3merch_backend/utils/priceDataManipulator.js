@@ -33,7 +33,7 @@ module.exports = {
             }
             return items;
         } catch (err) {
-            throw Error(`Could not add items ${err}`);
+            throw Error(`Could not add items ${err} \n`);
         }
     }
 }

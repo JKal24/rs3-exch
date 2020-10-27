@@ -6,6 +6,7 @@ export default function useFavorites() {
     // Controls the administration of favorites, 
     // will be updating info to be displayed on the landing page
 
+    const favoritesLimit = 10;
     const [favorites, setFavorites] = useState([]);
 
     async function handleFavorite(item) {
@@ -17,7 +18,7 @@ export default function useFavorites() {
             setFavorites(removedFavorite);
         } else {
             // Buttons will be set to disabled by the function favoritesFull
-            if (favorites.length + 1 > 10) {
+            if (favorites.length + 1 > favoritesLimit) {
                 return;
             }
             await addFavorite(item);

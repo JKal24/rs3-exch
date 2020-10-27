@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-export default function Searchbar() {
+export default function Searchbar(props) {
 
     const [keyword, setKeyword] = useState('');
 
@@ -19,11 +19,14 @@ export default function Searchbar() {
     return (
         <div className='search'>
             <Row>
-                <Col>
+                <Col sm="5">
                     <input type="text" className='search-box' placeholder="Search for an item..." onChange={handleSearchText} onKeyUp={handleSearchLink}></input>
                 </Col>
-                <Col>
+                <Col sm="2">
                     <Button variant="dark"><Link className='searchText' to={{ pathname: `/search/${keyword}` }}>Search</Link></Button>
+                </Col>
+                <Col sm={{ span: 3, offset: 2}}>
+                    <Button variant="warning" onClick={() => props.enablePlots(!props.plots)}>Enable Plots</Button>
                 </Col>
             </Row>
         </div>

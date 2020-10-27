@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Image, Col, Row } from 'react-bootstrap';
 import { initInfo, getInfo, getGraph } from '../config/commands';
+import format from '../config/format';
 import useFavorites from './hooks/useFavorites';
 import starIcon from '../assets/star.png';
 import loadingIcon from '../assets/rs3merch_logo_big.png';
@@ -35,9 +36,19 @@ export default function Items(props) {
             const info = await getInfo(props.filter);
             if (info) {
                 setItems(info.data);
+
                 if (props.landingPage) {
+
+                    // If on landing page, the items will be set to favorites and displayed
                     setFavorites(info.data)
                     setDisableNav(true)
+
+                } else {
+
+                    // Gathers favorited items after display items are loaded in
+                    const favorites = await getInfo();
+                    if (favorites) { setFavorites(favorites.data); }
+
                 }
             }
             setLoaded(true);
@@ -99,8 +110,7 @@ export default function Items(props) {
     }
 
     async function handleGraph(item_id) {
-        const graph = await getGraph(item_id);
-        console.log(graph);
+        return await getGraph(item_id);
     }
 
     return (
@@ -113,7 +123,16 @@ export default function Items(props) {
 
                                 { /* Makes a header for the table of items */}
                                 <Row xs="12" sm="12">
-                                    <Col className="val" sm="1"></Col>
+                                    {props.plots ? (
+                                        <>
+                                            <Col className="val" sm="1">Plots</Col>
+                                        </>
+                                    ) : (
+                                            <>
+                                                <Col className="val" sm="1"></Col>
+                                            </>
+                                        )
+                                    }
                                     <Col className="val" sm="1">Item Name</Col>
                                     <Col className="val" sm="1">Buy Limit</Col>
                                     <Col className="val" sm="1">Price</Col>
@@ -130,17 +149,33 @@ export default function Items(props) {
                                     items.map((item, index) => {
                                         return (
                                             <Row key={index} className="section" xs="12" sm="12">
-                                                <Col className="val" sm="1"><Image src={item.item_image_uri} thumbnail></Image></Col>
+                                                { props.plots ? (
+                                                    <>
+                                                        <Col className="val" sm="1">
+                                                            <Button variant="light" onClick={() => handleGraph(item.item_id)}>
+                                                                <Image src={item.item_image_uri} thumbnail />
+                                                            </Button>
+                                                        </Col>
+                                                    </>
+                                                ) : (
+                                                        <>
+                                                            <Col className="val" sm="1">
+                                                                <Image src={item.item_image_uri} thumbnail />
+                                                            </Col>
+                                                        </>
+                                                    )
+
+                                                }
                                                 <Col className="val" sm="1">{item.item_name}</Col>
                                                 <Col className="val" sm="1">{item.buy_limit}</Col>
-                                                <Col className="val" sm="1">{item.price_today} <Button onClick={() => handleGraph(item.item_id)} variant="dark">{item.item_id}</Button></Col>
-                                                <Col className="val" sm="1">{item.average}</Col>
+                                                <Col className="val" sm="1">{format(item.price_today)}</Col>
+                                                <Col className="val" sm="1">{format(item.average)}</Col>
                                                 <Col className="val" sm="1">{item.undervaluation}</Col>
                                                 <Col className="val" sm="1">{item.cvar_month}</Col>
-                                                <Col className="val" sm="1">{item.highest_price_week}</Col>
-                                                <Col className="val" sm="1">{item.lowest_price_week}</Col>
-                                                <Col className="val" sm="1">{item.highest_price_month}</Col>
-                                                <Col className="val" sm="1">{item.lowest_price_month}</Col>
+                                                <Col className="val" sm="1">{format(item.highest_price_week)}</Col>
+                                                <Col className="val" sm="1">{format(item.lowest_price_week)}</Col>
+                                                <Col className="val" sm="1">{format(item.highest_price_month)}</Col>
+                                                <Col className="val" sm="1">{format(item.lowest_price_month)}</Col>
                                                 <Col className="val" sm="1">
                                                     <Button className="fav-button" variant={isFavorited(item.item_name) ? 'success' : 'light'}
                                                         onClick={() => handleFavorite(item)} disabled={favoritesFull() && !props.landingPage}>
@@ -161,7 +196,8 @@ export default function Items(props) {
                         </>
                     ) : (
                             <h4 className="loading-contents" ><i>There is nothing to show here</i></h4>
-                        )}
+                        )
+                    }
                 </>
             ) : (
                     <div className="loading-contents">
