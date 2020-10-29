@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Image, Col, Row } from 'react-bootstrap';
-import { initInfo, getInfo, getGraph } from '../config/commands';
+import { initInfo, getInfo, getGraph, manual_cancelToken } from '../config/commands';
 import format from '../config/format';
 import useFavorites from './hooks/useFavorites';
 import starIcon from '../assets/star.png';
@@ -55,6 +55,8 @@ export default function Items(props) {
         }
 
         setData();
+
+        return () => { manual_cancelToken(); }
     }, [props.filter, props.keyword, props.landingPage, setFavorites])
 
     function copyPage() {
@@ -109,8 +111,8 @@ export default function Items(props) {
         setPage(page + 1);
     }
 
-    async function handleGraph(item_id) {
-        return await getGraph(item_id);
+    async function handleGraph(item_id, item_name) {
+        return await getGraph(item_id, item_name);
     }
 
     return (
@@ -119,74 +121,76 @@ export default function Items(props) {
                 <>
                     { items.length > 0 ? (
                         <>
-                            <Container>
+                            <div className="item-table">
 
-                                { /* Makes a header for the table of items */}
-                                <Row xs="12" sm="12">
+                                { /* Makes a header for the table of items, creates plotting column if enabled */}
+                                <div className="item-row">
                                     {props.plots ? (
                                         <>
-                                            <Col className="val" sm="1">Plots</Col>
+                                            <div className="val">Plots</div>
                                         </>
                                     ) : (
                                             <>
-                                                <Col className="val" sm="1"></Col>
+                                                <div className="val"></div>
                                             </>
                                         )
                                     }
-                                    <Col className="val" sm="1">Item Name</Col>
-                                    <Col className="val" sm="1">Buy Limit</Col>
-                                    <Col className="val" sm="1">Price</Col>
-                                    <Col className="val" sm="1">Monthly Average</Col>
-                                    <Col className="val" sm="1">Under-valuation</Col>
-                                    <Col className="val" sm="1">Monthly Variation</Col>
-                                    <Col className="val" sm="1">Weekly Highs</Col>
-                                    <Col className="val" sm="1">Weekly Lows</Col>
-                                    <Col className="val" sm="1">Monthly Highs</Col>
-                                    <Col className="val" sm="1">Monthly Lows</Col>
-                                    <Col className="val" sm="1">Favorite</Col>
-                                </Row>
+                                    <div className="val">Item Name</div>
+                                    <div className="val">Buy Limit</div>
+                                    <div className="val">Price</div>
+                                    <div className="val">Monthly Average</div>
+                                    <div className="val">Under-valuation</div>
+                                    <div className="val">Monthly Variation</div>
+                                    <div className="val">Weekly Highs</div>
+                                    <div className="val">Weekly Lows</div>
+                                    <div className="val">Monthly Highs</div>
+                                    <div className="val">Monthly Lows</div>
+                                    <div className="val">Favorite</div>
+                                </div>
                                 {
                                     items.map((item, index) => {
                                         return (
-                                            <Row key={index} className="section" xs="12" sm="12">
+                                            <div key={index} className="item-row">
+
+                                                { /* If plotting is enabled, each item has a button to open a plot in a seperate window */}
                                                 { props.plots ? (
                                                     <>
-                                                        <Col className="val" sm="1">
-                                                            <Button variant="light" onClick={() => handleGraph(item.item_id)}>
+                                                        <div className="val">
+                                                            <Button variant="light" onClick={() => handleGraph(item.item_id, item.item_name)}>
                                                                 <Image src={item.item_image_uri} thumbnail />
                                                             </Button>
-                                                        </Col>
+                                                        </div>
                                                     </>
                                                 ) : (
                                                         <>
-                                                            <Col className="val" sm="1">
+                                                            <div className="val">
                                                                 <Image src={item.item_image_uri} thumbnail />
-                                                            </Col>
+                                                            </div>
                                                         </>
                                                     )
 
                                                 }
-                                                <Col className="val" sm="1">{item.item_name}</Col>
-                                                <Col className="val" sm="1">{item.buy_limit}</Col>
-                                                <Col className="val" sm="1">{format(item.price_today)}</Col>
-                                                <Col className="val" sm="1">{format(item.average)}</Col>
-                                                <Col className="val" sm="1">{item.undervaluation}</Col>
-                                                <Col className="val" sm="1">{item.cvar_month}</Col>
-                                                <Col className="val" sm="1">{format(item.highest_price_week)}</Col>
-                                                <Col className="val" sm="1">{format(item.lowest_price_week)}</Col>
-                                                <Col className="val" sm="1">{format(item.highest_price_month)}</Col>
-                                                <Col className="val" sm="1">{format(item.lowest_price_month)}</Col>
-                                                <Col className="val" sm="1">
+                                                <div className="val">{item.item_name}</div>
+                                                <div className="val">{item.buy_limit}</div>
+                                                <div className="val">{format(item.price_today)}</div>
+                                                <div className="val">{format(item.average)}</div>
+                                                <div className="val">{item.undervaluation}</div>
+                                                <div className="val">{item.cvar_month}</div>
+                                                <div className="val">{format(item.highest_price_week)}</div>
+                                                <div className="val">{format(item.lowest_price_week)}</div>
+                                                <div className="val">{format(item.highest_price_month)}</div>
+                                                <div className="val">{format(item.lowest_price_month)}</div>
+                                                <div className="val">
                                                     <Button className="fav-button" variant={isFavorited(item.item_name) ? 'success' : 'light'}
                                                         onClick={() => handleFavorite(item)} disabled={favoritesFull() && !props.landingPage}>
                                                         <Image className="fav-star" src={starIcon} fluid />
                                                     </Button>
-                                                </Col>
-                                            </Row>
+                                                </div>
+                                            </div>
                                         )
                                     })
                                 }
-                            </Container>
+                            </div>
                             <Container className="navigation">
                                 <Button variant="secondary" className="navButton" onClick={handleFirstPage} disabled={disableNav}>{'<<'}</Button>
                                 <Button variant="secondary" className="navButton" onClick={handlePreviousPage} disabled={disableNav}>{'<'}</Button>

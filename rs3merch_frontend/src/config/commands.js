@@ -3,59 +3,58 @@ import axios from 'axios'
 
 // Commands functions for inputting and retrieving data from the database
 
-const CancelToken = axios.CancelToken;
-let source;
+let initCancelToken;
+let getCancelToken;
 
 export async function initInfo(filter, keyword) {
     try {
         // Cancels existing token
-        if (source) { source.cancel() };
-        source = CancelToken.source();
+        if (typeof initCancelToken != typeof undefined) {
+            initCancelToken.cancel('Request cancelled');
+        }
+
+        // New token
+        initCancelToken = axios.CancelToken.source();
 
         // Creates the api for axios requests with the cancel token
         const apiCancellable = axios.create({
             baseURL: 'http://localhost:8000',
-            cancelToken: source.token
+            cancelToken: initCancelToken.token
         });
 
         switch (filter) {
             case 'buylimit':
-                await apiCancellable.get(`/BuyLimitInit/${keyword}`);
-                return;
+                return await apiCancellable.get(`/BuyLimitInit/${keyword}`);
             case 'type':
-                await apiCancellable.get(`/InitByType/${keyword}`);
-                return;
+                return await apiCancellable.get(`/InitByType/${keyword}`);
             case 'invest':
-                await apiCancellable.get('/InvestmentInit');
-                return;
+                return await apiCancellable.get('/InvestmentInit');
             case 'stable':
-                await apiCancellable.get('/StableItemInit');
-                return;
+                return await apiCancellable.get('/StableItemInit');
             case 'input':
-                await apiCancellable.get(`/SearchText/${keyword.trim()}`);
-                return;
+                return await apiCancellable.get(`/SearchText/${keyword.trim()}`);
             default:
                 return;
         }
     } catch (error) {
-        if (axios.isCancel(error)) {
-            // Handle if request was cancelled
-            console.log('Request cancelled', error.message);
-        } else {
-            // Handle usual errors
-            console.log('Something went wrong: ', error.message)
-        }
+        throw Error(`Request denied ${error}`)
     }
 }
 
-export async function getInfo(filter='N/A') {
+export async function getInfo(filter = 'N/A') {
     try {
-        if (source) { source.cancel() };
-        source = CancelToken.source();
+        // Cancels existing token
+        if (typeof getCancelToken != typeof undefined) {
+            getCancelToken.cancel('Request cancelled');
+        }
+        
+        // New token
+        getCancelToken = axios.CancelToken.source();
 
+        // Creates the api for axios requests with the cancel token
         const apiCancellable = axios.create({
             baseURL: 'http://localhost:8000',
-            cancelToken: source.token
+            cancelToken: getCancelToken.token
         });
 
         switch (filter) {
@@ -73,13 +72,17 @@ export async function getInfo(filter='N/A') {
                 return await apiCancellable.get('/FavoritesInit');
         }
     } catch (error) {
-        if (axios.isCancel(error)) {
-            // Handle if request was cancelled
-            console.log('Request cancelled', error.message);
-        } else {
-            // Handle usual errors
-            console.log('Something went wrong: ', error.message)
-        }
+        throw Error(`Request denied ${error}`)
+    }
+}
+
+export function manual_cancelToken() {
+    if (typeof initCancelToken != typeof undefined) {
+        initCancelToken.cancel('Request cancelled');
+    }
+
+    if (typeof getCancelToken != typeof undefined) {
+        getCancelToken.cancel('Request cancelled');
     }
 }
 
@@ -105,6 +108,6 @@ export async function removeFavorite(item_name) {
 
 // Graph handler
 
-export async function getGraph(item_id) {
-    return await graph_api.get(`/${item_id}`);
+export async function getGraph(item_id, item_name) {
+    return await graph_api.get(`/${item_id}/${item_name}`);
 }

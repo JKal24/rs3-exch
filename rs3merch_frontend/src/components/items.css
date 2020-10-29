@@ -1,12 +1,32 @@
 /* Table contents */
+.item-table {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.item-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    width: 100%;
+}
+
 .val {
     border: rgb(16, 28, 65) 1px solid;
     text-align: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
 }
 
 .loading {
     display: block;
-    margin: auto auto;
+    margin: auto;
     animation-name: fade;
     animation-duration: 3s;
     animation-iteration-count: infinite;
