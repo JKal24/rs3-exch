@@ -34,7 +34,7 @@ export async function initInfo(filter, keyword) {
             case 'input':
                 return await apiCancellable.get(`/SearchText/${keyword.trim()}`);
             default:
-                return;
+                return false;
         }
     } catch (error) {
         throw Error(`Request denied ${error}`)
@@ -69,7 +69,7 @@ export async function getInfo(filter = 'N/A') {
             case 'input':
                 return await apiCancellable.get('/SearchByKeyword');
             default:
-                return await apiCancellable.get('/FavoritesInit');
+                return apiCancellable.get('/FavoritesInit');
         }
     } catch (error) {
         throw Error(`Request denied ${error}`)
@@ -97,6 +97,10 @@ export async function getTypes() {
 }
 
 // Favorite handlers
+
+export async function getFavorites() {
+    return await api.get('/FavoritesInit');
+}
 
 export async function addFavorite(item) {
     return await api.post('/FavoritesInsert', item);

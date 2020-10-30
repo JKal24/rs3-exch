@@ -18,8 +18,8 @@ module.exports = {
             while (populate < max_length) {
                 index = Math.floor(Math.random() * ids.length);
 
-                // Info is contained in an array that has one entry which is
-                // an object containing its respective uri element.
+                // Info is contained in an array inside an object which
+                // contains its' respective elements
                 const { uri, buy_limit } = await commands.consume_item_uris(ids[index]);
                 const info = await infoParser.getItemInfo(uri, buy_limit);
 
@@ -60,11 +60,11 @@ function evaluateStable(info) {
     // Create some simple tests to filter out unsatisfactory items from all evaluation functions
 
     return ((info.cvar_month != 0 || 
-    Math.min(priceChange(info.price_one_day, info.highest_price_month), priceChange(info.price_one_day, info.lowest_price_month)) >= 0.004) ? true : false);
+    Math.min(priceChange(info.price_one_day, info.highest_price_month), priceChange(info.price_one_day, info.lowest_price_month)) >= 0.004) && info.average >= 175 ? true : false);
 }
 
 function evaluateInvest(info) {
-    return (info.undervaluation <= 1.1 && info.cvar_month != 0 ? true : false);
+    return (info.average >= 175 && info.undervaluation <= 1.1 && info.cvar_month != 0 ? true : false);
 }
 
 function evaluateOrdinary(info) {

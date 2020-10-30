@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Image, Col, Row } from 'react-bootstrap';
-import { initInfo, getInfo, getGraph, manual_cancelToken } from '../config/commands';
+import { Container, Button, Image } from 'react-bootstrap';
+import { initInfo, getInfo, getGraph, getFavorites, manual_cancelToken } from '../config/commands';
 import format from '../config/format';
 import useFavorites from './hooks/useFavorites';
 import starIcon from '../assets/star.png';
@@ -32,26 +32,26 @@ export default function Items(props) {
 
     useEffect(() => {
         async function setData() {
-            await initInfo(props.filter, props.keyword);
-            const info = await getInfo(props.filter);
-            if (info) {
-                setItems(info.data);
+            try {
+                const favorites = await getFavorites();
+                const initialize_items = await initInfo(props.filter, props.keyword);
 
-                if (props.landingPage) {
-
-                    // If on landing page, the items will be set to favorites and displayed
-                    setFavorites(info.data)
-                    setDisableNav(true)
-
+                if (initialize_items) {
+                    // Gets the items from the uri database
+                    
+                    setItems((await getInfo(props.filter)).data);
                 } else {
+                    // Otherwise, if on landing page, the items will be set to favorites and displayed
 
-                    // Gathers favorited items after display items are loaded in
-                    const favorites = await getInfo();
-                    if (favorites) { setFavorites(favorites.data); }
-
+                    setItems(favorites.data);
+                    setDisableNav(true)
                 }
+
+                setFavorites(favorites.data);
+                setLoaded(true);
+            } catch (err) {
+                throw Error(`Could not set data ${err}`);
             }
-            setLoaded(true);
         }
 
         setData();
