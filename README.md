@@ -1,8 +1,8 @@
-#RS3Merch - A Flipping/Merchanting Tool for Runescape 3
+# RS3Merch - A Flipping/Merchanting Tool for Runescape 3
 
 ![alt text](https://github.com/JKal24/RS3Merch/blob/master/rs3merch_frontend/src/assets/rs3merch_logo_small.png)
 
-#Introduction
+# Introduction
 
 This project was made in a similar vain as ge-tracker where the main purpose is to feed the user with information about various items. 
 Information included in the app will be:
@@ -24,7 +24,7 @@ Lastly, simple plotly graphs may be used if the [ItemGraph](https://github.com/J
 Disclaimer: This app is not nearly as powerful as ge-tracker due to the simple fact that data accessibility is severely limited in Runescape 3.
 OSRS has a custom client which can track player data but this is not the case for Runescape 3.
 
-#Technologies Used
+# Technologies Used
 
 * Frontend: ReactJS, Axios, React-Router and React-Bootstrap
 * Backend: NodeJS, Express, Cheerio, Axios, dotenv, Node-postgres, cors
