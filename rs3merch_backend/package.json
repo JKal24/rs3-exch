@@ -1,0 +1,25 @@
+{
+  "name": "rs3merch_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "debug": "nodemon --inspect server.js",
+    "test": "node test/fixtures/scrape.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.5",
+    "pg": "^8.3.2",
+    "xmldom": "^0.3.0",
+    "xpath": "0.0.29"
+  }
+}

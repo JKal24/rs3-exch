@@ -1,0 +1,74 @@
+/* Table contents */
+.item-table {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.item-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    width: 100%;
+}
+
+.val {
+    border: rgb(16, 28, 65) 1px solid;
+    text-align: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+.loading {
+    display: block;
+    margin: auto;
+    animation-name: fade;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+.loading-contents {
+    height: 20rem;
+    width: 100%;
+    text-align: center;
+}
+
+.fav-button {
+    height: min-content;
+    width: 4vw;
+    border-radius: 50% !important;
+}
+
+/* Navigation for manipulating pages */
+.navigation {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    background-color: azure;
+    border: 2px solid black;
+    padding: 0.5rem;
+    width: 500px;
+    margin: 0.5rem;
+}
+
+.navButton {
+    margin: 0px 0.2em 0px;
+}
+
+.navInput {
+    margin: 0px 0.2em 0px;
+    width: 3em;
+}
+
+/* Animation */
+
+@keyframes fade {
+    0% {opacity: 1;}
+    50% {opacity: 0.1;}
+    100% {opacity: 1;}
+}
