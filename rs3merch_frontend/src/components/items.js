@@ -50,7 +50,7 @@ export default function Items(props) {
                 setFavorites(favorites.data);
                 setLoaded(true);
             } catch (err) {
-                throw Error(`Could not set data ${err}`);
+                return;
             }
         }
 

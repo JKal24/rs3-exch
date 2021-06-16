@@ -1,6 +1,6 @@
 const config = require('../utils/config');
 const cheerio = require('cheerio');
-const infoParser = require('../utils/infoParser');
+const infoParser = require('../data/infoParser');
 
 /**
  * Tests scraping methods

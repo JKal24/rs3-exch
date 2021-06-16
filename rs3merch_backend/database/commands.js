@@ -1,11 +1,32 @@
 const pool = require("./index");
 
 module.exports = {
+
+    /**
+     * Array parameter must be formatted according to the columns in the sql table.
+     */
+
+    async add_items(arr) {
+        await pool.query('INSERT INTO items (item_id, prices, undervaluation, cvar_month, cvar_week, highest_price_week, lowest_price_week, item_name, item_image_uri, buy_limit, item_type, item_sub_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ON CONFLICT (item_id) DO NOTHING', arr);
+    },
+
+    async get_item(item_name) {
+        await pool.query("SELECT * FROM items WHERE $")
+    },
+
+    async add_item_ids(id) {
+        try {
+            await pool.query('INSERT INTO item_ids (item_id) VALUES ($1) ON CONFLICT (item_id) DO NOTHING', [id]);
+        } catch (err) {
+            throw Error(`Item ID not added to database, check to see if database is hooked up properly ${err} \n`);
+        }
+    },
+
     async addToTable_item_uris(uri, buy_limit) {
         try {
             await pool.query('INSERT INTO item_uris (uri, buylimit) VALUES ($1, $2) ON CONFLICT (uri) DO NOTHING', [uri, buy_limit]);
         } catch (err) {
-            throw Error(`Information not added to database, error occured, check to see if database is hooked up properly ${err} \n`);
+            throw Error(`Uri not added to database, error occured, check to see if database is hooked up properly ${err} \n`);
         }
     },
 

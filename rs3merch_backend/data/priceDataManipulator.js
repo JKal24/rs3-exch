@@ -1,6 +1,6 @@
 const commands = require('../database/commands');
 const infoParser = require('./infoParser');
-const config = require('./config');
+const config = require('../utils/config');
 const ITEMS_PER_PAGE = 5;
 
 module.exports = {

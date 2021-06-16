@@ -51,6 +51,10 @@ function baseToMarketExchange(uri) {
     return '/w/RuneScape:Grand_Exchange_Market_Watch/' + uri;
 }
 
+function apiItemGraph(id) {
+    return 'https://secure.runescape.com/m=itemdb_rs/api/graph/' + id + '.json';
+}
+
 function standardTypeColumn(uri) {
     return (uri ? uri.match(/\w+$/)[0] : null);
 }
@@ -78,7 +82,7 @@ const buyLimits = {
 const standardTypes = {
     // Custom fields
     Archaeology: {
-        Archaeology: ['Soil', 'Materials',]
+        Archaeology: ['Soil', 'Materials']
     },
     Construction: {
         Construction: ['Building materials', 'Nails', 'Aquarium supplies', 'Garden']
@@ -162,6 +166,6 @@ const ALL_ITEM_TYPES_ID = 'Items_by_skill';
 
 module.exports = {
     buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, ALL_ITEM_TYPES_ID, parseHTTPS,
-    extension, normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink,
+    extension, normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph,
     conditionalSlice, removeArrElement
 };

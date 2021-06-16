@@ -22,6 +22,8 @@
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 0;
+    color: azure;
+    background-color: black;
 }
 
 .loading {

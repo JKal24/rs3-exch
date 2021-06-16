@@ -17,7 +17,6 @@ export default function useFavorites() {
             const removedFavorite = favorites.filter(fav_item => fav_item.item_name !== item.item_name);
             setFavorites(removedFavorite);
         } else {
-            // Buttons will be set to disabled by the function favoritesFull
             if (favorites.length + 1 > favoritesLimit) {
                 return;
             }
@@ -34,7 +33,7 @@ export default function useFavorites() {
     }
 
     function favoritesFull() {
-        return (favorites.length >= 10);
+        return (favorites.length >= favoritesLimit);
     }
 
     return {

@@ -1,6 +1,6 @@
-const infoParser = require('../utils/infoParser');
+const infoParser = require('../data/infoParser');
 const commands = require('../database/commands');
-const dataManipulator = require('../utils/priceDataManipulator');
+const dataManipulator = require('../data/priceDataManipulator');
 const config = require('../utils/config');
 
 module.exports = {
