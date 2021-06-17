@@ -5,13 +5,13 @@ const commands = require('../database/commands');
 
 module.exports = {
 
-    async updateItems() {
+    async initializeItems() {
         const data = await config.parseHTTPS(config.ITEM_BY_TYPE_URI);
         const $ = cheerio.load(data);
 
         /**
          * Records all the items by skill, looks for the exchange uri.
-         */
+         */ 
 
         $('h3').each((h3_i, ele) => {
             if ($(ele).children().first().attr('id') === config.ALL_ITEM_TYPES_ID) {
@@ -31,6 +31,23 @@ module.exports = {
 
         let t_trails_uri = $('a:contains("Treasure Trails")').attr('href');
         await parse_type_uris(t_trails_uri, "Treasure Trails");
+    },
+
+    async updateItems() {
+        const ids = await commands.get_item_ids();
+
+        for (let id in ids) {
+            const initialTime = (new Date()).getTime();
+            
+            const currentID = ids[id];
+            const price_info = await parse_api(currentID);
+            await commands.update_item(price_info, currentID);
+
+            // Pauses for 5 seconds before issuing next call, this is due to Runescape API throttling.
+            await throttle(initialTime, 5);
+        }
+
+
     },
 
     /** 
@@ -122,27 +139,38 @@ async function parse_type_uris(uris, type) {
             $(h2).next.children('tbody').children('tr').each(async (i_row, row) => {
 
                 /**
-                 * Format for the items array,
-                 * [item_id,
-                 * prices,
-                 * undervaluation,
-                 * cvar_month,
-                 * cvar_week,
-                 * highest_price_week,
-                 * lowest_price_week,
-                 * item_name,
-                 * item_image_uri,
-                 * buy_limit,
-                 * item_type,
-                 * item_sub_type]
+                 * Array formulation.
+                 * 
+                 *item_id
+                 *prices
+                 *valuation_week
+                 *valuation_month
+                 *valuation_long_term
+                 *cvar_week
+                 *cvar_month
+                 *cvar_long_term
+                 *highest_price_week
+                 *lowest_price_week
+                 *item_name
+                 *item_image_uri
+                 *buy_limit
+                 *item_type
+                 *item_sub_type
                  */
 
                 const item_image_uri = $(row).children('td:nth-child(1)').children('a').attr('href');
                 if (item_image_uri) {
                     let attributes = await parse_exchange_uris(uri);
-                    const item_name = $(row).children('td:nth-child(2)').text();
-                    const uriExtension = $(tr).children('td:nth-child(9)').children('a').attr('href');
-                    const buy_limit = $(tr).children('td:nth-child(7)').text();
+                    const initialTime = (new Date()).getTime();
+
+                    attributes = attributes.concat([
+                        $(row).children('td:nth-child(2)').text(), 
+                        $(row).children('td:nth-child(9)').children('a').attr('href'),
+                        (tr).children('td:nth-child(7)').text(),
+                        type, sub_type]);
+                    commands.add_item(attributes);
+                    
+                    await throttle(initialTime, 5);
                 }
             })
 
@@ -155,16 +183,23 @@ async function parse_exchange_uris(uri) {
     const $ = cheerio.load(data);
 
     const item_id = $('#exchange-itemid').text();
-    const prices = parse_api_prices(item_id);
-    return [item_id, parse_api_prices(item_id)];
+    return [item_id, parse_api(item_id)];
 }
 
-async function parse_api_prices(uri) {
-    const data = await config.parseHTTPS(uri);
+async function parse_api(id) {
+    let prices = parse_prices(id);
 
-    const json_data = JSON.parse(data)['daily'];
-    setTimeout();
+    let data_arr = priceDataParser.doCalculations(prices)
+    let concat_arr = [prices.slice(prices.length - 30)].concat(data_arr);
 
+    return concat_arr;
+}
+
+async function parse_prices(id) {
+    const data = await config.parseHTTPS(config.apiItemGraph(id));
+
+    const json_data = Object.values(JSON.parse(data)['daily']);
+    return json_data.slice(json_data.length - 90);
 }
 
 async function compile_invest_stable_uris(uris, filter) {
@@ -208,4 +243,10 @@ async function compile_invest_stable_uris(uris, filter) {
                 return;
         }
     }));
+}
+
+async function throttle(date, timeout) {
+    const newDate = (new Date()).getTime();
+    const adjustedTimeout = (timeout - (newDate - date)) * 1000;
+    await new Promise(resolve => setTimeout(resolve, adjustedTimeout));
 }

@@ -6,90 +6,52 @@ module.exports = {
      * Array parameter must be formatted according to the columns in the sql table.
      */
 
-    async add_items(arr) {
-        await pool.query('INSERT INTO items (item_id, prices, undervaluation, cvar_month, cvar_week, highest_price_week, lowest_price_week, item_name, item_image_uri, buy_limit, item_type, item_sub_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ON CONFLICT (item_id) DO NOTHING', arr);
+    async add_item(arr) {
+        await pool.query('INSERT INTO items (item_id, prices, valuation_week, valuation_month, valuation_long_term, cvar_week, cvar_month, cvar_long_term, highest_price_week, lowest_price_week, item_name, item_image_uri, buy_limit, item_type, item_sub_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) ON CONFLICT (item_id) DO NOTHING', arr);
     },
 
-    async get_item(item_name) {
-        await pool.query("SELECT * FROM items WHERE $")
-    },
-
-    async add_item_ids(id) {
-        try {
-            await pool.query('INSERT INTO item_ids (item_id) VALUES ($1) ON CONFLICT (item_id) DO NOTHING', [id]);
-        } catch (err) {
-            throw Error(`Item ID not added to database, check to see if database is hooked up properly ${err} \n`);
-        }
-    },
-
-    async addToTable_item_uris(uri, buy_limit) {
-        try {
-            await pool.query('INSERT INTO item_uris (uri, buylimit) VALUES ($1, $2) ON CONFLICT (uri) DO NOTHING', [uri, buy_limit]);
-        } catch (err) {
-            throw Error(`Uri not added to database, error occured, check to see if database is hooked up properly ${err} \n`);
-        }
-    },
-
-    async getAllID_item_uris() {
-        try {
-            return pool.query("SELECT id FROM item_uris").then(ids => {
-                return ids.rows.map(item => {
-                    return item.id;
-                })
+    async get_item_ids() {
+        return pool.query("SELECT item_id FROM items").then(ids => {
+            return ids.rows.map(id => {
+                return id.item_id;
             })
-        } catch (err) {
-            throw Error(`Could not get a list of the present item_uri ids, check to see if database is hooked up properly ${err} \n`);
-        }
+        })
     },
 
-    async consume_item_uris(id) {
-        try {
-            let consumedID = await pool.query('SELECT * FROM item_uris WHERE id = $1', [id]);
-            await pool.query('DELETE FROM item_uris WHERE id = $1', [id]);
-            return { uri: consumedID.rows[0].uri, buy_limit: consumedID.rows[0].buylimit };
-        } catch (err) {
-            throw Error(`Could not consume id, too many requests ${err} \n`);
-        }
+    async get_item_by_id(item_id) {
+        return (await pool.query("SELECT * FROM items WHERE item_id = $1", [item_id])).rows;
     },
 
-    async clearTable_item_uris() {
-        try {
-            await pool.query('TRUNCATE item_uris');
-        } catch (err) {
-            throw Error(`Could not clear table, check to see if database is hooked up properly ${err} \n`);
-        }
+    async get_item_by_buy_limit(lower_limit, upper_limit) {
+        return (await pool.query("SELECT * FROM items WHERE buy_limit BETWEEN $1 and $2", [lower_limit, upper_limit])).rows;
     },
 
-    async cleanTable_item_uris(undefined) {
-        try {
-            await pool.query('DELETE FROM item_uris WHERE uri = $1', [undefined]);
-        } catch (err) {
-            throw Error(`Could not clean table, check to see if database is hooked up properly ${err} \n`);
-        }
+    async get_item_by_types(item_type, item_sub_type) {
+        return (await pool.query("SELECT * FROM items WHERE item_type = $1 AND item_sub_type = $2", [item_type, item_sub_type])).rows;
     },
 
-    async getFavorites() {
-        try {
-            return (await pool.query('SELECT * FROM favorite_items')).rows;
-        } catch (err) {
-            throw Error(`Could not get favorite items, check to see if database is hooked up properly ${err} \n`);
-        }
+    // Declare the bounds in the controllers...
+
+    async get_item_by_rising() {
+        weeklyBound = 1.02;
+        monthlyBound = 1.01;
+        return (await pool.query("SELECT * FROM items WHERE valuation_week >= $1 AND valuation_month >= $2", [weeklyBound, monthlyBound])).rows;
     },
 
-    async addFavorites(item) {
-        try {
-            await pool.query('INSERT INTO favorite_items (item_name, item_id, item_image_uri, buy_limit, price_today, average, undervaluation, cvar_month, highest_price_week, lowest_price_week, highest_price_month, lowest_price_month) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) ON CONFLICT (item_name) DO NOTHING',
-            [item.item_name, item.item_id, item.item_image_uri, item.buy_limit, item.price_today, item.average, item.undervaluation, item.cvar_month, item.highest_price_week, item.lowest_price_week, item.highest_price_month, item.lowest_price_month]);
-        } catch (err) {
-            throw Error(`Could not get favorite items, check to see if database is hooked up properly ${err} \n`);
-        }
+    async get_item_by_falling() {
+        weeklyBound = 0.98;
+        monthlyBound = 0.99;
+        return (await pool.query("SELECT * FROM items WHERE valuation_week <= $1 AND valuation_month <= $2", [weeklyBound, monthlyBound])).rows;
     },
 
-    async removeFavorites(item_name) {
-        try {
-            await pool.query('DELETE FROM favorite_items WHERE item_name = $1', [item_name]);
-        } catch (err) {
-            throw Error(`Could not get favorite items, check to see if database is hooked up properly ${err} \n`);
+    async update_item(price_data, item_id) {
+        price_data.push(item_id);
+        await pool.query("UPDATE items SET prices = $1, valuation_week = $2, valuation_month = $3, valuation_long_term = $4, cvar_week = $5, cvar_month = $6, cvar_long_term = $7, highest_price_week = $8, lowest_price_week = $9 WHERE item_id = $10", price_data);
+    },
+
+    async empty_items(mode) {
+        if (mode == "Production") {
+            await pool.query("DELETE FROM items");
         }
     }
 }

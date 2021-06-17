@@ -8,7 +8,7 @@ const pool = new Pool({
 });
 
 pool.on("error", (err, client) => {
-    console.log("Error connecting to db", err);
+    console.error("Error connecting to db", err);
 });
 
 module.exports = pool;

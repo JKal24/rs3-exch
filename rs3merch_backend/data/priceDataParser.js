@@ -1,22 +1,20 @@
 module.exports = {
-    compileData(table) {
-        const index = table.length;
-        return {
-            price_today: table[index - 1],
-            average: average(table.slice(index - 31)),
-            undervaluation: undervaluation(table),
-            cvar_month: cvar(table.slice(index - 31)),
-            highest_price_week: highest(table.slice(index - 8)),
-            lowest_price_week: lowest(table.slice(index - 8)),
-            highest_price_month: highest(table.slice(index - 31)),
-            lowest_price_month: lowest(table.slice(index - 31)),
-        };
-    },
+    doCalculations(prices) {
+        const len = prices.length;
+        return [
+            valuation(prices.slice(len - 7)),
+            valuation(prices.slice(len - 30)),
+            valuation(prices),
+            cvar(prices.slice(len - 7)),
+            cvar(prices.slice(len - 30)),
+            cvar(prices),
+            highest(prices.slice(len - 7)),
+            lowest(prices.slice(len - 7))
+        ]
+    }
 }
 
 function cvar(table) {
-    const avg = average(table);
-
     const variance = table.reduce((acc, val) => {
         return acc + Math.pow(val - avg, 2);
     }, 0) / table.length;
@@ -24,7 +22,7 @@ function cvar(table) {
     return threeDecimals(Math.sqrt(variance) / average(table));
 }
 
-function undervaluation(table) {
+function valuation(table) {
     const value_today = table[table.length - 1];
 
     return threeDecimals(value_today / average(table));
