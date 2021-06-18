@@ -1,4 +1,4 @@
-const commands = require('../database/commands');
+const { updateItems } = require('../data/infoParser');
 
 module.exports = {
 
@@ -17,5 +17,10 @@ module.exports = {
 
     async removeFavorite(req, res) {
         return res.json(await commands.removeFavorites(req.body.item_name));
+    },
+
+    async updateAllItems(req, res) {
+        await updateItems();
+        return res.send('Update complete.');
     }
 }

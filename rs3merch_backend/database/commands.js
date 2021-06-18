@@ -22,28 +22,6 @@ module.exports = {
         return (await pool.query("SELECT * FROM items WHERE item_id = $1", [item_id])).rows;
     },
 
-    async get_item_by_buy_limit(lower_limit, upper_limit) {
-        return (await pool.query("SELECT * FROM items WHERE buy_limit BETWEEN $1 and $2", [lower_limit, upper_limit])).rows;
-    },
-
-    async get_item_by_types(item_type, item_sub_type) {
-        return (await pool.query("SELECT * FROM items WHERE item_type = $1 AND item_sub_type = $2", [item_type, item_sub_type])).rows;
-    },
-
-    // Declare the bounds in the controllers...
-
-    async get_item_by_rising() {
-        weeklyBound = 1.02;
-        monthlyBound = 1.01;
-        return (await pool.query("SELECT * FROM items WHERE valuation_week >= $1 AND valuation_month >= $2", [weeklyBound, monthlyBound])).rows;
-    },
-
-    async get_item_by_falling() {
-        weeklyBound = 0.98;
-        monthlyBound = 0.99;
-        return (await pool.query("SELECT * FROM items WHERE valuation_week <= $1 AND valuation_month <= $2", [weeklyBound, monthlyBound])).rows;
-    },
-
     async update_item(price_data, item_id) {
         price_data.push(item_id);
         await pool.query("UPDATE items SET prices = $1, valuation_week = $2, valuation_month = $3, valuation_long_term = $4, cvar_week = $5, cvar_month = $6, cvar_long_term = $7, highest_price_week = $8, lowest_price_week = $9 WHERE item_id = $10", price_data);

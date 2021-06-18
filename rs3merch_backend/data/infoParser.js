@@ -46,89 +46,15 @@ module.exports = {
             // Pauses for 5 seconds before issuing next call, this is due to Runescape API throttling.
             await throttle(initialTime, 5);
         }
-
-
     },
-
-    /** 
-     * Creates an object for each item that has
-     * the following attributes: item name, buy limit,
-     * averages, co-efficient of variation, undervaluation
-     * historic highs and lows and a uri to the item image.
-     */
-
-    async getItemInfo(uri, buylimit) {
-        const data = await config.parseHTTPS(uri);
-        let values = await getIdentifiers(data);
-
-        await getBaseValues(config.exchangeToModuleData(uri)).then(async res => {
-            Object.assign(values, { buy_limit: buylimit }, res);
-        });
-        return values;
-
-    },
-
-    async getValuationTable(dataUri, size = 90) {
-        let values = await getTable(await config.parseHTTPS(dataUri));
-        if (values.length >= size) {
-            return values.slice(0, size);
-        }
-        return values;
-
-    }
 }
 
-// Information gathering functions
-
-async function getIdentifiers(data) {
-    const $ = cheerio.load(data);
-    const image_src = $('p[class="gemw-image inventory-image"]').children('a').children('img').attr('src');
-    let item_image_uri;
-
-    // Get the image src
-    if (image_src) {
-        item_image_uri = config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('src'));
-    } else {
-        item_image_uri = config.runescapeWikiBaseLink($('.gemw-image').children('a').children('img').attr('data-cfsrc'))
-    }
-
-    // Return the name, id and image src bundled together
-    return { item_name: $('.gemw-name').text(), item_id: $('#exchange-itemid').text(), item_image_uri };
-
+async function can_be_updated() {
+    const runedate = await config.parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json').lastConfigUpdateRuneday;
+    
 }
 
-async function getBaseValues(uri) {
-    const data = await config.parseHTTPS(uri);
-    const values = await getTable(data);
-    return priceDataParser.compileData(values);
-
-}
-
-async function getTable(data) {
-    // Scrapes data module website for a long list of prices
-    const $ = cheerio.load(data);
-    let node = $('pre', 'div[id=mw-content-text]');
-
-    if ($(node).hasClass('mw-code mw-script')) {
-        let valueInfo = $(node).text().split(',');
-        valueInfo = config.conditionalSlice(valueInfo);
-        valueInfo = valueInfo.map(value => {
-            return parseInt(value.split(':')[1].match(/\d+/g)[0]);
-        });
-        return valueInfo;
-    } else {
-        let valueInfo = $(node).children().text();
-        valueInfo = valueInfo.replace(/[{}A-Z]/gi, '').split("','");
-        valueInfo = valueInfo.map(value => {
-            return parseInt(value.split(':')[1].replace(/'/, ''));
-        })
-        valueInfo = config.conditionalSlice(valueInfo);
-        return valueInfo;
-    }
-
-}
-
-async function parse_type_uris(uris, type) {
+async function parse_type_uris(uri, type) {
     const data = await config.parseHTTPS(uri);
     const $ = cheerio.load(data);
 
@@ -156,6 +82,9 @@ async function parse_type_uris(uris, type) {
                  *buy_limit
                  *item_type
                  *item_sub_type
+                 *
+                 * Creates an object for each item
+                 * with the array attributes.
                  */
 
                 const item_image_uri = $(row).children('td:nth-child(1)').children('a').attr('href');
@@ -169,7 +98,7 @@ async function parse_type_uris(uris, type) {
                         (tr).children('td:nth-child(7)').text(),
                         type, sub_type]);
                     commands.add_item(attributes);
-                    
+
                     await throttle(initialTime, 5);
                 }
             })

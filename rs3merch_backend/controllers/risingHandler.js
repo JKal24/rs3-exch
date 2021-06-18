@@ -1,14 +1,11 @@
-const config = require('../utils/config');
 const pool = require('../database');
-const { get_item_by_buy_limit } = require('../database/query');
+const { get_item_by_rising } = require('../database/query');
 const logger = require('js-logger');
 
+const weeklyBound = 1.02;
+const monthlyBound = 1.01;
+
 module.exports = {
-
-    async showBuyLimits(req, res) {
-        return res.json(Object.keys(config.buyLimits));
-    },
-
     async createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
@@ -16,8 +13,7 @@ module.exports = {
                 throw new Error('Could not search item');
             } 
 
-            const limits = config.buyLimits[req.params.buylimit]
-            const query = get_item_by_buy_limit(limits[0], limits[limits.length - 1]);
+            const query = get_item_by_rising(weeklyBound, monthlyBound);
             const stream = client.query(query);
 
             stream.pipe(JSONStream.stringify()).pipe(res);
