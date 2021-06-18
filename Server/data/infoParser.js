@@ -34,6 +34,9 @@ module.exports = {
     },
 
     async updateItems() {
+        if (!can_be_updated) {
+            return;
+        }
         const ids = await commands.get_item_ids();
 
         for (let id in ids) {
@@ -51,7 +54,14 @@ module.exports = {
 
 async function can_be_updated() {
     const runedate = await config.parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json').lastConfigUpdateRuneday;
-    
+    const currentRuneDate = await commands.get_update();
+    if (runedate == currentRuneDate) {
+        return false;
+    }
+
+    await commands.clean_update();
+    await commands.add_update(runedate);
+    return true;
 }
 
 async function parse_type_uris(uri, type) {

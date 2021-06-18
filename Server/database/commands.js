@@ -31,5 +31,17 @@ module.exports = {
         if (mode == "Production") {
             await pool.query("DELETE FROM items");
         }
-    }
+    },
+
+    async get_update() {
+        return (await pool.query("SELECT * FROM update_date")).rows[0];
+    },
+
+    async add_update(runedate) {
+        return await pool.query("INSERT INTO update_date (runedate) VALUES ($1)", [runedate]);
+    },
+
+    async clean_update() {
+        await pool.query("DELETE FROM update_date");
+    },
 }

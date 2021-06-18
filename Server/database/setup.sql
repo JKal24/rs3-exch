@@ -3,7 +3,7 @@ CREATE DATABASE rs3items;
 DROP TABLE IF EXISTS items;
 
 CREATE TABLE items (
-    item_id VARCHAR(255) PRIMARY KEY,
+    item_id INTEGER PRIMARY KEY,
     prices INTEGER[],
     valuation_week FLOAT(2),
     valuation_month FLOAT(2),
@@ -18,4 +18,8 @@ CREATE TABLE items (
     buy_limit INTEGER,
     item_type VARCHAR(255),
     item_sub_type VARCHAR(255)
+);
+
+CREATE TABLE update_date (
+    runedate VARCHAR(255)
 );
