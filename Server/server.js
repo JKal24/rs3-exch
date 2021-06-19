@@ -14,7 +14,10 @@ require('dotenv').config();
 // });
 
 const infoParser = require('./data/infoParser');
-async function fn() {
-    await infoParser.initializeItems();
+
+function fn() {
+    infoParser.initializeItems();
 }
+
+
 fn();
