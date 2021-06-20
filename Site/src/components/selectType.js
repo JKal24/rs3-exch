@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Collapse } from 'react-bootstrap';
-import { getTypes } from '../config/commands';
+import { getTypes } from '../data/commands';
 
 export default function SelectType() {
 

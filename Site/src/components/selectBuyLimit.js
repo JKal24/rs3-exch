@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Collapse, Button } from 'react-bootstrap';
-import { getBuyLimits } from '../config/commands'
+import { getBuyLimits } from '../data/commands'
 
 export default function SelectBuyLimit() {
 

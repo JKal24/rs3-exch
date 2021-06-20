@@ -25,9 +25,6 @@ export default function Searchbar(props) {
                 <Col sm="2">
                     <Button variant="dark"><Link className='searchText' to={{ pathname: `/search/${keyword}` }}>Search</Link></Button>
                 </Col>
-                <Col sm={{ span: 3, offset: 2}}>
-                    <Button variant="warning" onClick={() => props.enablePlots(!props.plots)}>Enable Plots</Button>
-                </Col>
             </Row>
         </div>
     )

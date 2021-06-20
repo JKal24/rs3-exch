@@ -75,7 +75,7 @@ async function parse_type_uris(uri, type) {
         const sub_type = $(h2).children('span').first().text();
         if (sub_type) {
 
-            let node = $(h2).next();
+            let node = $(h2).next()[0];
             while (node != null && node.name != 'h2') {
                 if (node.name == 'table') {
 
@@ -103,23 +103,26 @@ async function parse_type_uris(uri, type) {
                         * Creates an object for each item
                         * with the array attributes.
                         */
+                        const columns = $(row).children('td');
+                        const lastIndex = columns.length - 1;
 
-                        const item_image_uri = $(row).children('td:nth-child(1)').children('a').attr('href');
+                        const item_image_uri = $(row).children('td:nth-child(1)').children('a').first().children('img').attr('src');
                         if (item_image_uri) {
  
-                            const item_uri = config.runescapeWikiBaseLink($(row).children('td:nth-child(9)').children('a').attr('href'));
+                            const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
                             let attributes = await parse_exchange_uris(item_uri);
  
                             attributes = attributes.concat([
-                                $(row).children('td:nth-child(2)').text(),
+                                $(columns[1]).text(),
                                 config.runescapeWikiBaseLink(item_image_uri),
-                                (tr).children('td:nth-child(7)').text(),
+                                config.parseInteger($(columns[lastIndex - 3]).text()),
                                 type, sub_type]);
  
                             commands.add_item(attributes);
                         }
                     }
                 }
+                node = $(node).next()[0];
             }
         }
     }
@@ -129,7 +132,7 @@ async function parse_exchange_uris(uri) {
     const data = await config.parseHTTPS(uri);
     const $ = cheerio.load(data);
     const item_id = $('#exchange-itemid').text();
-    return [item_id, await parse_api(item_id)];
+    return [config.parseInteger(item_id)].concat(await parse_api(item_id));
 }
 
 async function parse_api(id) {
@@ -152,6 +155,6 @@ async function parse_prices(id) {
     })
 }
 
-function throttle(ms = 5000) {
-    new Promise((r) => setTimeout(r, ms));
+async function throttle(ms = 6000) {
+    await new Promise((r) => setTimeout(r, ms));
 }

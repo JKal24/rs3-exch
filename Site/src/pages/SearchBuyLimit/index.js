@@ -2,15 +2,15 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import Items from '../../components/items';
 
-export default function SearchBuyLimit(props) {
+export default function SearchBuyLimit() {
 
-    let { buy_limit } = useParams();
+    let { buylimit } = useParams();
     const filter = "buylimit";
 
     return (
         <div className="contents">
-            <h2 className="contents-title">{buy_limit.replace('_', ' ')} Buy Limit Items</h2>
-            <Items filter={filter} keyword={buy_limit} plots={props.plots} />
+            <h2 className="contents-title">{buylimit.replace('_', ' ')} Buy Limit Items</h2>
+            <Items filter={filter} keyword={buylimit} />
         </div>
     );
 }

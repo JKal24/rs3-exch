@@ -26,11 +26,6 @@ function parseHTTPS(uri) {
 
 // Transformation functions
 
-
-function extension(str) {
-    return str.replace(/\s/g, '_').replace(/&/g, '%26').replace(/'/g, '%27').replace(/\+/g, '%2B');
-}
-
 function runescapeWikiBaseLink(str) {
     return 'https://runescape.wiki' + str;
 }
@@ -59,11 +54,8 @@ function standardTypeColumn(uri) {
     return (uri ? uri.match(/\w+$/)[0] : null);
 }
 
-function conditionalSlice(arr) {
-    if (arr.length > 91) {
-        return arr.slice(arr.length - 91, arr.length);
-    }
-    return arr;
+function parseInteger(str) {
+    return parseInt(str.replace(/,/g, ''));
 }
 
 function removeArrElement(arr, index) {
@@ -78,6 +70,10 @@ const buyLimits = {
     Medium: ['1000', '1500', '2000', '5000'],
     High: ['10000', '20000', '25000', '28000', '30000']
 }
+
+/**
+ * Still deciding on how to use custom fields...
+ */
 
 const standardTypes = {
     // Custom fields
@@ -163,7 +159,6 @@ const standardTypes = {
 }
 
 module.exports = {
-    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS,
-    extension, normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph,
-    conditionalSlice, removeArrElement
+    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS, parseInteger, removeArrElement,
+    normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph
 };

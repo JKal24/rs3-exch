@@ -5,7 +5,11 @@ module.exports = {
         return new QueryStream("SELECT * FROM items WHERE buy_limit BETWEEN $1 and $2", [lower_limit, upper_limit]);
     },
 
-    get_item_by_types(item_type, item_sub_type) {
+    get_item_by_types(item_type) {
+        return new QueryStream("SELECT * FROM items WHERE item_type = $1", [item_type]);
+    },
+
+    get_item_by_types_and_sub_type(item_type, item_sub_type) {
         return new QueryStream("SELECT * FROM items WHERE item_type = $1 AND item_sub_type = $2", [item_type, item_sub_type]);
     },
 

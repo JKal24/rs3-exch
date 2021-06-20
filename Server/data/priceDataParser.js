@@ -15,11 +15,13 @@ module.exports = {
 }
 
 function cvar(table) {
+    const avg = average(table);
+
     const variance = table.reduce((acc, val) => {
         return acc + Math.pow(val - avg, 2);
     }, 0) / table.length;
 
-    return threeDecimals(Math.sqrt(variance) / average(table));
+    return threeDecimals(Math.sqrt(variance) / avg);
 }
 
 function valuation(table) {

@@ -16,11 +16,11 @@ export default function Navigation() {
             </div>
 
             <Button variant="dark" className='link-nav'>
-                <a href='/invest'>Investments</a>
+                <a href='/rising'>Rising in Price</a>
             </Button>
 
             <Button variant="dark" className='link-nav'>
-                <a href='/stable'>Stable Items</a>
+                <a href='/falling'>Falling in Price</a>
             </Button>
 
             <SelectBuyLimit />

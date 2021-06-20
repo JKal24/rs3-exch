@@ -6,6 +6,7 @@ const fallingHandler = require('./controllers/fallingHandler');
 const risingHandler = require('./controllers/risingHandler');
 const searchHandler = require('./controllers/searchItemHandler');
 const typeHandler = require('./controllers/typeHandler');
+const randomHandler = require('./controllers/randomHandler');
 const updateHandler = require('./controllers/updateHandler');
 
 routes.get('/BuyLimitListing', buyLimitHandler.showBuyLimits);
@@ -18,7 +19,9 @@ routes.get('/RisingItemSearch', risingHandler.createPage);
 routes.get('/SearchByKeyword/:keyword', searchHandler.createPage);
 
 routes.get('/TypeListing', typeHandler.showTypes);
-routes.get('/SearchByTypes/:type/:sub_type', typeHandler.createPage);
+routes.get('/SearchByTypes/:type', typeHandler.createPage);
+
+routes.get('/RandomListing', randomHandler.createPage);
 
 routes.get('/Update', updateHandler.updateAllItems);
 
