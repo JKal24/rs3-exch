@@ -81,43 +81,43 @@ async function parse_type_uris(uri, type) {
 
                     const rows = $(node).children('tbody').first().children('tr');
                     for (const row of rows) {
-                    /**
-                        * Array formulation.
-                        * 
-                        *item_id
-                        *prices
-                        *valuation_week
-                        *valuation_month
-                        *valuation_long_term
-                        *cvar_week
-                        *cvar_month
-                        *cvar_long_term
-                        *highest_price_week
-                        *lowest_price_week
-                        *item_name
-                        *item_image_uri
-                        *buy_limit
-                        *item_type
-                        *item_sub_type
-                        *
-                        * Creates an object for each item
-                        * with the array attributes.
-                        */
+                        /**
+                            * Array formulation.
+                            * 
+                            *item_id
+                            *prices
+                            *valuation_week
+                            *valuation_month
+                            *valuation_long_term
+                            *cvar_week
+                            *cvar_month
+                            *cvar_long_term
+                            *highest_price_week
+                            *lowest_price_week
+                            *item_name
+                            *item_image_uri
+                            *buy_limit
+                            *item_type
+                            *item_sub_type
+                            *
+                            * Creates an object for each item
+                            * with the array attributes.
+                            */
                         const columns = $(row).children('td');
                         const lastIndex = columns.length - 1;
 
                         const item_image_uri = $(row).children('td:nth-child(1)').children('a').first().children('img').attr('src');
                         if (item_image_uri) {
- 
+
                             const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
                             let attributes = await parse_exchange_uris(item_uri);
- 
+
                             attributes = attributes.concat([
                                 $(columns[1]).text(),
                                 config.runescapeWikiBaseLink(item_image_uri),
                                 config.parseInteger($(columns[lastIndex - 3]).text()),
                                 type, sub_type]);
- 
+
                             commands.add_item(attributes);
                         }
                     }
@@ -136,25 +136,51 @@ async function parse_exchange_uris(uri) {
 }
 
 async function parse_api(id) {
-    let prices = await parse_prices(id);
+    let prices;
 
-    let data_arr = priceDataParser.doCalculations(prices)
-    let concat_arr = [prices.slice(prices.length - 30)].concat(data_arr);
+    /**
+     * If a connection error occurs here then just try connecting to the API again.
+     * A new throttle will be made to allow a buffer for connecting to API.
+     */
 
-    return concat_arr;
+    try {
+        prices = await parse_prices(id);
+    } catch (error) {
+        prices = await parse_prices(id, 3500);
+    }
+
+    /**
+     * If the prices data could not be properly accessed then an array with empty values
+     * should be returned instead.
+     * 
+     * API access is likely down or broken.
+     */
+
+    try {
+        let data_arr = priceDataParser.doCalculations(prices)
+        let concat_arr = [prices.slice(prices.length - 30)].concat(data_arr);
+    
+        return concat_arr;
+    } catch (exception) {
+        // Catch the TypeError.
+        
+        return [[], 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    
 }
 
-async function parse_prices(id) {
+async function parse_prices(id, ms = 5500) {
     // API is called
     const data = await config.parseHTTPS(config.apiItemGraph(id));
 
     // Data is throttled
-    return await throttle().then(() => {
+    return await throttle(ms).then(() => {
         const json_data = Object.values(JSON.parse(data)['daily']);
         return json_data.slice(json_data.length - 90);
     })
+
 }
 
-async function throttle(ms = 6000) {
+async function throttle(ms) {
     await new Promise((r) => setTimeout(r, ms));
 }
