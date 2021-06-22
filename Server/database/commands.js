@@ -28,7 +28,7 @@ module.exports = {
     },
 
     async get_random_items() {
-        return (await pool.query("SELECT * FROM my_table TABLESAMPLE SYSTEM(0.01) LIMIT 5")).rows;
+        return (await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(0.01) LIMIT 5")).rows;
     },
 
     async empty_items(mode) {

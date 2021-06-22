@@ -12,3 +12,16 @@ app.use(routes);
 
 app.listen(PORT, () => {
 });
+
+const cron = require('node-cron');
+const infoParser = require('./data/infoParser');
+
+cron.schedule('0 0 * * *', () => {
+    if ((new Date()).getDate() != 1) {
+        infoParser.updateItems();
+    }
+});
+
+cron.schedule('0 0 1 * *', () => {
+    infoParser.initializeItems();
+});

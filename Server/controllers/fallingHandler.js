@@ -1,12 +1,13 @@
-const pool = require('../database');
+const pool = require('../database/index');
 const { get_item_by_falling } = require('../database/query');
 const logger = require('js-logger');
+const JSONStream = require('JSONStream')
 
 const weeklyBound = 0.98;
 const monthlyBound = 0.99;
 
 module.exports = {
-    async createPage(req, res) {
+    createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
                 logger.error(err.message);
@@ -15,7 +16,7 @@ module.exports = {
 
             const query = get_item_by_falling(weeklyBound, monthlyBound);
             const stream = client.query(query);
-
+            
             stream.pipe(JSONStream.stringify()).pipe(res);
             stream.on('end', () => {
                 res.end();

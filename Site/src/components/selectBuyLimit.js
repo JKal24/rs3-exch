@@ -16,7 +16,7 @@ export default function SelectBuyLimit() {
     }, [])
 
     return (
-        <>
+        <div>
             <Button className='link-nav' variant="dark" onClick={() => setOpen(!open)} aria-controls="buy-limits" aria-expanded={open}>
                 Buy Limits
             </Button>
@@ -37,7 +37,7 @@ export default function SelectBuyLimit() {
                     }
                 </div>
             </Collapse>
-        </>
+        </div>
     )
 
 }

@@ -46,6 +46,11 @@ module.exports = {
         }
         const ids = await commands.get_item_ids();
 
+        if (ids.length == 0) {
+            initializeItems();
+            return;
+        }
+
         for (let id in ids) {
             const currentID = ids[id];
             const price_info = await parse_api(currentID);

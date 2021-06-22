@@ -1,12 +1,13 @@
 const pool = require('../database');
 const { get_item_by_rising } = require('../database/query');
 const logger = require('js-logger');
+const JSONStream = require('JSONStream')
 
 const weeklyBound = 1.02;
 const monthlyBound = 1.01;
 
 module.exports = {
-    async createPage(req, res) {
+    createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
                 logger.error(err.message);

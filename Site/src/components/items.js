@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Image } from 'react-bootstrap';
-import { getInfo, manual_cancelToken } from '../data/commands';
+import { getInfo, manual_cancelToken, retrieveInfo } from '../data/commands';
 import format from '../config/format';
 import loadingIcon from '../assets/rs3merch_logo_big.png';
 import './items.css';
+
+const selectItems = state => state.items;
 
 export default function Items(props) {
 
@@ -23,9 +25,10 @@ export default function Items(props) {
      */
 
     useEffect(() => {
-        async function setData() {
-            setItems((await getInfo(props.filter, props.keyword)).data);
+        function setData() {
+            retrieveInfo(props.filter, props.keyword);
 
+            setItems([]);
             if (!props.filter) setDisableNav(true);
 
             setLoaded(true);
@@ -89,11 +92,11 @@ export default function Items(props) {
     }
 
     return (
-        <>
+        <div>
             {loaded ? (
-                <>
+                <div>
                     {items.length > 0 ? (
-                        <>
+                        <div>
                             <div className="item-table">
 
                                 { /* Makes a header for the table of items */}
@@ -139,17 +142,17 @@ export default function Items(props) {
                                 <input placeholder={page} onKeyDown={handlePageChange} className="navInput" disabled={disableNav ? "disabled" : ""}></input>
                                 <Button variant="secondary" className="navButton" onClick={handleNextPage} disabled={disableNav}>{'>'}</Button>
                             </Container>
-                        </>
+                        </div>
                     ) : (
                         <h4 className="loading-contents" ><i>Loading...</i></h4>
                     )
                     }
-                </>
+                </div>
             ) : (
                 <div className="loading-contents">
                     <img src={loadingIcon} className="loading" alt="Loading..." />
                 </div>
             )}
-        </>
+        </div>
     );
 }

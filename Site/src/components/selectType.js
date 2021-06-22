@@ -16,13 +16,13 @@ export default function SelectType() {
     }, [])
 
     return (
-        <>
+        <div>
             <Button className='link-nav' variant="dark" onClick={() => setOpen(!open)} aria-controls="types" aria-expanded={open}>
                 Types
             </Button>
             <Collapse in={open}>
                 <div id="types">
-                    <>
+                    <div>
                         {
                             // Listing of each type
 
@@ -36,10 +36,10 @@ export default function SelectType() {
                                 );
                             })
                         }
-                    </>
+                    </div>
                 </div>
             </Collapse>
-        </>
+        </div>
     )
 
 }
