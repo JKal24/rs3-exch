@@ -13,15 +13,16 @@ app.use(routes);
 app.listen(PORT, () => {
 });
 
-const cron = require('node-cron');
 const infoParser = require('./data/infoParser');
+const { CronJob } = require('cron');
 
-cron.schedule('0 0 * * *', () => {
+const dailyJob = new CronJob('0 0 * * *',() => {
     if ((new Date()).getDate() != 1) {
         infoParser.updateItems();
     }
-});
+}, null, false, "America/Toronto"); 
 
-cron.schedule('0 0 1 * *', () => {
+const monthlyJob = new CronJob('0 0 1 * *',() => {
+    console.log('running');
     infoParser.initializeItems();
-});
+}, null, true, "America/Toronto"); 

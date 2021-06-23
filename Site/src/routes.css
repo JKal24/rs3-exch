@@ -1,12 +1,26 @@
-html, body, body>div {
+html {
+    overflow-y: scroll;
     height: 100%;
+    width: 100%;
+    margin: 0px auto;
+    padding: 0;
 }
 
-/* Screen orientation */
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0px auto;
+    padding: 0;
+}
+
+#root, .view {
+    height: 100%;
+    width: 100%;
+}
+
 .view {
     display: flex;
     flex-flow: row nowrap;
-    height: 100%;
 }
 
 .right-container {
@@ -38,7 +52,7 @@ html, body, body>div {
     max-height: 100%;
     height: auto;
     overflow: auto;
-    background-color: steelblue;
+    background-color: lavender;
     float: left;
 }
 

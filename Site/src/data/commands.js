@@ -1,109 +1,56 @@
 import { api } from './api';
-import axios from 'axios'
-
 import oboe from 'oboe';
-
-// Commands functions for inputting and retrieving data from the database
-
-let initCancelToken;
-let getCancelToken;
+import { useSelector, useDispatch } from 'react-redux';
 
 export function retrieveInfo(filter = 'N/A', param = '') {
+    const requestData = useSelector(state => state.items.requestData);
+    const cancelRequest = useSelector(state => state.items.cancelRequest);
+    let parseString = 'http://localhost:8000/';
+
     switch (filter) {
         case 'buylimit':
-            oboe(`/BuyLimitSearch/${param}`).node('!.[*]', function(x) {
-                console.log('from path matching', x)
-            }).done(_ => {
-                console.log("Done stream");
-            })
+            parseString = parseString.concat(`BuyLimitSearch/${param}`);
+            break;
         case 'type':
-            oboe(`/SearchByTypes/${param}`).node('!.[*]', function(x) {
-                console.log('from path matching', x)
-            }).done(_ => {
-                console.log("Done stream");
-            })
+            parseString = parseString.concat(`SearchByTypes/${param}`);
+            break;
         case 'rising':
-            oboe(`/RisingItemSearch`).node('!.[*]', function(x) {
-                console.log('from path matching', x)
-            }).done(_ => {
-                console.log("Done stream");
-            })
+            parseString = parseString.concat('RisingItemSearch');
+            break;
         case 'falling':
-            return oboe(`http://localhost:8000/FallingItemSearch`).node('!.[*]', function(x) {
-                if (x) {
-                    console.log('item: ', x)
-                }
-                return oboe.drop();
-            }).done(_ => {
-                console.log("Done stream");
-            })
+            parseString = parseString.concat('FallingItemSearch');
+            break;
         case 'input':
-            oboe(`/SearchByKeyword/${param}`).node('!.[*]', function(x) {
-                console.log('from path matching', x)
-            }).done(_ => {
-                console.log("Done stream");
-            })
+            parseString = parseString.concat(`SearchByKeyword/${param}`);
+            break;
         default:
-            oboe('http://localhost:8000/RandomListing').node('![*]', function(x) {
-                if (x) {
-                    console.log('item: ', x)
-                }
-                return oboe.drop();
-            }).done(_ => {
-                console.log("Done stream");
-            })
-        }
-}
+            parseString = parseString.concat('RandomListing');
+    }
 
-export async function getInfo(filter = 'N/A', param = '') {
-    try {
-        // Cancels existing token
-        if (typeof getCancelToken != typeof undefined) {
-            getCancelToken.cancel('Request cancelled');
+    const dataStream = [];
+
+    return oboe(parseString).node('!.[*]', function (x) {
+        if (x) {
+            dataStream.push(x);
         }
         
-        // New token
-        getCancelToken = axios.CancelToken.source();
+        
+        if (cancelToken) this.abort();
 
-        // Creates the api for axios requests with the cancel token
-        const apiCancellable = axios.create({
-            baseURL: 'http://localhost:8000',
-            cancelToken: getCancelToken.token,
-        });
+    }).done(_ => {
+        console.log("Done stream");
+    });
+}
 
-        const streamData = async (uri) => {
-            const data = await apiCancellable({
-                url: uri,
-                method: 'GET',
-                onDownloadProgress: progressEvent_1 => {
-                    const dataChunk = progressEvent_1.currentTarget.response;
-                    // dataChunk contains the data that have been obtained so far (the whole data so far).. 
-                    // So here we do whatever we want with this partial data.. 
-                    // In my case I'm storing that on a redux store that is used to 
-                    // render a table, so now, table rows are rendered as soon as 
-                    // they are obtained from the endpoint.
-                }
-            });
-            return await Promise.resolve(data); 
-        }
+let cancelToken = false;
+let requestPageData = false;
 
-        switch (filter) {
-            case 'buylimit':
-                return await streamData(`/BuyLimitSearch/${param}`);
-            case 'type':
-                return await streamData(`/SearchByTypes/${param}`);
-            case 'rising':
-                return await streamData('/RisingItemSearch');
-            case 'falling':
-                return await apiCancellable.get('/FallingItemSearch');
-            case 'input':
-                return await apiCancellable.get(`/SearchByKeyword/${param}`);
-            default:
-                return await streamData('/RandomListing');
-        }
-    } catch (error) {
-        throw Error(`Request denied ${error}`)
-    }
+export function dropRequest() {
+    this.cancelToken = true;
+}
+
+export function sendPageData() {
+    this.requestPageData = true;
 }
 
 export function manual_cancelToken() {

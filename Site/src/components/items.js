@@ -5,8 +5,6 @@ import format from '../config/format';
 import loadingIcon from '../assets/rs3merch_logo_big.png';
 import './items.css';
 
-const selectItems = state => state.items;
-
 export default function Items(props) {
 
     const [items, setItems] = useState([]);

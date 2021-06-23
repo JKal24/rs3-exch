@@ -19,12 +19,12 @@ export default function Routes() {
                 <div className="right-container">
                     <Searchbar></Searchbar>
                     <Switch>
-                        <Route exact path='/' render={() => (<LandingPage/>)}></Route>
-                        <Route exact path='/rising' render={() => (<SearchInvestments/>)}></Route>
-                        <Route exact path='/falling' render={() => (<SearchFalling/>)}></Route>
-                        <Route exact path='/type/:type' render={() => (<SearchType/>)}></Route>
-                        <Route exact path='/buylimit/:buylimit' render={() => (<SearchBuyLimit/>)}></Route>
-                        <Route exact path='/search/:keyword' render={() => (<SearchByInput/>)}></Route>
+                        <Route exact path='/' render={() => (<LandingPage />)}></Route>
+                        <Route exact path='/rising' render={() => (<SearchInvestments />)}></Route>
+                        <Route exact path='/falling' render={() => (<SearchFalling />)}></Route>
+                        <Route exact path='/type/:type' render={() => (<SearchType />)}></Route>
+                        <Route exact path='/buylimit/:buylimit' render={() => (<SearchBuyLimit />)}></Route>
+                        <Route exact path='/search/:keyword' render={() => (<SearchByInput />)}></Route>
                     </Switch>
                 </div>
             </div>
