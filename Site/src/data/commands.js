@@ -1,10 +1,64 @@
 import { api } from './api';
 import oboe from 'oboe';
-import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios'
+
+let cancelToken;
+
+export async function getItems(filter, param = '') {
+    // Cancels existing token
+    if (typeof cancelToken != typeof undefined) {
+        cancelToken.cancel('Request cancelled');
+    }
+    
+    // New token
+    cancelToken = axios.CancelToken.source();
+
+    // Creates the api for axios requests with the cancel token
+    const apiCancellable = axios.create({
+        baseURL: 'http://localhost:8000',
+        cancelToken: cancelToken.token
+    });
+
+    switch (filter) {
+        case 'buylimit': 
+            return (await apiCancellable.get(`BuyLimitSearch/${param}`)).data;
+        case 'type':
+            return (await apiCancellable.get(`SearchByTypes/${param}`)).data;
+        case 'rising':
+            return (await apiCancellable.get('RisingItemSearch')).data;
+        case 'falling':
+            return (await apiCancellable.get('FallingItemSearch')).data;
+        case 'input':
+            return (await apiCancellable.get(`SearchByKeyword/${param}`)).data;
+        default:
+            const data = (await apiCancellable.get(`RandomListing`)).data;
+            return data;
+    }
+}
+
+export function manualCancelToken() {
+    if (typeof getCancelToken != typeof undefined) {
+        cancelToken.cancel('Request cancelled');
+    }
+}
+
+// Nav handlers
+
+export async function getBuyLimits() {
+    return (await api.get('/BuyLimitListing')).data;
+}
+
+export async function getTypes() {
+    return (await api.get('/TypeListing')).data;
+}
+
+// Update data
+
+export async function doUpdate() {
+    api.get('/Update');
+}
 
 export function retrieveInfo(filter = 'N/A', param = '') {
-    const requestData = useSelector(state => state.items.requestData);
-    const cancelRequest = useSelector(state => state.items.cancelRequest);
     let parseString = 'http://localhost:8000/';
 
     switch (filter) {
@@ -27,54 +81,5 @@ export function retrieveInfo(filter = 'N/A', param = '') {
             parseString = parseString.concat('RandomListing');
     }
 
-    const dataStream = [];
-
-    return oboe(parseString).node('!.[*]', function (x) {
-        if (x) {
-            dataStream.push(x);
-        }
-        
-        
-        if (cancelToken) this.abort();
-
-    }).done(_ => {
-        console.log("Done stream");
-    });
-}
-
-let cancelToken = false;
-let requestPageData = false;
-
-export function dropRequest() {
-    this.cancelToken = true;
-}
-
-export function sendPageData() {
-    this.requestPageData = true;
-}
-
-export function manual_cancelToken() {
-    if (typeof initCancelToken != typeof undefined) {
-        initCancelToken.cancel('Request cancelled');
-    }
-
-    if (typeof getCancelToken != typeof undefined) {
-        getCancelToken.cancel('Request cancelled');
-    }
-}
-
-// Nav handlers
-
-export async function getBuyLimits() {
-    return (await api.get('/BuyLimitListing')).data;
-}
-
-export async function getTypes() {
-    return (await api.get('/TypeListing')).data;
-}
-
-// Update data
-
-export async function doUpdate() {
-    api.get('/Update');
+    return parseString;
 }

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Collapse, Button } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import { getBuyLimits } from '../data/commands'
+import { createBuyLimits } from '../redux/reducers/nav';
 
 export default function SelectBuyLimit() {
 
     const [buyLimits, setBuyLimits] = useState([]);
     const [open, setOpen] = useState(false);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function handleBuyLimits() {
