@@ -16,13 +16,23 @@ app.listen(PORT, () => {
 const infoParser = require('./data/infoParser');
 const { CronJob } = require('cron');
 
-const dailyJob = new CronJob('0 0 * * *',() => {
+// Initialize the items when first run
+
+// infoParser.initializeItems();
+
+// Update the items daily and re-initialize monthly
+
+const dailyJob = new CronJob('0 1 * * *', function() {
     if ((new Date()).getDate() != 1) {
         infoParser.updateItems();
     }
-}, null, false, "America/Toronto"); 
+}, null, true, "America/Toronto");
 
-const monthlyJob = new CronJob('0 0 1 * *',() => {
+dailyJob.start();
+
+const monthlyJob = new CronJob('0 1 1 * *', function() {
     console.log('running');
     infoParser.initializeItems();
-}, null, true, "America/Toronto"); 
+}, null, true, "America/Toronto");
+
+monthlyJob.start();

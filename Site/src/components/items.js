@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Container, Button, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { ITEMS_PER_PAGE } from '../config/format';
-import { input, refresh, incrementPage, decrementPage, setFirstPage, error } from '../redux/reducers/items';
+import { refresh, incrementPage, decrementPage, setFirstPage, readItems } from '../redux/reducers/items';
+import { clearCancelToken } from '../data/commands';
 import format from '../config/format';
 import loadingIcon from '../assets/rs3merch_logo_big.png';
 import './items.css';
-import { retrieveInfo, getItems, manualCancelToken } from '../data/commands';
 
 export default function Items(props) {
 
     const dispatch = useDispatch();
 
-    const pageItems = useSelector((state) => state.items.pageItems);
-    const page = useSelector((state) => state.items.page);
+    const pageItems = useSelector(state => state.items.pageItems);
+    const page = useSelector(state => state.items.page);
+    const loaded = useSelector(state => state.items.loaded);
 
     /** 
      * Items will be loaded in through useEffect the first time, 
@@ -21,12 +21,12 @@ export default function Items(props) {
      */
 
     useEffect(() => {
-        async function initialize() {
-            dispatch(input(await getItems(props.filter, props.param)));
-        }
-        initialize();
+        dispatch(readItems( { filter: props.filter, param: props.param }));
 
-        return () => manualCancelToken();
+        return () => {
+            clearCancelToken();
+            dispatch(refresh());
+        }
     }, [props.filter, props.param])
 
     function handleFirstPage() {
@@ -43,7 +43,7 @@ export default function Items(props) {
 
     return (
         <>
-            { pageItems.length >= page * ITEMS_PER_PAGE ? (
+            { loaded ? (
                 <div>
                     <div className="item-table">
 

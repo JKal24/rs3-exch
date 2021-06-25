@@ -158,7 +158,9 @@ const standardTypes = {
     }
 }
 
+const BATCH_READ = 100;
+
 module.exports = {
-    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS, parseInteger, removeArrElement,
+    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS, parseInteger, removeArrElement, BATCH_READ,
     normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph
 };

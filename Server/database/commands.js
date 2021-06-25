@@ -27,8 +27,8 @@ module.exports = {
         await pool.query("UPDATE items SET prices = $1, valuation_week = $2, valuation_month = $3, valuation_long_term = $4, cvar_week = $5, cvar_month = $6, cvar_long_term = $7, highest_price_week = $8, lowest_price_week = $9 WHERE item_id = $10", price_data);
     },
 
-    async get_random_items() {
-        return (await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(0.01) LIMIT 5")).rows;
+    async get_random_items(ITEMS_PER_PAGE) {
+        return (await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(0.01) LIMIT $1", [ITEMS_PER_PAGE])).rows;
     },
 
     async empty_items(mode) {
@@ -47,5 +47,5 @@ module.exports = {
 
     async clean_update() {
         await pool.query("DELETE FROM update_date");
-    },
+    }
 }

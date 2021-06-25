@@ -1,51 +1,58 @@
 import { api } from './api';
-import oboe from 'oboe';
 import axios from 'axios'
 
-let cancelToken;
+const cancelToken = axios.CancelToken;
+const source = cancelToken.source();
 
-export async function getItems(filter, param = '') {
+export async function getItems(filter, param) {
     // Cancels existing token
-    if (typeof cancelToken != typeof undefined) {
-        cancelToken.cancel('Request cancelled');
-    }
-    
-    // New token
-    cancelToken = axios.CancelToken.source();
+    clearCancelToken();
 
     // Creates the api for axios requests with the cancel token
     const apiCancellable = axios.create({
         baseURL: 'http://localhost:8000',
-        cancelToken: cancelToken.token
+        cancelToken: source.token
     });
 
     switch (filter) {
-        case 'buylimit': 
-            return (await apiCancellable.get(`BuyLimitSearch/${param}`)).data;
+        case 'buylimit':
+            return (await apiCancellable.get(`/BuyLimitSearch/${param}`)).data;
         case 'type':
-            return (await apiCancellable.get(`SearchByTypes/${param}`)).data;
+            return (await apiCancellable.get(`/SearchByTypes/${param}`)).data;
         case 'rising':
-            return (await apiCancellable.get('RisingItemSearch')).data;
+            return (await apiCancellable.get('/RisingItemSearch')).data;
         case 'falling':
-            return (await apiCancellable.get('FallingItemSearch')).data;
+            return (await apiCancellable.get('/FallingItemSearch')).data;
         case 'input':
-            return (await apiCancellable.get(`SearchByKeyword/${param}`)).data;
+            return (await apiCancellable.get(`/SearchByKeyword/${param}`)).data;
         default:
-            const data = (await apiCancellable.get(`RandomListing`)).data;
-            return data;
+            try {
+                const data = await apiCancellable.get('/RandomListing');
+                return (await apiCancellable.get(`/RandomListing`)).data;
+            } catch (err) {
+                console.log(err.message);
+            }
+            
     }
 }
 
-export function manualCancelToken() {
-    if (typeof getCancelToken != typeof undefined) {
-        cancelToken.cancel('Request cancelled');
+// In the event that a request needs to be cancelled
+// Normally a request is cancelled if the page is refreshed
+
+export function clearCancelToken() {
+    if (source != undefined) {
+        source.cancel('Request cancelled');
+    } else {
+        // New token
+        source = cancelToken.source();
     }
 }
 
 // Nav handlers
 
 export async function getBuyLimits() {
-    return (await api.get('/BuyLimitListing')).data;
+    const data = (await api.get('/BuyLimitListing')).data;
+    return data;
 }
 
 export async function getTypes() {
@@ -56,30 +63,4 @@ export async function getTypes() {
 
 export async function doUpdate() {
     api.get('/Update');
-}
-
-export function retrieveInfo(filter = 'N/A', param = '') {
-    let parseString = 'http://localhost:8000/';
-
-    switch (filter) {
-        case 'buylimit':
-            parseString = parseString.concat(`BuyLimitSearch/${param}`);
-            break;
-        case 'type':
-            parseString = parseString.concat(`SearchByTypes/${param}`);
-            break;
-        case 'rising':
-            parseString = parseString.concat('RisingItemSearch');
-            break;
-        case 'falling':
-            parseString = parseString.concat('FallingItemSearch');
-            break;
-        case 'input':
-            parseString = parseString.concat(`SearchByKeyword/${param}`);
-            break;
-        default:
-            parseString = parseString.concat('RandomListing');
-    }
-
-    return parseString;
 }

@@ -14,7 +14,6 @@ module.exports = {
          */
         for (const title of $('h3')) {
             if ($(title).children().first().attr('id') === 'Items_by_skill') {
-                const h3 = $(title).next().children('dd').first().children('table').first().children('tbody').first().children('tr');
 
                 /**
                  * Do each skill type one at a time

@@ -1,44 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Collapse } from 'react-bootstrap';
-import { getTypes } from '../data/commands';
+import React, { useEffect } from 'react';
+import { Collapse, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { createTypes, toggleOpenTypes } from '../redux/reducers/nav';
 
 export default function SelectType() {
 
-    const [types, setTypes] = useState([]);
-    const [open, setOpen] = useState(false);
+    const dispatch = useDispatch();
+
+    const types = useSelector(state => state.nav.types);
+    const open = useSelector(state => state.nav.openTypes);
+    const loaded = useSelector(state => state.nav.loadedTypes);
 
     useEffect(() => {
-        async function handleTypes() {
-            setTypes(await getTypes());
-        }
-
-        handleTypes();
-    }, [])
+        dispatch(createTypes());
+    }, [dispatch])
 
     return (
         <div>
-            <Button className='link-nav' variant="dark" onClick={() => setOpen(!open)} aria-controls="types" aria-expanded={open}>
+            <Button className='link-nav' variant="dark" onClick={() => dispatch(toggleOpenTypes())} aria-controls="types" aria-expanded={open}>
                 Types
             </Button>
-            <Collapse in={open}>
-                <div id="types">
-                    <div>
-                        {
-                            // Listing of each type
+            {
+                loaded ? (
+                    <Collapse in={open}>
+                        <div id="types">
+                            <div>
+                                {
+                                    // Listing of each type
 
-                            types.map((type, index) => {
-                                return (
-                                    <div key={index} className='link-nav-container'>
-                                        <a href={`/type/${type}`} key={index} className='link-nav-text'>
-                                            {type.replace('_', ' ')}
-                                        </a>
-                                    </div>
-                                );
-                            })
-                        }
-                    </div>
-                </div>
-            </Collapse>
+                                    types.map((type, index) => {
+                                        return (
+                                            <div key={index} className='link-nav-container'>
+                                                <a href={`/type/${type}`} key={index} className='link-nav-text'>
+                                                    {type.replace('_', ' ')}
+                                                </a>
+                                            </div>
+                                        );
+                                    })
+                                }
+                            </div>
+                        </div>
+                    </Collapse>
+                ) : (
+                    <>
+                    </>
+                )
+            }
+
         </div>
     )
 

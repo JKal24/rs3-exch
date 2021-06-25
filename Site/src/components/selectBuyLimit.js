@@ -1,46 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Collapse, Button } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { getBuyLimits } from '../data/commands'
-import { createBuyLimits } from '../redux/reducers/nav';
+import { useDispatch, useSelector } from 'react-redux';
+import { createBuyLimits, toggleOpenBuylimits } from '../redux/reducers/nav';
 
 export default function SelectBuyLimit() {
 
-    const [buyLimits, setBuyLimits] = useState([]);
-    const [open, setOpen] = useState(false);
-
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        async function handleBuyLimits() {
-            setBuyLimits(await getBuyLimits());
-        }
+    const buylimits = useSelector(state => state.nav.buylimits);
+    const open = useSelector(state => state.nav.openBuyLimits);
+    const loaded = useSelector(state => state.nav.loadedBuyLimits);
 
-        handleBuyLimits();
-    }, [])
+    useEffect(() => {
+        dispatch(createBuyLimits());
+    }, [dispatch])
 
     return (
         <div>
-            <Button className='link-nav' variant="dark" onClick={() => setOpen(!open)} aria-controls="buy-limits" aria-expanded={open}>
+            <Button className='link-nav' variant="dark" onClick={() => dispatch(toggleOpenBuylimits())} aria-controls="buy-limits" aria-expanded={open}>
                 Buy Limits
             </Button>
-            <Collapse in={open}>
-                <div id="buy-limits">
-                    {
-                        // Listing of each buy limit
+            {
+                loaded ? (
+                    <Collapse in={open}>
+                        <div id="buy-limits">
+                            {
+                                // Listing of each buy limit
 
-                        buyLimits.map((buyLimit, index) => {
-                            return (
-                                <div key={index} className='link-nav-container'>
-                                    <a href={`/buylimit/${buyLimit}`} className='link-nav-text'>
-                                        {buyLimit.replace('_', ' ')}
-                                    </a>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-            </Collapse>
+                                buylimits.map((buyLimit, index) => {
+                                    return (
+                                        <div key={index} className='link-nav-container'>
+                                            <a href={`/buylimit/${buyLimit}`} className='link-nav-text'>
+                                                {buyLimit.replace('_', ' ')}
+                                            </a>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </Collapse>
+                ) : (
+                    <>
+                    </>
+                )
+            }
         </div>
     )
 
