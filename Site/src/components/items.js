@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { Container, Button, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { refresh, incrementPage, decrementPage, setFirstPage, readItems } from '../redux/reducers/items';
-import { clearCancelToken } from '../data/commands';
-import format from '../config/format';
+import { refresh, incrementPage, decrementPage, setFirstPage, readItems, refreshItems } from '../redux/reducers/items';
 import loadingIcon from '../assets/rs3merch_logo_big.png';
 import './items.css';
 
@@ -21,13 +19,13 @@ export default function Items(props) {
      */
 
     useEffect(() => {
-        dispatch(readItems( { filter: props.filter, param: props.param }));
+        dispatch(readItems({ filter: props.filter, param: props.param }));
 
         return () => {
-            clearCancelToken();
+            dispatch(refreshItems());
             dispatch(refresh());
         }
-    }, [props.filter, props.param])
+    }, [props.filter, props.param, dispatch])
 
     function handleFirstPage() {
         dispatch(setFirstPage());
@@ -43,7 +41,7 @@ export default function Items(props) {
 
     return (
         <>
-            { loaded ? (
+            {loaded ? (
                 <div>
                     <div className="item-table">
 
@@ -53,14 +51,15 @@ export default function Items(props) {
                             <div className="val">Item Name</div>
                             <div className="val">Buy Limit</div>
                             <div className="val">Price</div>
-                            <div className="val">Monthly Average</div>
-                            <div className="val">Under-valuation</div>
+                            <div className="val">Weekly Variation</div>
                             <div className="val">Monthly Variation</div>
+                            <div className="val">Long-term Variation</div>
+                            <div className="val">Weekly Valuation</div>
+                            <div className="val">Monthly Valuation</div>
+                            <div className="val">Long-term Valuation</div>
                             <div className="val">Weekly Highs</div>
                             <div className="val">Weekly Lows</div>
-                            <div className="val">Monthly Highs</div>
-                            <div className="val">Monthly Lows</div>
-                            <div className="val">Favorite</div>
+                            <div className="val">Item Type</div>
                         </div>
                         {
                             pageItems.map((item, index) => {
@@ -71,14 +70,22 @@ export default function Items(props) {
                                         </div>
                                         <div className="val">{item.item_name}</div>
                                         <div className="val">{item.buy_limit}</div>
-                                        <div className="val">{format(item.price_today)}</div>
-                                        <div className="val">{format(item.average)}</div>
-                                        <div className="val">{item.undervaluation}</div>
-                                        <div className="val">{item.cvar_month}</div>
-                                        <div className="val">{format(item.highest_price_week)}</div>
-                                        <div className="val">{format(item.lowest_price_week)}</div>
-                                        <div className="val">{format(item.highest_price_month)}</div>
-                                        <div className="val">{format(item.lowest_price_month)}</div>
+                                        <div className="val">{item.prices[item.prices.length - 1]}</div>
+                                        <div className="val">{complement(item.cvar_week)}</div>
+                                        <div className="val">{complement(item.cvar_month)}</div>
+                                        <div className="val">{complement(item.cvar_long_term)}</div>
+                                        <div className="val">{percentage(complement(item.valuation_week))}</div>
+                                        <div className="val">{percentage(complement(item.valuation_month))}</div>
+                                        <div className="val">{percentage(complement(item.valuation_long_term))}</div>
+                                        <div className="val">{item.highest_price_week}</div>
+                                        <div className="val">{item.lowest_price_week}</div>
+                                        {
+                                            props.filter === 'types' ? (
+                                                <div className="val">{item.item_sub_type}</div>
+                                            ) : (
+                                                <div className="val">{item.item_type}</div>
+                                            )
+                                        }
                                     </div>
                                 )
                             })
@@ -98,4 +105,12 @@ export default function Items(props) {
             )}
         </>
     );
+}
+
+function complement(amount) {
+    return (1.0 - amount);
+}
+
+function percentage(amount) {
+    return 100 * amount;
 }

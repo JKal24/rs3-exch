@@ -4,7 +4,7 @@ const logger = require('js-logger');
 const JSONStream = require('JSONStream')
 
 module.exports = {
-    createPage(req, res) {
+    async createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
                 logger.error(err.message);

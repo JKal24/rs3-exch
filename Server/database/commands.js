@@ -28,7 +28,8 @@ module.exports = {
     },
 
     async get_random_items(ITEMS_PER_PAGE) {
-        return (await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(0.01) LIMIT $1", [ITEMS_PER_PAGE])).rows;
+        const data = await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(10) LIMIT $1", [ITEMS_PER_PAGE])
+        return (data).rows;
     },
 
     async empty_items(mode) {

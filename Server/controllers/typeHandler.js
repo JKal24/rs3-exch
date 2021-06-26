@@ -11,7 +11,7 @@ module.exports = {
         return res.json(Object.keys(config.standardTypes));
     },
 
-    createPage(req, res) {
+    async createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
                 logger.error(err.message);

@@ -7,7 +7,7 @@ const weeklyBound = 1.02;
 const monthlyBound = 1.01;
 
 module.exports = {
-    createPage(req, res) {
+    async createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
                 logger.error(err.message);
