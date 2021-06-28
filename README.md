@@ -1,6 +1,6 @@
 # RS3Merch - A Flipping/Merchanting Tool for Runescape 3
 
-![alt text](https://github.com/JKal24/RS3Merch/blob/master/Site/src/assets/rs3merch_logo_small.png)
+![alt text](https://github.com/JKal24/RS3Merch/blob/master/Site/src/assets/rs3exch_logo_small.png)
 
 # Introduction
 
