@@ -150,7 +150,7 @@ async function parse_api(id) {
     try {
         prices = await parse_prices(id);
     } catch (error) {
-        prices = await parse_prices(id, 3500);
+        prices = await parse_prices(id, 2500);
     }
 
     /**

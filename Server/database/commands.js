@@ -27,9 +27,23 @@ module.exports = {
         await pool.query("UPDATE items SET prices = $1, valuation_week = $2, valuation_month = $3, valuation_long_term = $4, cvar_week = $5, cvar_month = $6, cvar_long_term = $7, highest_price_week = $8, lowest_price_week = $9 WHERE item_id = $10", price_data);
     },
 
+    /**
+     * @param {The number of items being requested} ITEMS_PER_PAGE 
+     * @returns An array with a minimum of items requested, may be more due to inconsistent nature of tablesample.
+     */
+
     async get_random_items(ITEMS_PER_PAGE) {
-        const data = await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(10) LIMIT $1", [ITEMS_PER_PAGE])
-        return (data).rows;
+        let limit = 5; let parse = 0;
+        let data;
+
+        do {
+            data = (await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(10) LIMIT $1", [ITEMS_PER_PAGE])).rows;
+            if (parse > limit) break;
+            parse++;
+        }
+        while (data.length < ITEMS_PER_PAGE);
+
+        return data;
     },
 
     async empty_items(mode) {

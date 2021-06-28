@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Collapse, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { createBuyLimits, toggleOpenBuylimits } from '../redux/reducers/nav';
+import { createBuyLimits, toggleOpenBuylimits } from '../app/reducers/nav';
 
 export default function SelectBuyLimit() {
 
@@ -40,8 +40,8 @@ export default function SelectBuyLimit() {
                         </div>
                     </Collapse>
                 ) : (
-                    <>
-                    </>
+                    <div>
+                    </div>
                 )
             }
         </div>

@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { Container, Button, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { refresh, incrementPage, decrementPage, setFirstPage, readItems, refreshItems } from '../redux/reducers/items';
-import loadingIcon from '../assets/rs3merch_logo_big.png';
-import './items.css';
+import { refresh, incrementPage, decrementPage, setFirstPage, readItems, refreshItems, readPageLimits } from '../app/reducers/items';
+import '../spreadsheets/items.css';
 
 export default function Items(props) {
 
@@ -19,13 +18,14 @@ export default function Items(props) {
      */
 
     useEffect(() => {
-        dispatch(readItems({ filter: props.filter, param: props.param }));
+        dispatch(readPageLimits());
+        dispatch(readItems({ filter: props.filter, param: props.keyword }));
 
         return () => {
             dispatch(refreshItems());
             dispatch(refresh());
         }
-    }, [props.filter, props.param, dispatch])
+    }, [props.filter, props.keyword, dispatch])
 
     function handleFirstPage() {
         dispatch(setFirstPage());
@@ -35,12 +35,12 @@ export default function Items(props) {
         dispatch(decrementPage());
     }
 
-    async function handleNextPage() {
+    function handleNextPage() {
         dispatch(incrementPage());
     }
 
     return (
-        <>
+        <div>
             {loaded ? (
                 <div>
                     <div className="item-table">
@@ -80,7 +80,7 @@ export default function Items(props) {
                                         <div className="val">{item.highest_price_week}</div>
                                         <div className="val">{item.lowest_price_week}</div>
                                         {
-                                            props.filter === 'types' ? (
+                                            props.filter === 'type' ? (
                                                 <div className="val">{item.item_sub_type}</div>
                                             ) : (
                                                 <div className="val">{item.item_type}</div>
@@ -99,11 +99,10 @@ export default function Items(props) {
                     </Container>
                 </div>
             ) : (
-                <div className="loading-contents">
-                    <img src={loadingIcon} className="loading" alt="Loading..." />
+                <div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

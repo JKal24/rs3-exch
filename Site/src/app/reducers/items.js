@@ -1,9 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getItems } from "../../data/commands";
+import { getItems, getPageLimit } from "../../data/commands";
 import axios from 'axios';
 
+const DEFAULT_LIMIT = 5;
+
+export const readPageLimits = createAsyncThunk('items/limits',
+    async (_, { rejectWithValue }) => {
+        try {
+            return await getPageLimit();
+        } catch (err) {
+            rejectWithValue("Using default limit...");
+        }
+    }
+)
+
 export const readItems = createAsyncThunk('items/read',
-    async ( { filter = 'N/A', param = '' }, { signal, rejectWithValue }) => {
+    async ( { filter, param }, { signal, rejectWithValue }) => {
         try {
             const source = axios.CancelToken.source();
             signal.addEventListener("abort", () => {
@@ -31,19 +43,35 @@ const itemSlice = createSlice({
         pageItems: [],
         contentIndex: 0,
         loaded: false,
-        itemsPerPage: 5
+        itemsPerPage: DEFAULT_LIMIT
     },
     reducers: {
-        input: (state, action) => { state = { ...state, contents: action.payload, pageItems: action.payload.slice(0, state.itemsPerPage) } },
-        refresh: (state) => { state = { contents: [], error: '', pageItems: [], page: 1, contentIndex: 0 } },
-        incrementPage: (state) => { state.page += 1; state.pageItems = state.contents.slice[state.contentIndex, state.contentIndex + state.itemsPerPage]; state.contentIndex += state.itemsPerPage; },
+        input: (state, action) => { 
+            state = { ...state, contents: action.payload, pageItems: action.payload.slice(0, state.itemsPerPage) } 
+        },
+        refresh: (state) => { 
+            state = { contents: [], error: '', pageItems: [], page: 1, contentIndex: 0 } 
+        },
+        incrementPage: (state) => { 
+            state.page += 1; 
+            state.pageItems = state.contents.slice(state.contentIndex, state.contentIndex + state.itemsPerPage); 
+            state.contentIndex += state.itemsPerPage; 
+        },
         decrementPage: (state) => {
             if (state.page > 1) {
-                state.page = state.page - 1; state.pageItems = state.contents.slice[state.contentIndex - state.itemsPerPage, state.contentIndex]; state.contentIndex -= state.itemsPerPage;
+                state.page = state.page - 1; 
+                state.pageItems = state.contents.slice(state.contentIndex - state.itemsPerPage, state.contentIndex); 
+                state.contentIndex -= state.itemsPerPage;
             }
         },
-        setFirstPage: (state) => { state.page = 1; state.pageItems = state.contents.slice[0, state.itemsPerPage]; state.contentIndex = 0 },
-        error: (state, action) => { state.error = action.payload }
+        setFirstPage: (state) => { 
+            state.page = 1; 
+            state.pageItems = state.contents.slice(0, state.itemsPerPage); 
+            state.contentIndex = 0 
+        },
+        error: (state, action) => { 
+            state.error = action.payload; 
+        }
     },
     extraReducers: {
         [readItems.fulfilled]: (state, action) => {
@@ -60,6 +88,9 @@ const itemSlice = createSlice({
             state.pageItems = [];
             state.page = 1;
             state.contentIndex = 0;
+        },
+        [readPageLimits.fulfilled]: (state, action) => {
+            state.itemsPerPage = action.payload;
         }
     }
 })

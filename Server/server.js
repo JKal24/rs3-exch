@@ -18,11 +18,11 @@ const { CronJob } = require('cron');
 
 // Initialize the items when first run
 
-// infoParser.initializeItems();
+infoParser.initializeItems();
 
 // Update the items daily and re-initialize monthly
 
-const dailyJob = new CronJob('0 1 * * *', function() {
+const dailyJob = new CronJob('0 0 * * *', async function() {
     if ((new Date()).getDate() != 1) {
         infoParser.updateItems();
     }
@@ -30,7 +30,7 @@ const dailyJob = new CronJob('0 1 * * *', function() {
 
 dailyJob.start();
 
-const monthlyJob = new CronJob('0 1 1 * *', function() {
+const monthlyJob = new CronJob('0 0 1 * *', async function() {
     console.log('running');
     infoParser.initializeItems();
 }, null, true, "America/Toronto");

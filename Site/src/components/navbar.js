@@ -3,7 +3,7 @@ import { Image, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import SelectType from './selectType';
 import SelectBuyLimit from './selectBuyLimit';
-import logoIcon from '../assets/rs3merch_logo_small.png';
+import logoIcon from '../assets/rs3exch_logo_small.png';
 
 export default function Navigation() {
 

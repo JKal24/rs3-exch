@@ -52,7 +52,7 @@ body {
     max-height: 100%;
     height: auto;
     overflow: auto;
-    background-color: lavender;
+    background-color: rgb(228, 228, 228);
     float: left;
 }
 
@@ -61,7 +61,6 @@ body {
     flex-flow: row nowrap;
     justify-content: center;
     height: 3.2em;
-    border: gainsboro 1px solid;
 }
 
 .link-nav, .link-nav>a, .searchText {
@@ -72,12 +71,11 @@ body {
 }
 
 .link-nav-container {
-    background: rgb(142, 166, 211);
+    background: rgb(228, 228, 228);
     width: 100%;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     text-align: center;
-    border: rgb(35, 51, 80) 2px solid;
 }
 
 .link-nav-text {
@@ -87,7 +85,7 @@ body {
 .search {
     width: 100%;
     height: 3.2em;
-    background: lavender;
+    background: rgb(228, 228, 228);
     padding-top: 0.5vh;
 }
 

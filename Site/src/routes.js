@@ -8,7 +8,7 @@ import SearchByInput from './pages/SearchByInput';
 import SearchFalling from './pages/SearchFalling';
 import SearchType from './pages/SearchType';
 import LandingPage from './pages/LandingPage';
-import './routes.css';
+import './spreadsheets/routes.css';
 
 export default function Routes() {
 

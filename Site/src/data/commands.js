@@ -1,6 +1,6 @@
 import { api } from './api';
 
-export async function getItems(filter, param) {
+export async function getItems(filter, param = '') {
 
     switch (filter) {
         case 'buylimit':
@@ -14,8 +14,7 @@ export async function getItems(filter, param) {
         case 'input':
             return (await api.get(`/SearchByKeyword/${param}`)).data;
         default:
-            const data = await api.get('/RandomListing');
-            return (data).data;            
+            return (await api.get('/RandomListing')).data;
     }
 }
 
@@ -28,6 +27,10 @@ export async function getBuyLimits() {
 
 export async function getTypes() {
     return (await api.get('/TypeListing')).data;
+}
+
+export async function getPageLimit() {
+    return (await api.get('/DefaultPageLimit')).data;
 }
 
 // Update data

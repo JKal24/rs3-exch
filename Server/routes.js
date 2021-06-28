@@ -22,6 +22,7 @@ routes.get('/TypeListing', typeHandler.showTypes);
 routes.get('/SearchByTypes/:type', typeHandler.createPage);
 
 routes.get('/RandomListing', randomHandler.createPage);
+routes.get('/DefaultPageLimit', randomHandler.sendPageLimit);
 
 routes.get('/Update', updateHandler.updateAllItems);
 

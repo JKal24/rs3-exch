@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Collapse, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { createTypes, toggleOpenTypes } from '../redux/reducers/nav';
+import { createTypes, toggleOpenTypes } from '../app/reducers/nav';
 
 export default function SelectType() {
 
@@ -42,8 +42,8 @@ export default function SelectType() {
                         </div>
                     </Collapse>
                 ) : (
-                    <>
-                    </>
+                    <div>
+                    </div>
                 )
             }
 
