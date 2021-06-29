@@ -1,10 +1,9 @@
 import { api } from './api';
 
 export async function getItems(filter, param = '') {
-
     switch (filter) {
         case 'buylimit':
-            return (await api.get(`/BuyLimitSearch/${param}`)).data;
+            return (await api.get(`/BuyLimitSearch/${param}`, )).data;
         case 'type':
             return (await api.get(`/SearchByTypes/${param}`)).data;
         case 'rising':
@@ -21,8 +20,7 @@ export async function getItems(filter, param = '') {
 // Nav handlers
 
 export async function getBuyLimits() {
-    const data = (await api.get('/BuyLimitListing')).data;
-    return data;
+    return (await api.get('/BuyLimitListing')).data;
 }
 
 export async function getTypes() {

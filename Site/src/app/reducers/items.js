@@ -2,9 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getItems, getPageLimit } from "../../data/commands";
 import axios from 'axios';
 
-const DEFAULT_LIMIT = 5;
+const DEFAULT_LIMIT = 10;
 
-export const readPageLimits = createAsyncThunk('items/limits',
+export const readDefaultPageLimit = createAsyncThunk('items/limits',
     async (_, { rejectWithValue }) => {
         try {
             return await getPageLimit();
@@ -39,35 +39,15 @@ const itemSlice = createSlice({
     initialState: {
         contents: [],
         error: '',
-        page: 1,
-        pageItems: [],
-        contentIndex: 0,
         loaded: false,
         itemsPerPage: DEFAULT_LIMIT
     },
     reducers: {
         input: (state, action) => { 
-            state = { ...state, contents: action.payload, pageItems: action.payload.slice(0, state.itemsPerPage) } 
+            state = { ...state, contents: action.payload } 
         },
         refresh: (state) => { 
-            state = { contents: [], error: '', pageItems: [], page: 1, contentIndex: 0 } 
-        },
-        incrementPage: (state) => { 
-            state.page += 1; 
-            state.pageItems = state.contents.slice(state.contentIndex, state.contentIndex + state.itemsPerPage); 
-            state.contentIndex += state.itemsPerPage; 
-        },
-        decrementPage: (state) => {
-            if (state.page > 1) {
-                state.page = state.page - 1; 
-                state.pageItems = state.contents.slice(state.contentIndex - state.itemsPerPage, state.contentIndex); 
-                state.contentIndex -= state.itemsPerPage;
-            }
-        },
-        setFirstPage: (state) => { 
-            state.page = 1; 
-            state.pageItems = state.contents.slice(0, state.itemsPerPage); 
-            state.contentIndex = 0 
+            state = { ...state, contents: [], error: '' } 
         },
         error: (state, action) => { 
             state.error = action.payload; 
@@ -76,7 +56,6 @@ const itemSlice = createSlice({
     extraReducers: {
         [readItems.fulfilled]: (state, action) => {
             state.contents = action.payload;
-            state.pageItems = (action.payload).slice(0, state.itemsPerPage);
             state.loaded = true;
         },
         [readItems.rejected]: (state, action) => {
@@ -85,16 +64,13 @@ const itemSlice = createSlice({
         [refreshItems.fulfilled]: (state) => {
             state.error = '';
             state.contents = [];
-            state.pageItems = [];
-            state.page = 1;
-            state.contentIndex = 0;
         },
-        [readPageLimits.fulfilled]: (state, action) => {
+        [readDefaultPageLimit.fulfilled]: (state, action) => {
             state.itemsPerPage = action.payload;
         }
     }
 })
 
-export const { input, request, receive, refresh, incrementPage, decrementPage, setFirstPage, error } = itemSlice.actions;
+export const { input, refresh, error } = itemSlice.actions;
 
 export default itemSlice.reducer;

@@ -1,6 +1,6 @@
 const { get_random_items } = require('../database/commands');
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 
 module.exports = {
     async createPage(req, res) {

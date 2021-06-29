@@ -1,0 +1,24 @@
+{
+  "name": "rs3merch",
+  "version": "1.0.0",
+  "description": "![alt text](https://github.com/JKal24/RS3Merch/blob/master/Site/src/assets/rs3exch_logo_small.png)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cd Server && npm start",
+    "site": "cd Site && npm start",
+    "start": "concurrently \"npm run server\" \"npm run site\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JKal24/RS3Merch.git"
+  },
+  "author": "jask24",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JKal24/RS3Merch/issues"
+  },
+  "homepage": "https://github.com/JKal24/RS3Merch#readme",
+  "dependencies": {
+    "concurrently": "^6.2.0"
+  }
+}

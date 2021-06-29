@@ -1,24 +1,21 @@
 import React, { useEffect } from 'react';
 import { Container, Button, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { refresh, incrementPage, decrementPage, setFirstPage, readItems, refreshItems, readPageLimits } from '../app/reducers/items';
+import { refresh, readItems, refreshItems, readDefaultPageLimit } from '../app/reducers/items';
+import { useTable, usePagination } from 'react-table';
+import { valuation, variation } from './utils/calc';
 import '../spreadsheets/items.css';
 
 export default function Items(props) {
 
     const dispatch = useDispatch();
 
-    const pageItems = useSelector(state => state.items.pageItems);
-    const page = useSelector(state => state.items.page);
+    const contents = useSelector(state => state.items.contents);
     const loaded = useSelector(state => state.items.loaded);
-
-    /** 
-     * Items will be loaded in through useEffect the first time, 
-     * afterwards they will be loaded in through handleNextPage
-     */
+    const itemsPerPage = useSelector(state => state.items.itemsPerPage);
 
     useEffect(() => {
-        dispatch(readPageLimits());
+        dispatch(readDefaultPageLimit());
         dispatch(readItems({ filter: props.filter, param: props.keyword }));
 
         return () => {
@@ -27,89 +24,145 @@ export default function Items(props) {
         }
     }, [props.filter, props.keyword, dispatch])
 
-    function handleFirstPage() {
-        dispatch(setFirstPage());
-    }
+    const typeString = (props.filter === 'type' ? 'item_sub_type' : 'item_type');
 
-    function handlePreviousPage() {
-        dispatch(decrementPage());
-    }
-
-    function handleNextPage() {
-        dispatch(incrementPage());
-    }
+    const columns = React.useMemo(() => [{
+        Header: '',
+        accessor: 'item_image_uri'
+    }, {
+        Header: 'Item Name',
+        accessor: 'item_name'
+    }, {
+        Header: 'Buy Limit',
+        accessor: 'buy_limit'
+    }, {
+        Header: 'Price',
+        accessor: 'prices'
+    }, {
+        Header: 'Weekly Variation',
+        accessor: 'cvar_week'
+    }, {
+        Header: 'Monthly Variation',
+        accessor: 'cvar_month'
+    }, {
+        Header: 'Long-term Variation',
+        accessor: 'cvar_long_term'
+    }, {
+        Header: 'Weekly Valuation',
+        accessor: 'valuation_week'
+    }, {
+        Header: 'Monthly Valuation',
+        accessor: 'valuation_month'
+    }, {
+        Header: 'Long-term Valuation',
+        accessor: 'valuation_long_term'
+    }, {
+        Header: 'Weekly Highs',
+        accessor: 'highest_price_week'
+    }, {
+        Header: 'Weekly Lows',
+        accessor: 'lowest_price_week'
+    }, {
+        Header: 'Item Type',
+        accessor: typeString
+    }], []);
 
     return (
         <div>
-            {loaded ? (
-                <div>
-                    <div className="item-table">
-
-                        { /* Makes a header for the table of items */}
-                        <div className="item-row">
-                            <div className="val"></div>
-                            <div className="val">Item Name</div>
-                            <div className="val">Buy Limit</div>
-                            <div className="val">Price</div>
-                            <div className="val">Weekly Variation</div>
-                            <div className="val">Monthly Variation</div>
-                            <div className="val">Long-term Variation</div>
-                            <div className="val">Weekly Valuation</div>
-                            <div className="val">Monthly Valuation</div>
-                            <div className="val">Long-term Valuation</div>
-                            <div className="val">Weekly Highs</div>
-                            <div className="val">Weekly Lows</div>
-                            <div className="val">Item Type</div>
-                        </div>
-                        {
-                            pageItems.map((item, index) => {
-                                return (
-                                    <div key={index} className="item-row">
-                                        <div className="val">
-                                            <Image src={item.item_image_uri} thumbnail />
-                                        </div>
-                                        <div className="val">{item.item_name}</div>
-                                        <div className="val">{item.buy_limit}</div>
-                                        <div className="val">{item.prices[item.prices.length - 1]}</div>
-                                        <div className="val">{complement(item.cvar_week)}</div>
-                                        <div className="val">{complement(item.cvar_month)}</div>
-                                        <div className="val">{complement(item.cvar_long_term)}</div>
-                                        <div className="val">{percentage(complement(item.valuation_week))}</div>
-                                        <div className="val">{percentage(complement(item.valuation_month))}</div>
-                                        <div className="val">{percentage(complement(item.valuation_long_term))}</div>
-                                        <div className="val">{item.highest_price_week}</div>
-                                        <div className="val">{item.lowest_price_week}</div>
-                                        {
-                                            props.filter === 'type' ? (
-                                                <div className="val">{item.item_sub_type}</div>
-                                            ) : (
-                                                <div className="val">{item.item_type}</div>
-                                            )
-                                        }
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                    <Container className="navigation">
-                        <Button variant="secondary" className="navButton" onClick={handleFirstPage}>{'<<'}</Button>
-                        <Button variant="secondary" className="navButton" onClick={handlePreviousPage}>{'<'}</Button>
-                        <input placeholder={page} className="navInput" disabled></input>
-                        <Button variant="secondary" className="navButton" onClick={handleNextPage}>{'>'}</Button>
-                    </Container>
-                </div>
-            ) : (
-                <div>
-                </div>
-            )}
+        {
+            loaded ? ( <Table columns={columns} data={contents} filter={props.filter}></Table> ) : (<div> </div>)
+        }
         </div>
     );
 }
 
-function complement(amount) {
-    return (1.0 - amount);
-}
+function Table({ columns, data, filter }) {
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        page,
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
+        nextPage,
+        previousPage,
+        setPageSize,
+        state: { pageIndex, pageSize },
+    } = useTable({
+        columns,
+        data,
+        initialState: { pageIndex: 0 },
+    },
+        usePagination
+    )
 
-function percentage(amount) {
-    return 100 * amount;
+    return (
+        <div className="items">
+            <table {...getTableProps()}>
+                <thead>
+                    {headerGroups.map(headerGroup => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map(column => (
+                                <th {...column.getHeaderProps()} className="val">{column.render('Header')}</th>
+                            ))}
+                        </tr>
+                    ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                    {page.map((row, i) => {
+                        const values = row.values;
+                        return (
+                            <tr key={i}>
+                                <td className="val">
+                                    <Image src={values.item_image_uri} thumbnail />
+                                </td>
+                                <td className="val">{values.item_name}</td>
+                                <td className="val">{values.buy_limit}</td>
+                                <td className="val">{values.prices[values.prices.length - 1]}</td>
+                                <td className="val">{variation(values.cvar_week)}</td>
+                                <td className="val">{variation(values.cvar_month)}</td>
+                                <td className="val">{variation(values.cvar_long_term)}</td>
+                                <td className="val">{valuation(values.valuation_week)}</td>
+                                <td className="val">{valuation(values.valuation_month)}</td>
+                                <td className="val">{valuation(values.valuation_long_term)}</td>
+                                <td className="val">{values.highest_price_week}</td>
+                                <td className="val">{values.lowest_price_week}</td>
+                                {
+                                    filter === 'type' ? (
+                                        <td className="val">{values.item_sub_type}</td>
+                                    ) : (
+                                        <td className="val">{values.item_type}</td>
+                                    )
+                                }
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+            
+            <Container className="navigation">
+                <Button variant="secondary" className="navButton" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
+                <Button variant="secondary" className="navButton" onClick={() => { previousPage(); console.log(data); console.log(pageIndex) } }>{'<'}</Button>
+                <input placeholder={pageIndex + 1} className="navInput" disabled></input>
+                <Button variant="secondary" className="navButton" onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
+                <div className="resultsFilter">Show
+                    <select
+                        value={pageSize}
+                        onChange={e => {
+                            setPageSize(Number(e.target.value))
+                        }}
+                    >
+                        {[10, 20, 30, 40, 50].map(pageSize => (
+                            <option key={pageSize} value={pageSize}>
+                                {pageSize}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </Container>
+        </div>
+    )
 }
