@@ -7,7 +7,11 @@ module.exports = {
      */
 
     async add_item(arr) {
-        await pool.query('INSERT INTO items (item_id, prices, valuation_week, valuation_month, valuation_long_term, cvar_week, cvar_month, cvar_long_term, highest_price_week, lowest_price_week, item_name, item_image_uri, buy_limit, item_type, item_sub_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) ON CONFLICT (item_id) DO NOTHING', arr);
+        const queryString = 'INSERT INTO items (item_id, prices, valuation_week, valuation_month, valuation_long_term, cvar_week, cvar_month, cvar_long_term, ' +
+            'highest_price_week, lowest_price_week, item_name, item_image_uri, buy_limit, item_type, item_sub_type)' +
+            ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) ' +
+            'ON CONFLICT (item_id) DO UPDATE SET item_type = items.item_type || $14, item_sub_type = items.item_sub_type || $15'
+        await pool.query(queryString, arr);
     },
 
     async get_item_ids() {
@@ -46,8 +50,8 @@ module.exports = {
         return data;
     },
 
-    async empty_items(mode) {
-        if (mode == "Production") {
+    async empty_items() {
+        if (process.env.mode == "Production") {
             await pool.query("DELETE FROM items");
         }
     },

@@ -1,4 +1,4 @@
-const { updateItems } = require('../data/infoParser');
+const { partialUpdateItems: updateItems } = require('../data/infoParser');
 
 module.exports = {
     async updateAllItems(req, res) {

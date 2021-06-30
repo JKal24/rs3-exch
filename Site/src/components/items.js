@@ -3,7 +3,7 @@ import { Container, Button, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { refresh, readItems, refreshItems, readDefaultPageLimit } from '../app/reducers/items';
 import { useTable, usePagination } from 'react-table';
-import { valuation, variation } from './utils/calc';
+import { valuation, variation } from './utils/num';
 import '../spreadsheets/items.css';
 
 export default function Items(props) {
@@ -12,7 +12,6 @@ export default function Items(props) {
 
     const contents = useSelector(state => state.items.contents);
     const loaded = useSelector(state => state.items.loaded);
-    const itemsPerPage = useSelector(state => state.items.itemsPerPage);
 
     useEffect(() => {
         dispatch(readDefaultPageLimit());
@@ -69,9 +68,9 @@ export default function Items(props) {
 
     return (
         <div>
-        {
-            loaded ? ( <Table columns={columns} data={contents} filter={props.filter}></Table> ) : (<div> </div>)
-        }
+            {
+                loaded ? (<Table columns={columns} data={contents} filter={props.filter}></Table>) : (<div> </div>)
+            }
         </div>
     );
 }
@@ -99,6 +98,12 @@ function Table({ columns, data, filter }) {
         usePagination
     )
 
+    let itemsPerPage = useSelector(state => state.items.itemsPerPage);
+
+    useEffect(() => {
+        setPageSize(itemsPerPage);
+    }, [itemsPerPage])
+
     return (
         <div className="items">
             <table {...getTableProps()}>
@@ -117,20 +122,21 @@ function Table({ columns, data, filter }) {
                         return (
                             <tr key={i}>
                                 <td className="val">
-                                    <Image src={values.item_image_uri} thumbnail />
+                                    <Image src={values.item_image_uri} cookie={'cookie2=value2; SameSite=None; Secure'} thumbnail fluid />
                                 </td>
                                 <td className="val">{values.item_name}</td>
                                 <td className="val">{values.buy_limit}</td>
-                                <td className="val">{values.prices[values.prices.length - 1]}</td>
+                                <td className="val">{values.prices[values.prices.length - 1].toLocaleString()}</td>
                                 <td className="val">{variation(values.cvar_week)}</td>
                                 <td className="val">{variation(values.cvar_month)}</td>
                                 <td className="val">{variation(values.cvar_long_term)}</td>
                                 <td className="val">{valuation(values.valuation_week)}</td>
                                 <td className="val">{valuation(values.valuation_month)}</td>
                                 <td className="val">{valuation(values.valuation_long_term)}</td>
-                                <td className="val">{values.highest_price_week}</td>
-                                <td className="val">{values.lowest_price_week}</td>
+                                <td className="val">{values.highest_price_week.toLocaleString()}</td>
+                                <td className="val">{values.lowest_price_week.toLocaleString()}</td>
                                 {
+                                    // Types are now arrays, remove duplicate elements in reducer maybe? remove quotations "" on sub_types.
                                     filter === 'type' ? (
                                         <td className="val">{values.item_sub_type}</td>
                                     ) : (
@@ -142,27 +148,19 @@ function Table({ columns, data, filter }) {
                     })}
                 </tbody>
             </table>
-            
-            <Container className="navigation">
-                <Button variant="secondary" className="navButton" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
-                <Button variant="secondary" className="navButton" onClick={() => { previousPage(); console.log(data); console.log(pageIndex) } }>{'<'}</Button>
-                <input placeholder={pageIndex + 1} className="navInput" disabled></input>
-                <Button variant="secondary" className="navButton" onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
-                <div className="resultsFilter">Show
-                    <select
-                        value={pageSize}
-                        onChange={e => {
-                            setPageSize(Number(e.target.value))
-                        }}
-                    >
-                        {[10, 20, 30, 40, 50].map(pageSize => (
-                            <option key={pageSize} value={pageSize}>
-                                {pageSize}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </Container>
+
+            {
+                filter ? (
+                    <Container className="navigation">
+                        <Button variant="secondary" className="navButton" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
+                        <Button variant="secondary" className="navButton" onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
+                        <input placeholder={pageIndex + 1} className="navInput" ></input>
+                        <Button variant="secondary" className="navButton" onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
+                    </Container>
+                ) : (
+                    <div>Loading Page Statement...</div>
+                )
+            }
         </div>
     )
 }

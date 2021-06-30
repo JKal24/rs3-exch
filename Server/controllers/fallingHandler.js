@@ -3,8 +3,8 @@ const { get_item_by_falling } = require('../database/query');
 const logger = require('js-logger');
 const JSONStream = require('JSONStream')
 
-const weeklyBound = 0.98;
-const monthlyBound = 0.99;
+const weeklyBound = 0.99;
+const monthlyBound = 0.985;
 
 module.exports = {
     async createPage(req, res) {

@@ -16,8 +16,8 @@ CREATE TABLE items (
     item_name VARCHAR(255),
     item_image_uri VARCHAR(255),
     buy_limit INTEGER,
-    item_type VARCHAR(255),
-    item_sub_type VARCHAR(255)
+    item_type TEXT[],
+    item_sub_type TEXT[]
 );
 
 CREATE TABLE update_date (

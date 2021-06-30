@@ -16,11 +16,11 @@ module.exports = {
     // Declare the bounds in the controllers...
 
     get_item_by_rising(weeklyBound, monthlyBound) {
-        return new QueryStream("SELECT * FROM items WHERE valuation_week >= $1 AND valuation_month >= $2", [weeklyBound, monthlyBound]);
+        return new QueryStream("SELECT * FROM items WHERE valuation_week >= $1 AND valuation_month >= $2 AND cvar_month > 0", [weeklyBound, monthlyBound]);
     },
 
     get_item_by_falling(weeklyBound, monthlyBound) {
-        return new QueryStream("SELECT * FROM items WHERE valuation_week <= $1 AND valuation_month <= $2", [weeklyBound, monthlyBound]);
+        return new QueryStream("SELECT * FROM items WHERE valuation_week <= $1 AND valuation_month <= $2 AND cvar_month > 0", [weeklyBound, monthlyBound]);
     },
 
     get_item_by_search(search_keyword) {

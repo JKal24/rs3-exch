@@ -7,6 +7,7 @@ export async function getItems(filter, param = '') {
         case 'type':
             return (await api.get(`/SearchByTypes/${param}`)).data;
         case 'rising':
+            const data = (await api.get('/RisingItemSearch')).data;
             return (await api.get('/RisingItemSearch')).data;
         case 'falling':
             return (await api.get('/FallingItemSearch')).data;

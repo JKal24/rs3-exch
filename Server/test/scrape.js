@@ -10,7 +10,7 @@ async function extractInfoTest(uri, dataUri) {
 
     // Testing Runescape API versus Wiki Scraping
 
-    const begin = new Date().getTime();
+    const begin = time();
 
     const data = await config.parseHTTPS(uri);
     const $ = cheerio.load(data);
@@ -18,36 +18,41 @@ async function extractInfoTest(uri, dataUri) {
     // Item ID
     const id = $('#exchange-itemid').text();
 
-    const point0 = new Date().getTime();
+    const point0 = time();
 
 
     await infoParser.getItemInfo(uri);
 
-    const point1 = new Date().getTime();
+    const point1 = time();
 
 
     await infoParser.getValuationTable(dataUri);
 
-    const point2 = new Date().getTime();
+    const point2 = time();
 
 
     // Item details
     const detailURI = 'https://secure.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item='
     const detailData = await config.parseHTTPS(detailURI + id);
 
-    const point3 = new Date().getTime();
+    const point3 = time();
 
 
     // Item graph
     const graphURI = 'https://secure.runescape.com/m=itemdb_rs/api/graph/'
     const graphData = await config.parseHTTPS(graphURI + id + '.json');
 
-    const point4 = new Date().getTime();
+    const point4 = time();
 
+    // Compare time...
 
     return {
         id,
         detailData,
         graphData
     }
+}
+
+function time() {
+    return (new Date()).getTime();
 }
