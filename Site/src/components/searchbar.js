@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
+import '../spreadsheets/nav.css';
 
-export default function Searchbar(props) {
+export default function Searchbar() {
 
     const [focus, setFocus] = useState(false);
 

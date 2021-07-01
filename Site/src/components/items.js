@@ -83,13 +83,12 @@ function Table({ columns, data, filter }) {
         page,
         canPreviousPage,
         canNextPage,
-        pageOptions,
-        pageCount,
         gotoPage,
+        pageCount,
         nextPage,
         previousPage,
         setPageSize,
-        state: { pageIndex, pageSize },
+        state: { pageIndex },
     } = useTable({
         columns,
         data,
@@ -151,14 +150,22 @@ function Table({ columns, data, filter }) {
 
             {
                 filter ? (
-                    <Container className="navigation">
-                        <Button variant="secondary" className="navButton" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
-                        <Button variant="secondary" className="navButton" onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
-                        <input placeholder={pageIndex + 1} className="navInput" ></input>
-                        <Button variant="secondary" className="navButton" onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
-                    </Container>
+                    <div>
+                        <Container className="pageNavigation">
+                            <div className="navElements">
+                                <Button variant="secondary" className="navButton" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
+                                <Button variant="secondary" className="navButton" onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
+                                <input placeholder={pageIndex + 1} className="navInput" ></input>
+                                <Button variant="secondary" className="navButton" onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
+                                <Button variant="secondary" className="navButton" onClick={() => gotoPage(pageCount)} disabled={!canNextPage}>{'>>'}</Button>
+                            </div>
+                            <div className="pageInfo">
+                                Page {pageIndex + 1} of {pageCount}
+                            </div>
+                        </Container>
+                    </div>
                 ) : (
-                    <div>Loading Page Statement...</div>
+                    <div></div>
                 )
             }
         </div>

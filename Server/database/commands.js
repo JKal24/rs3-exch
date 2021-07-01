@@ -9,8 +9,10 @@ module.exports = {
     async add_item(arr) {
         const queryString = 'INSERT INTO items (item_id, prices, valuation_week, valuation_month, valuation_long_term, cvar_week, cvar_month, cvar_long_term, ' +
             'highest_price_week, lowest_price_week, item_name, item_image_uri, buy_limit, item_type, item_sub_type)' +
-            ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) ' +
-            'ON CONFLICT (item_id) DO UPDATE SET item_type = items.item_type || $14, item_sub_type = items.item_sub_type || $15'
+            ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)' +
+            ' ON CONFLICT (item_id) DO UPDATE SET item_type = ARRAY(SELECT DISTINCT UNNEST(items.item_type || $14)),' + 
+            ' item_sub_type = ARRAY(SELECT DISTINCT UNNEST(items.item_sub_type || $15))' +
+            ' WHERE NOT items.item_type @> $14 AND NOT items.item_sub_type @> $15';
         await pool.query(queryString, arr);
     },
 
@@ -41,7 +43,7 @@ module.exports = {
         let data;
 
         do {
-            data = (await pool.query("SELECT * FROM items TABLESAMPLE SYSTEM(10) LIMIT $1", [ITEMS_PER_PAGE])).rows;
+            data = (await pool.query("SELECT * FROM items TABLESAMPLE BERNOULLI(10) LIMIT $1", [ITEMS_PER_PAGE])).rows;
             if (parse > limit) break;
             parse++;
         }
@@ -53,6 +55,12 @@ module.exports = {
     async empty_items() {
         if (process.env.mode == "Production") {
             await pool.query("DELETE FROM items");
+        }
+    },
+
+    async delete_item(item_id) {
+        if (process.env.mode == "Production") {
+            await pool.query("DELETE FROM items WHERE item_id = $1", [item_id]);
         }
     },
 

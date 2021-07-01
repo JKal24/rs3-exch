@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "debug": "nodemon --inspect server.js",
-    "test": "node test/fixtures/scrape.js"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",

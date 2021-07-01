@@ -5,7 +5,7 @@ export default function LandingPage() {
 
     return (
         <div className="contents">
-            <div>Introduction Statement...</div>
+            <h2 className="contents-title">Runescape Grand Exchange Item Information</h2>
             <Items />
         </div>
     )
