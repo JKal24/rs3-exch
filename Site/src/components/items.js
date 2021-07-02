@@ -121,7 +121,7 @@ function Table({ columns, data, filter }) {
                         return (
                             <tr key={i}>
                                 <td className="val">
-                                    <Image src={values.item_image_uri} cookie={'cookie2=value2; SameSite=None; Secure'} thumbnail fluid />
+                                    <Image src={values.item_image_uri} cookie={'cookie2=value2; SameSite=None; Secure'} />
                                 </td>
                                 <td className="val">{values.item_name}</td>
                                 <td className="val">{values.buy_limit}</td>
@@ -134,14 +134,17 @@ function Table({ columns, data, filter }) {
                                 <td className="val">{valuation(values.valuation_long_term)}</td>
                                 <td className="val">{values.highest_price_week.toLocaleString()}</td>
                                 <td className="val">{values.lowest_price_week.toLocaleString()}</td>
+                                <td className="val">
                                 {
                                     // Types are now arrays, remove duplicate elements in reducer maybe? remove quotations "" on sub_types.
-                                    filter === 'type' ? (
-                                        <td className="val">{values.item_sub_type}</td>
-                                    ) : (
-                                        <td className="val">{values.item_type}</td>
-                                    )
+                                    filter === 'type' ? values.item_sub_type.map((sub_type, type_i) => {
+                                        return (<h6 key={type_i}>{sub_type}</h6>)
+                                    }
+                                    ) : values.item_type.map((type, type_i) => {
+                                        return (<h6 key={type_i}>{type}</h6>)
+                                    })
                                 }
+                                </td>
                             </tr>
                         )
                     })}
@@ -151,22 +154,20 @@ function Table({ columns, data, filter }) {
             {
                 filter ? (
                     <div>
-                        <Container className="pageNavigation">
-                            <div className="navElements">
-                                <Button variant="secondary" className="navButton" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
-                                <Button variant="secondary" className="navButton" onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
-                                <input placeholder={pageIndex + 1} className="navInput" ></input>
-                                <Button variant="secondary" className="navButton" onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
-                                <Button variant="secondary" className="navButton" onClick={() => gotoPage(pageCount)} disabled={!canNextPage}>{'>>'}</Button>
+                        <Container className="page-navigation">
+                            <div className="nav-elements">
+                                <Button variant="secondary" className="nav-button" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
+                                <Button variant="secondary" className="nav-button" onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
+                                <input placeholder={pageIndex + 1} className="nav-input" ></input>
+                                <Button variant="secondary" className="nav-button" onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
+                                <Button variant="secondary" className="nav-button" onClick={() => gotoPage(pageCount)} disabled={!canNextPage}>{'>>'}</Button>
                             </div>
-                            <div className="pageInfo">
+                            <div className="page-info">
                                 Page {pageIndex + 1} of {pageCount}
                             </div>
                         </Container>
                     </div>
-                ) : (
-                    <div></div>
-                )
+                ) : null
             }
         </div>
     )

@@ -17,9 +17,9 @@ test("Expects to receive a certain amount of items for each query based on types
     const rising = pool.query(query.get_item_by_rising(1, 1));
     const falling = pool.query(query.get_item_by_falling(1, 1));
 
-    expect(buylimits.length).toBe(5);
-    expect(rising.length).toBe(3);
-    expect(falling.length).toBe(5);
+    expect(buylimits[0].length).toBe(5);
+    expect(rising[0].length).toBe(3);
+    expect(falling[0].length).toBe(5);
 
     await commands.delete_item(255);
     await commands.delete_item(256);
@@ -32,7 +32,9 @@ test("Expects to receive a certain amount of items for each query based on types
 })
 
 test("checks to see if the entry is updated such that the type and sub types arrays do not contain duplicate but rather distinct entries", async () => {
-    await commands.add_item([255, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "ohabcoh", "random.com", 499, ["type1"], ["w"]]);
+    await commands.add_item([254, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "ohabcoh", "random.com", 499, [
+        "type1", "type2", "type3", "type4", "type5", "type6", "type7", "type8", "type9", "type10"
+    ], ["w"]]);
     await commands.add_item([255, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "ohabcoh", "random.com", 499, ["type1"], ["w"]]);
     await commands.add_item([255, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "ohabcoh", "random.com", 499, ["type1"], ["w"]]);
 

@@ -18,7 +18,7 @@ const { CronJob } = require('cron');
 
 // Initialize the items when first run
 
-infoParser.initializeItems();
+// infoParser.initializeItems();
 
 // Update the items daily and re-initialize monthly
 

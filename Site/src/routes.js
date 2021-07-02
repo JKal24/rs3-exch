@@ -8,7 +8,7 @@ import SearchByInput from './pages/SearchByInput';
 import SearchFalling from './pages/SearchFalling';
 import SearchType from './pages/SearchType';
 import LandingPage from './pages/LandingPage';
-import Bottom from './components/bottom';
+import Footer from './components/footer';
 import './spreadsheets/routes.css';
 
 export default function Routes() {
@@ -27,7 +27,7 @@ export default function Routes() {
                         <Route exact path='/buylimit/:buylimit' render={() => (<SearchBuyLimit />)}></Route>
                         <Route exact path='/search/:keyword' render={() => (<SearchByInput />)}></Route>
                     </Switch>
-                    <Bottom></Bottom>
+                    <Footer></Footer>
                 </div>
             </div>
         </BrowserRouter>

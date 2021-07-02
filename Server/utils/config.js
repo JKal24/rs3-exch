@@ -25,7 +25,7 @@ function parseHTTPS(uri) {
     });
 }
 
-// Transformation functions
+// Scrape accessing functions
 
 function runescapeWikiBaseLink(str) {
     return 'https://runescape.wiki' + str;
@@ -68,6 +68,13 @@ function removeArrElement(arr, index) {
     return arr.slice(0, index).concat(arr.slice(index + 1));
 }
 
+// Only allows words, may have spaces
+
+function capitalizeFirstLetter(string) {
+    const adjustedString = string.match(/[A-Za-z| ]*/g)[0]
+    return adjustedString.charAt(0).toUpperCase() + adjustedString.slice(1);
+  }
+
 // Type information listings
 
 const buyLimits = {
@@ -105,6 +112,6 @@ const standardTypes = [
 const BATCH_READ = 100;
 
 module.exports = {
-    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS, parseInteger, removeArrElement, BATCH_READ, getCheerioPage,
+    buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS, parseInteger, removeArrElement, BATCH_READ, getCheerioPage, capitalizeFirstLetter,
     normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph
 };

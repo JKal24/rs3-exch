@@ -3,9 +3,7 @@ import { Image, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import SelectType from './selectType';
 import SelectBuyLimit from './selectBuyLimit';
-import logoIcon from '../assets/rs3exch_logo_small.png';
-import leftTitle from '../assets/rs3exch_left.png';
-import rightTitle from '../assets/rs3exch_right.png';
+import logoIcon from '../assets/rs3exch_nav_logo.png';
 import '../spreadsheets/nav.css';
 
 export default function Navigation() {
@@ -14,9 +12,7 @@ export default function Navigation() {
         <div className="left-container">
             <div className="header">
                 <Link to='/'>
-                    <Image src={leftTitle} fluid />
-                    <Image src={logoIcon} fluid />
-                    <Image src={rightTitle} fluid />
+                    <Image src={logoIcon} className="header-image" />
                 </Link>
             </div>
 

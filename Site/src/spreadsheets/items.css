@@ -1,4 +1,8 @@
 /* Table contents */
+.contents {
+    background-color: white;
+}
+
 .items {
     margin: 1.0rem;
 }
@@ -26,38 +30,38 @@
 }
 
 /* Navigation for manipulating pages */
-.pageNavigation {
+.page-navigation {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
-    background-color: rgb(218, 228, 228);
+    background-color: rgb(228, 228, 228);
     border: 2px solid black;
     padding: 0.5em;
     margin: 0.5em;
 }
 
-.navElements {
+.nav-elements {
     flex-basis: 100%;
     text-align: center;
 }
 
-.navButton {
+.nav-button {
     margin: 0px 0.2em 0px;
 }
 
-.pageInfo {
+.page-info {
     max-width: fit-content;
     text-align: center;
     font-size: small;
     font-style: italic;
 }
 
-.navInput {
+.nav-input {
     margin: 0px 0.2em 0px;
     width: 3em;
 }
 
-.resultsFilter {
+.results-filter {
     margin-right: 0;
 }
 

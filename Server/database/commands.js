@@ -39,17 +39,24 @@ module.exports = {
      */
 
     async get_random_items(ITEMS_PER_PAGE) {
-        let limit = 5; let parse = 0;
+        const update = await module.exports.get_update();
+        const count = update ? update.item_count : await module.exports.get_current_items_count();
+        const percentage = Math.ceil((ITEMS_PER_PAGE / count) * 100);
+        let attempt = 0;
         let data;
 
         do {
-            data = (await pool.query("SELECT * FROM items TABLESAMPLE BERNOULLI(10) LIMIT $1", [ITEMS_PER_PAGE])).rows;
-            if (parse > limit) break;
-            parse++;
+            data = (await pool.query("SELECT * FROM items TABLESAMPLE BERNOULLI($1)", [percentage])).rows;
+            if (attempt > 10) break;
+            attempt++;
         }
         while (data.length < ITEMS_PER_PAGE);
 
         return data;
+    },
+
+    async get_current_items_count() {
+        return (await pool.query("SELECT COUNT(*) FROM items")).rows[0].count;
     },
 
     async empty_items() {
@@ -60,7 +67,7 @@ module.exports = {
 
     async delete_item(item_id) {
         if (process.env.mode == "Production") {
-            await pool.query("DELETE FROM items WHERE item_id = $1", [item_id]);
+            await pool.query("DELETE FROM items WHERE items.item_id = $1", [item_id]);
         }
     },
 
@@ -68,9 +75,11 @@ module.exports = {
         return (await pool.query("SELECT * FROM update_date")).rows[0];
     },
 
-    async add_update(runedate) {
-        return await pool.query("INSERT INTO update_date (runedate) VALUES ($1)", [runedate]);
+    async add_update(runedate, item_count) {
+        return await pool.query("INSERT INTO update_date (runedate, item_count) VALUES ($1, $2)", [runedate, item_count]);
     },
+
+    // Clean and replace with updated date and count, previous counts do not need to be kept
 
     async clean_update() {
         await pool.query("DELETE FROM update_date");

@@ -1,7 +1,7 @@
 const config = require('../utils/config');
 const priceDataParser = require('./priceDataParser');
 const commands = require('../database/commands');
-const { can_be_updated, throttle } = require('./update');
+const { can_be_updated, update, throttle } = require('./update');
 
 module.exports = {
 
@@ -11,7 +11,8 @@ module.exports = {
         /**
          * Records all the items by skill, looks for the exchange uri.
          */
-        for (const title of $('h3')) {
+        const titleHeaders = $('h3');
+        await Promise.all(titleHeaders.map(async (title, i) => {
             if ($(title).children().first().attr('id') === 'Items_by_skill') {
 
                 /**
@@ -21,7 +22,9 @@ module.exports = {
 
                 for (const tr of $(title).next().children('dd').first().children('table').first().children('tbody').first().children('tr')) {
 
-                    const type = config.standardTypeColumn($(tr).children('td:nth-child(2)').children().first().text());
+                    const type = config.capitalizeFirstLetter(
+                        config.standardTypeColumn(
+                            $(tr).children('td:nth-child(2)').children().first().text()));
                     const uri = $(tr).children('td:nth-child(2)').children().first().attr('href');
 
                     if (uri) {
@@ -29,24 +32,29 @@ module.exports = {
                     }
                 }
             }
-        }
-
+        }));
 
         // Other items entry - Treasure Trails
 
         let t_trails_uri = config.runescapeWikiBaseLink($('a:contains("Treasure Trails")').attr('href'));
-        parse_type_uris(t_trails_uri, "Treasure Trails");
+        await parse_type_uris(t_trails_uri, "Treasure Trails");
+
+        await update();
     },
 
     async fullUpdateItems() {
         const $ = await config.getCheerioPage(config.ITEM_BY_TYPE_URI);
 
-        for (const title of $('h3')) {
+        const titleHeaders = $('h3');
+        await Promise.all(titleHeaders.map(async (title, i) => {
             if ($(title).children().first().attr('id') === 'Items_by_skill') {
 
                 for (const tr of $(title).next().children('dd').first().children('table').first().children('tbody').first().children('tr')) {
 
-                    const type = config.standardTypeColumn($(tr).children('td:nth-child(2)').children().first().text());
+                    const type = config.capitalizeFirstLetter(
+                        config.standardTypeColumn(
+                            $(tr).children('td:nth-child(2)').children().first().text()));
+
                     const uri = $(tr).children('td:nth-child(2)').children().first().attr('href');
 
                     if (uri) {
@@ -54,26 +62,30 @@ module.exports = {
                     }
                 }
             }
-        }
+        }));
+
+        await update();
     },
 
     async partialUpdateItems() {
-        if (!can_be_updated) {
+        if (!can_be_updated()) {
             return;
         }
         const ids = await commands.get_item_ids();
 
         if (ids.length == 0) {
-            initializeItems();
+            await module.exports.initializeItems();
             return;
         }
 
-        for (let id in ids) {
+        await Promise.all(ids.map(async (id, i) => {
             const currentID = ids[id];
             const price_info = await parse_api(currentID);
 
-            commands.update_item(price_info, currentID);
-        }
+            await commands.update_item(price_info, currentID);
+        }));
+
+        await update();
     }
 }
 
@@ -85,7 +97,7 @@ async function parse_type_uris(uri, type) {
     if (ids.length == 0) {
         // Initial first update
         for (const h2 of $('h2')) {
-            const sub_type = $(h2).children('span').first().text();
+            const sub_type = config.capitalizeFirstLetter($(h2).children('span').first().text());
             if (sub_type) {
 
                 let node = $(h2).next()[0];
@@ -132,7 +144,7 @@ async function parse_type_uris(uri, type) {
                                     config.parseInteger($(columns[lastIndex - 3]).text()),
                                     new Array(type), new Array(sub_type)]);
 
-                                commands.add_item(attributes);
+                                await commands.add_item(attributes);
                             }
                         }
                     }
@@ -143,7 +155,7 @@ async function parse_type_uris(uri, type) {
     } else {
         // Additional updates for adding items
         for (const h2 of $('h2')) {
-            const sub_type = $(h2).children('span').first().text();
+            const sub_type = config.capitalizeFirstLetter($(h2).children('span').first().text());
             if (sub_type) {
 
                 let node = $(h2).next()[0];
@@ -165,19 +177,19 @@ async function parse_type_uris(uri, type) {
 
                                     // Gathers all relevant item data
                                     const itemImageUri = $(row).children('td:nth-child(1)').children('a').first().children('img').attr('src') ||
-                                    $(row).children('td:nth-child(1)').children('a').first().children('img').attr('data-cfsrc');
+                                        $(row).children('td:nth-child(1)').children('a').first().children('img').attr('data-cfsrc');
                                     if (itemImageUri) {
                                         // Will parse the same uri as checked however with every update, it isn't an expectation that many items will be added
                                         // Therefore the data will not be collected when checked for new items
                                         let attributes = await parse_exchange_uris(detailsUri);
-    
+
                                         attributes = attributes.concat([
                                             $(columns[1]).text(),
                                             config.runescapeWikiBaseLink(itemImageUri),
                                             config.parseInteger($(columns[lastIndex - 3]).text()),
                                             new Array(type), new Array(sub_type)]);
-        
-                                        commands.add_item(attributes);
+
+                                        await commands.add_item(attributes);
                                     }
                                 }
                             }
