@@ -24,7 +24,7 @@ const { CronJob } = require('cron');
 
 const dailyJob = new CronJob('0 0 * * *', async function () {
     if ((new Date()).getDate() != 1) {
-        infoParser.updateItems();
+        infoParser.partialUpdateItems();
     }
 }, null, true, "America/Toronto");
 

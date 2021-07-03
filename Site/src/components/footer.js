@@ -13,6 +13,7 @@ export default function Bottom() {
 function Acknowledgements() {
     return (
         <div className="acknowledgements">
+            <Link to="/Questions">Common Questions </Link>
             <Link to="/Acknowledgements">Acknowledgements</Link>
         </div>
     )
