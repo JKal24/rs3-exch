@@ -12,9 +12,9 @@ export default function Bottom() {
 
 function Acknowledgements() {
     return (
-        <div className="acknowledgements">
-            <Link to="/Questions">Common Questions </Link>
-            <Link to="/Acknowledgements">Acknowledgements</Link>
+        <div className="footer-link-container">
+            <Link to="/Questions" className="footer-link">Common Questions </Link>
+            <Link to="/Acknowledgements" className="footer-link">Acknowledgements</Link>
         </div>
     )
 }

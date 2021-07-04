@@ -121,7 +121,7 @@ function Table({ columns, data, filter }) {
                         return (
                             <tr key={i}>
                                 <td className="val">
-                                    <Image src={values.item_image_uri} cookie={'cookie2=value2; SameSite=None; Secure'} />
+                                    <Image src={values.item_image_uri} />
                                 </td>
                                 <td className="val">{values.item_name}</td>
                                 <td className="val">{values.buy_limit}</td>

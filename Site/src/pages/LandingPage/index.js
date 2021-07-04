@@ -18,8 +18,8 @@ export default function LandingPage() {
                 a custom client with which to collect data from users. <br/> Therefore, all data is collected through the official Runescape API and 
                 additionally, initial item descriptions are scraped from <Link to='https://runescape.wiki/'>https://runescape.wiki/<ExternalLink/></Link>. 
                 This app is not intended for commercial use.<br/>
-                <div className="future-info">*Graphs for item prices will be implemented soon</div>
                 </p>
+                <div className="future-info">*Graphs for item prices will be implemented soon</div>
             </div>
             <Items />
         </div>

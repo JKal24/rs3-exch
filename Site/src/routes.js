@@ -9,6 +9,8 @@ import SearchFalling from './pages/SearchFalling';
 import SearchType from './pages/SearchType';
 import LandingPage from './pages/LandingPage';
 import Footer from './components/footer';
+import Acknowledgements from './pages/Information/acknowledgements';
+import Questions from './pages/Information/questions';
 import './spreadsheets/routes.css';
 
 export default function Routes() {
@@ -26,6 +28,8 @@ export default function Routes() {
                         <Route exact path='/type/:type' render={() => (<SearchType />)}></Route>
                         <Route exact path='/buylimit/:buylimit' render={() => (<SearchBuyLimit />)}></Route>
                         <Route exact path='/search/:keyword' render={() => (<SearchByInput />)}></Route>
+                        <Route exact path='/Acknowledgements' render={() => (<Acknowledgements />)}></Route>
+                        <Route exact path='/Questions' render={() => (<Questions />)}></Route>
                     </Switch>
                     <Footer></Footer>
                 </div>
