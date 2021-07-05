@@ -18,15 +18,15 @@ export default function Searchbar() {
     }
 
     return (
-        <Tab.Container className='search'>
-            <Row>
+        <Tab.Container>
+            <Row className="search">
                 <Col sm={3}>
                     <input type="text" className='search-box' placeholder="Search for an item..."
                         onKeyUp={handleSearchLink} onFocus={() => dispatch(toggleFocus())} onBlur={() => dispatch(toggleFocus())}></input>
                 </Col>
                 <Col>
                     <div>
-                        <div eventKey="filter"><Button>Filters</Button></div>
+                        <div eventKey="filter"><button className='filter-button'>Filters</button></div>
                     </div>
                 </Col>
             </Row>

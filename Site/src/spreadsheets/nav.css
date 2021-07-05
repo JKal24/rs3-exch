@@ -42,21 +42,27 @@
 }
 
 .search {
+    display: flex;
     width: 100%;
-    padding-top: 0.8vh;
-    padding-bottom: 0.8vh;
 }
 
 .search-box {
     width: 20vw;
-    margin-top: 0.1em;
+    margin-top: 0.4em;
     margin-bottom: 0.2em;
     margin-left: 0.5em;
-    display: inline-block;
+    margin-right: 0px;
+    font-family: Arial;
 }
 
-.search-filter {
-    display:inline-block;
+.filter-button {
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+    margin-left: 0px;
+    display: inline-block;
+    background-color: rgb(175, 175, 175);
+    color: rgb(235, 235, 235);
+    border: rgb(75, 75, 75) solid 0.1em;
 }
 
 .end-contents {

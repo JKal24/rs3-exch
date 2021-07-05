@@ -2,6 +2,7 @@ const config = require('../utils/config');
 const priceDataParser = require('./priceDataParser');
 const commands = require('../database/commands');
 const { can_be_updated, update, throttle } = require('./update');
+const { default: Logger } = require('js-logger');
 
 module.exports = {
 
@@ -68,7 +69,8 @@ module.exports = {
     },
 
     async partialUpdateItems() {
-        if (!can_be_updated()) {
+        const updateStatus = await can_be_updated();
+        if (!updateStatus) {
             return;
         }
         const ids = await commands.get_item_ids();
@@ -79,10 +81,9 @@ module.exports = {
         }
 
         await Promise.all(ids.map(async (id, i) => {
-            const currentID = ids[id];
-            const price_info = await parse_api(currentID);
+            const price_info = await parse_api(id);
 
-            await commands.update_item(price_info, currentID);
+            await commands.update_item(price_info, id);
         }));
 
         await update();
@@ -133,7 +134,9 @@ async function parse_type_uris(uri, type) {
 
                             // Only valid rows contain images of items
                             const item_image_uri = $(row).children('td:nth-child(1)').children('a').first().children('img').attr('src');
-                            if (item_image_uri) {
+                            const price = config.parseInteger($(row).children('td:nth-child(3)').text());
+                            // Checks if item price is at least above 100 gold.
+                            if (item_image_uri && config.parseInteger($(row).children('td:nth-child(3)').text()) > 100) {
 
                                 const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
                                 let attributes = await parse_exchange_uris(item_uri);
@@ -251,11 +254,15 @@ async function parse_prices(id, ms = 5500) {
     // API is called
     const data = await config.parseHTTPS(config.apiItemGraph(id));
 
+    try {
+        return await throttle(ms).then(() => {
+            const json_data = Object.values(JSON.parse(data)['daily']);
+            return json_data.slice(json_data.length - 90);
+        })
+    } catch (err) {
+        Logger.log('API is down & unstable or invalid ID inputted')
+        return [];
+    }
     // Data is throttled
-    return await throttle(ms).then(() => {
-        const json_data = Object.values(JSON.parse(data)['daily']);
-        return json_data.slice(json_data.length - 90);
-    })
-
 }
 

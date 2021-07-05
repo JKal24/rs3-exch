@@ -3,14 +3,13 @@ const { parseHTTPS } = require('../utils/config');
 
 module.exports = {
     async can_be_updated() {
-        const runedate = await parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json').lastConfigUpdateRuneday;
-        const currentRuneDate = await commands.get_update();
-        if (runedate == currentRuneDate) {
+        const runedate = JSON.parse(await parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json')).lastConfigUpdateRuneday;
+        const currentRuneDate = await commands.get_update().runedate || '-1';
+        if (runedate == parseInt(currentRuneDate)) {
             return false;
         }
     
         await commands.clean_update();
-        await commands.add_update(runedate);
         return true;
     },
 
