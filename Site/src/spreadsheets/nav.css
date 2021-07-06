@@ -42,8 +42,7 @@
 }
 
 .search {
-    display: flex;
-    width: 100%;
+    margin-left: 0.5em;
 }
 
 .search-box {
@@ -55,14 +54,31 @@
     font-family: Arial;
 }
 
-.filter-button {
-    margin-top: 0.4em;
-    margin-bottom: 0.2em;
-    margin-left: 0px;
-    display: inline-block;
-    background-color: rgb(175, 175, 175);
-    color: rgb(235, 235, 235);
-    border: rgb(75, 75, 75) solid 0.1em;
+.tab-content, .tab-content + div {
+    width: 100%;
+}
+
+.input-group {
+    width: min-content !important;
+    height: min-content !important;
+}
+
+.filter-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-left: 0.5em;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.filter-column {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 .end-contents {

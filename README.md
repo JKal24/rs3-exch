@@ -22,7 +22,7 @@ OSRS has a custom client which can track player data but this is not the case fo
 
 # Technologies Used
 
-* Frontend: ReactJS, Axios, React-Router and React-Bootstrap
+* Frontend: ReactJS, Redux, Axios, React-Router, React-Redux toolkit and React-Bootstrap
 * Backend: NodeJS, Express, Cheerio, Axios, dotenv, Node-postgres, cors
 
 # Acknowledgements

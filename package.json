@@ -4,7 +4,7 @@
   "description": "![alt text](https://github.com/JKal24/RS3Merch/blob/master/Site/src/assets/rs3exch_logo_small.png)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "cd Server && npm start",
+    "server": "cd functions && npm start",
     "site": "cd Site && npm start",
     "start": "concurrently \"npm run server\" \"npm run site\""
   },

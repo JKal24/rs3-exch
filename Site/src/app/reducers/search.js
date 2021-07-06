@@ -4,11 +4,14 @@ const searchSlice = createSlice({
     name: "search",
     initialState: {
         focus: false,
-        key: 'filter'
+        key: ''
     },
     reducers: {
         toggleFocus: (state) => { state.focus = !state.focus; },
-        changeTab: (state, action) => { state.key = action.payload },
+        changeTab: (state, action) => {
+            if (state.key === action.payload) state.key = ''; 
+            else state.key = action.payload
+        },
     }
 });
 

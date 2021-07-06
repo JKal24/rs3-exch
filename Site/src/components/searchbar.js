@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Row, Col, Nav, Tab, Button } from 'react-bootstrap';
+import { Nav, Tab, Row, Tabs } from 'react-bootstrap';
 import { toggleFocus, changeTab } from '../app/reducers/search';
+import Filters from './filter';
 import '../spreadsheets/nav.css';
 
 export default function Searchbar() {
@@ -18,34 +19,25 @@ export default function Searchbar() {
     }
 
     return (
-        <Tab.Container>
-            <Row className="search">
-                <Col sm={3}>
+        <div className="search">
+            <Tab.Container defaultActiveKey="" activeKey={key} onSelect={key => dispatch(changeTab(key))}>
+                <Row>
                     <input type="text" className='search-box' placeholder="Search for an item..."
                         onKeyUp={handleSearchLink} onFocus={() => dispatch(toggleFocus())} onBlur={() => dispatch(toggleFocus())}></input>
-                </Col>
-                <Col>
-                    <div>
-                        <div eventKey="filter"><button className='filter-button'>Filters</button></div>
-                    </div>
-                </Col>
-            </Row>
-            <Row>
-                <Tab.Content>
-                    <Tab.Pane eventKey="filter">
-                        --In construction--
-                    </Tab.Pane>
-                </Tab.Content>
-            </Row>
-        </Tab.Container>
-
-    )
-}
-
-const Filters = () => {
-    return (
-        <div>
-            Content
+                    <Nav>
+                        <Nav.Item>
+                            <Nav.Link eventKey="filter" style={{color:'rgb(75, 75, 75)'}}>FILTERS</Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                </Row>
+                <Row>
+                    <Tabs defaultActiveKey="" activeKey={key} onSelect={key => dispatch(changeTab(key))}>
+                        <Tab eventKey="filter">
+                            <Filters className="filter" />
+                        </Tab>
+                    </Tabs>
+                </Row>
+            </Tab.Container>
         </div>
     )
 }

@@ -5,12 +5,12 @@ import '../spreadsheets/nav.css';
 export default function Bottom() {
     return (
         <div className="end-contents">
-            <Acknowledgements></Acknowledgements>
+            <Links></Links>
         </div>
     )
 }
 
-function Acknowledgements() {
+function Links() {
     return (
         <div className="footer-link-container">
             <Link to="/Questions" className="footer-link">Common Questions </Link>
