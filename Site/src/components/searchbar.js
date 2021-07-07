@@ -26,7 +26,7 @@ export default function Searchbar() {
                         onKeyUp={handleSearchLink} onFocus={() => dispatch(toggleFocus())} onBlur={() => dispatch(toggleFocus())}></input>
                     <Nav>
                         <Nav.Item>
-                            <Nav.Link eventKey="filter" style={{color:'rgb(75, 75, 75)'}}>FILTERS</Nav.Link>
+                            <Nav.Link eventKey="filter" className='filter-tab'>FILTERS</Nav.Link>
                         </Nav.Item>
                     </Nav>
                 </Row>

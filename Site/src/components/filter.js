@@ -1,7 +1,6 @@
 import React from 'react';
 import { InputGroup, FormControl, Form } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { createTypes } from '../app/reducers/nav';
 import '../spreadsheets/nav.css';
 
 export default function Filters() {
@@ -43,6 +42,7 @@ export default function Filters() {
                         types.map((type, index) => {
                             return (
                                 <Form.Check
+                                    key={index}
                                     custom
                                     type={type}
                                     id={`custom-${type}`}

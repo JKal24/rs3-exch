@@ -43,15 +43,20 @@
 
 .search {
     margin-left: 0.5em;
+    font-family: Arial;
+    color: white;
 }
 
 .search-box {
     width: 20vw;
-    margin-top: 0.4em;
-    margin-bottom: 0.2em;
-    margin-left: 0.5em;
-    margin-right: 0px;
-    font-family: Arial;
+    border: rgb(25, 25, 30);
+    background-color: rgb(55, 55, 65);
+    border-radius: 10px;
+    margin-left: 1.0em;
+}
+
+.search-box::placeholder {
+    color: rgb(205, 205, 205);
 }
 
 .tab-content, .tab-content + div {
@@ -81,6 +86,21 @@
     margin-right: 0.5em;
 }
 
+.filter-tab {
+    color: rgb(205, 205, 205);
+    border: rgb(25, 25, 30);
+    background-color: rgb(55, 55, 65);
+    border-radius: 10px;
+    width: 8vw;
+    text-align: center;
+}
+
+.search-box, .filter-tab {
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+    margin-right: 0.5em;
+}
+
 .end-contents {
     position: relative;
     height: 100%;
@@ -100,4 +120,47 @@
     color: rgb(275, 275, 275);
     padding-right: 0.5em;
     padding-left: 0.5em;
+}
+
+/*
+@media (min-width:320px)  { smartphones, iPhone, portrait 480x320 phones }
+@media (min-width:481px)  { portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. }
+@media (min-width:641px)  { portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones }
+@media (min-width:961px)  { tablet, landscape iPad, lo-res laptops ands desktops }
+@media (min-width:1025px) { big landscape tablets, laptops, and desktops }
+@media (min-width:1281px) { hi-res laptops and desktops }
+*/
+
+@media (max-width: 1281px) {
+    .filter-tab {
+        border-radius: 15px;
+        width: 6.4vw;
+    }
+    .search-box {
+        border-radius: 15px;
+        width: 8vw;
+    }
+}
+
+@media (max-width: 961px) {
+    .filter-tab {
+        border-radius: 15px;
+        width: 4.8vw;
+    }
+    .search-box {
+        border-radius: 15px;
+        width: 6vw;
+    }
+}
+
+@media (max-width: 481px) {
+    .filter-tab, .search-box {
+        border-radius: 10px;
+        margin-top: 0.2em;
+        margin-bottom: 0.1em;
+        margin-left: 0.3em;   
+        margin-right: 0.3em;
+        width: 4vw;
+    }
+    
 }
