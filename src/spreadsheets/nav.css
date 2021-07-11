@@ -1,0 +1,166 @@
+.left-container {
+    display: flex;
+    flex-flow: column nowrap;
+    top: 0px;
+    left: 0px;
+    width: 20vw;
+    padding: 0%;
+    max-height: 100%;
+    height: auto;
+    overflow: auto;
+    float: left;
+}
+
+.header { 
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+
+.link-nav, .link-nav>a, .searchText {
+    text-align: center;
+    margin-bottom: 0.5vh !important;
+    width: 100%;
+    color: rgb(110, 150, 223) !important;
+}
+
+.link-nav-container {
+    width: 100%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    text-align: center;
+}
+
+.link-nav-text {
+    color: black;
+}
+
+.header-image {
+    max-width:100%;
+    max-height:100%;
+    display: inline;
+}
+
+.search {
+    margin-left: 0.5em;
+    font-family: Arial;
+    color: white;
+}
+
+.search-box {
+    width: 20vw;
+    border: rgb(25, 25, 30);
+    background-color: rgb(55, 55, 65);
+    border-radius: 10px;
+    margin-left: 1.0em;
+}
+
+.search-box::placeholder {
+    color: rgb(205, 205, 205);
+}
+
+.tab-content, .tab-content + div {
+    width: 100%;
+}
+
+.input-group {
+    width: min-content !important;
+    height: min-content !important;
+}
+
+.filter-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-left: 0.5em;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+.filter-column {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.filter-tab {
+    color: rgb(205, 205, 205);
+    border: rgb(25, 25, 30);
+    background-color: rgb(55, 55, 65);
+    border-radius: 10px;
+    width: 8vw;
+    text-align: center;
+}
+
+.search-box, .filter-tab {
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+    margin-right: 0.5em;
+}
+
+.end-contents {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.footer-link-container {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(115, 115, 115);
+    text-align: right;
+}
+
+.footer-link {
+    color: rgb(275, 275, 275);
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+}
+
+/*
+@media (min-width:320px)  { smartphones, iPhone, portrait 480x320 phones }
+@media (min-width:481px)  { portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. }
+@media (min-width:641px)  { portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones }
+@media (min-width:961px)  { tablet, landscape iPad, lo-res laptops ands desktops }
+@media (min-width:1025px) { big landscape tablets, laptops, and desktops }
+@media (min-width:1281px) { hi-res laptops and desktops }
+*/
+
+@media (max-width: 1281px) {
+    .filter-tab {
+        border-radius: 15px;
+        width: 6.4vw;
+    }
+    .search-box {
+        border-radius: 15px;
+        width: 8vw;
+    }
+}
+
+@media (max-width: 961px) {
+    .filter-tab {
+        border-radius: 15px;
+        width: 4.8vw;
+    }
+    .search-box {
+        border-radius: 15px;
+        width: 6vw;
+    }
+}
+
+@media (max-width: 481px) {
+    .filter-tab, .search-box {
+        border-radius: 10px;
+        margin-top: 0.2em;
+        margin-bottom: 0.1em;
+        margin-left: 0.3em;   
+        margin-right: 0.3em;
+        width: 4vw;
+    }
+    
+}

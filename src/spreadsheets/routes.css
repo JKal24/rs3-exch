@@ -1,0 +1,30 @@
+body {
+    background-color: rgb(225, 225, 225) !important;
+}
+
+#root, .view {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.view {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.right-container {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+}
+
+.contents {
+    padding-bottom: 10vh;
+}
+
+.contents-title {
+    text-align: center;
+    border-bottom: gainsboro 1px solid;
+    color: slategrey;
+}

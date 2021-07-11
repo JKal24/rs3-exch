@@ -1,0 +1,74 @@
+/* Table contents */
+.contents {
+    background-color: white;
+}
+
+.items {
+    margin: 1.0rem;
+}
+
+.val {
+    border: rgb(16, 28, 65) 0.05em solid;
+    text-align: center;
+    background-color: rgb(221, 221, 221);
+    padding: 0.2rem;
+    color: black;
+}
+
+.loading {
+    display: block;
+    margin: auto;
+    animation-name: fade;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+}
+
+.loading-contents {
+    height: 20rem;
+    width: 100%;
+    text-align: center;
+}
+
+/* Navigation for manipulating pages */
+.page-navigation {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    background-color: rgb(228, 228, 228);
+    border: 2px solid black;
+    padding: 0.5em;
+    margin: 0.5em;
+}
+
+.nav-elements {
+    flex-basis: 100%;
+    text-align: center;
+}
+
+.nav-button {
+    margin: 0px 0.2em 0px;
+}
+
+.page-info {
+    max-width: fit-content;
+    text-align: center;
+    font-size: small;
+    font-style: italic;
+}
+
+.nav-input {
+    margin: 0px 0.2em 0px;
+    width: 3em;
+}
+
+.results-filter {
+    margin-right: 0;
+}
+
+/* Animation */
+
+@keyframes fade {
+    0% {opacity: 1;}
+    50% {opacity: 0.1;}
+    100% {opacity: 1;}
+}
