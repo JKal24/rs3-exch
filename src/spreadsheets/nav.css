@@ -51,7 +51,6 @@
     width: 20vw;
     border: rgb(25, 25, 30);
     background-color: rgb(55, 55, 65);
-    border-radius: 10px;
     margin-left: 1.0em;
 }
 
@@ -68,6 +67,11 @@
     height: min-content !important;
 }
 
+.search-box, .filter-tab {
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+    margin-right: 0.5em;
+}
 .filter-container {
     display: flex;
     justify-content: space-evenly;
@@ -95,12 +99,6 @@
     text-align: center;
 }
 
-.search-box, .filter-tab {
-    margin-top: 0.4em;
-    margin-bottom: 0.2em;
-    margin-right: 0.5em;
-}
-
 .end-contents {
     position: relative;
     height: 100%;
@@ -121,15 +119,6 @@
     padding-right: 0.5em;
     padding-left: 0.5em;
 }
-
-/*
-@media (min-width:320px)  { smartphones, iPhone, portrait 480x320 phones }
-@media (min-width:481px)  { portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. }
-@media (min-width:641px)  { portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones }
-@media (min-width:961px)  { tablet, landscape iPad, lo-res laptops ands desktops }
-@media (min-width:1025px) { big landscape tablets, laptops, and desktops }
-@media (min-width:1281px) { hi-res laptops and desktops }
-*/
 
 @media (max-width: 1281px) {
     .filter-tab {

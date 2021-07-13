@@ -1,26 +1,11 @@
-const pool = require('../database');
-const { get_item_by_rising } = require('../database/query');
-const logger = require('js-logger');
-const JSONStream = require('JSONStream')
+const { get_item_by_rising } = require('../database/commands');
 
 const weeklyBound = 1.01;
 const monthlyBound = 1.015;
 
 module.exports = {
     async createPage(req, res) {
-        pool.connect((err, client, ret) => {
-            if (err) {
-                logger.error(err.message);
-                throw new Error('Could not search item');
-            } 
-
-            const query = get_item_by_rising(weeklyBound, monthlyBound);
-            const stream = client.query(query);
-
-            stream.pipe(JSONStream.stringify()).pipe(res);
-            stream.on('end', () => {
-                res.end();
-            });
-        })
+        res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
+        res.send(await get_item_by_rising(weeklyBound, monthlyBound));
     }
 }

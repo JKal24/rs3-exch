@@ -1,6 +1,4 @@
 const { admin, db } = require('./admin');
-const pool = require('./index');
-
 let idCount = 0;
 
 module.exports = {
@@ -98,20 +96,19 @@ module.exports = {
             conditional = '>';
         }
 
-        let itemsSnapshot = await items.where('random_id', '<', random).limit(5).get();
-        const items = itemsSnapshot.docs;
-        let size = itemsSnapshot.size;
+        let size = 0;
+        const returnItems = [];
 
         while (size < ITEMS_PER_PAGE) {
-            itemsSnapshot = await items.where('random_id', '<', random).limit(5).get();
-            items = items.concat(itemsSnapshot.docs);
+            const itemsSnapshot = await items.where('random_id', conditional, random).limit(5).get();
+            returnItems = returnItems.concat(itemsSnapshot.docs);
             size += itemsSnapshot.size;
         }
 
-        return items;
+        return returnItems;
     },
 
-    get_item_by_buy_limit(lower_limit, upper_limit) {
+    async get_item_by_buy_limit(lower_limit, upper_limit) {
         const items = db.collection('items');
         return (await items.where('buy_limit', ">=", lower_limit)
             .where('buy_limit', "<=", upper_limit)
@@ -123,13 +120,13 @@ module.exports = {
      * @returns all entries containing that same type
      */
 
-    get_item_by_types(item_type) {
+    async get_item_by_types(item_type) {
         const items = db.collection('items');
         return (await items.where('item_type', "==", item_type)
             .get()).docs;
     },
 
-    get_item_by_types_and_sub_type(item_type, item_sub_type) {
+    async get_item_by_types_and_sub_type(item_type, item_sub_type) {
         const items = db.collection('items');
         return (await items.where('item_type', "==", item_type)
             .where('item_sub_type', "==", item_sub_type)
@@ -141,21 +138,21 @@ module.exports = {
      * @returns entries which satisfy the above requirements
      */
 
-    get_item_by_rising(weeklyBound, monthlyBound) {
+    async get_item_by_rising(weeklyBound, monthlyBound) {
         const items = db.collection('items');
         return (await items.where('valuation_week', ">=", weeklyBound)
             .where('valuation_month', ">=", monthlyBound)
             .where('cvar_long_term', '>', 0).get()).docs;
     },
 
-    get_item_by_falling(weeklyBound, monthlyBound) {
+    async get_item_by_falling(weeklyBound, monthlyBound) {
         const items = db.collection('items');
         return (await items.where('valuation_week', "<=", weeklyBound)
             .where('valuation_month', "<=", monthlyBound)
             .where('cvar_long_term', '>', 0).get()).docs;
     },
 
-    get_item_by_search(search_keyword) {
+    async get_item_by_search(search_keyword) {
         const queryText = search_keyword.toLowerCase();
         const items = db.collection('items');
 
@@ -166,18 +163,56 @@ module.exports = {
     },
 
     async get_update() {
-        return (await pool.query("SELECT * FROM update_date")).rows[0];
+        const updates = db.collection('updates');
+
+        return updates.get().then(querySnapshot => {
+            return querySnapshot.docs;
+        })
     },
 
-    async add_update(runedate, item_count) {
-        return await pool.query("INSERT INTO update_date (runedate, item_count) VALUES ($1, $2)", [runedate, item_count]);
+    async add_update(day, currentRuneDate) {
+        const updates = db.collection('updates');
+        await updates.doc(day.toString()).set({ currentRuneDate });
     },
 
     // Clean and replace with updated date and count, previous counts do not need to be kept
 
     async clean_update() {
-        await pool.query("DELETE FROM update_date");
+        await deleteCollection('updates');
     }
+}
+
+async function deleteCollection(collectionPath, batchSize = 100) {
+    const collectionRef = db.collection(collectionPath);
+    const query = collectionRef.limit(batchSize);
+
+    return new Promise((resolve, reject) => {
+        deleteQueryBatch(query, resolve).catch(reject);
+    });
+}
+
+async function deleteQueryBatch(query, resolve) {
+    const snapshot = await query.get();
+
+    const batchSize = snapshot.size;
+    if (batchSize === 0) {
+        // When there are no documents left, we are done
+        resolve();
+        return;
+    }
+
+    // Delete documents in a batch
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+    });
+    await batch.commit();
+
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+        deleteQueryBatch(query, resolve);
+    });
 }
 
 function getRandomInt(max) {

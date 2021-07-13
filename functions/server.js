@@ -1,10 +1,16 @@
 require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const accountKeys = require('./ServiceAccountKey.json');
 
-admin.initializeApp();
+app.use(cors({origin:true}));
+
+admin.initializeApp({
+    credential: admin.credential.cert(accountKeys)
+});
 
 const buyLimitHandler = require('./controllers/buyLimitHandler');
 const fallingHandler = require('./controllers/fallingHandler');
@@ -12,7 +18,6 @@ const risingHandler = require('./controllers/risingHandler');
 const searchHandler = require('./controllers/searchItemHandler');
 const typeHandler = require('./controllers/typeHandler');
 const randomHandler = require('./controllers/randomHandler');
-const updateHandler = require('./controllers/updateHandler');
 
 app.get('/BuyLimitListing', buyLimitHandler.showBuyLimits);
 app.get('/BuyLimitSearch/:buylimit', buyLimitHandler.createPage);
@@ -29,6 +34,17 @@ app.get('/SearchByTypes/:type', typeHandler.createPage);
 app.get('/RandomListing', randomHandler.createPage);
 app.get('/DefaultPageLimit', randomHandler.sendPageLimit);
 
-app.get('/Update', updateHandler.updateAllItems);
+exports.api = functions.https.onRequest(app);
 
-exports.api = functions
+const infoParser = require('./data/infoParser');
+const update = require('./data/update');
+const commands = require('./database/commands');
+
+async function fn() {
+    const day = (new Date()).getDate();
+    await update.update(day);
+    // await infoParser.fullUpdateItems();
+
+    console.log(await commands.get_update());
+}
+fn();
