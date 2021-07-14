@@ -2,7 +2,7 @@ const config = require('../utils/config');
 const priceDataParser = require('./priceDataParser');
 const commands = require('../database/commands');
 const { can_be_updated, update, throttle } = require('./update');
-const { default: Logger } = require('js-logger');
+const { Logger } = require('js-logger');
 
 module.exports = {
 

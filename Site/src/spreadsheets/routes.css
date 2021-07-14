@@ -13,10 +13,27 @@ body {
     flex-flow: row nowrap;
 }
 
+.left-container {
+    display: flex;
+    flex-flow: column nowrap;
+    top: 0px;
+    left: 0px;
+    width: 20vw;
+    padding: 0%;
+    max-height: 100%;
+    height: auto;
+    overflow: auto;
+    float: left;
+}
+
 .right-container {
     display: flex;
     flex-flow: column nowrap;
     width: 100%;
+}
+
+.alternate-nav {
+    display: none;
 }
 
 .contents {
@@ -27,4 +44,10 @@ body {
     text-align: center;
     border-bottom: gainsboro 1px solid;
     color: slategrey;
+}
+
+@media (max-width: 961px) {
+    .left-container {
+        display: none;
+    }
 }

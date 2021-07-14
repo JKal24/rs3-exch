@@ -1,20 +1,11 @@
-.left-container {
-    display: flex;
-    flex-flow: column nowrap;
-    top: 0px;
-    left: 0px;
-    width: 20vw;
-    padding: 0%;
-    max-height: 100%;
-    height: auto;
-    overflow: auto;
-    float: left;
-}
-
 .header { 
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
+}
+
+.alternate-header {
+    display: none;
 }
 
 .link-nav, .link-nav>a, .searchText {
@@ -47,6 +38,10 @@
     color: white;
 }
 
+.smaller-nav {
+    display: none;
+}
+
 .search-box {
     width: 20vw;
     border: rgb(25, 25, 30);
@@ -64,7 +59,6 @@
 }
 
 .input-group {
-    width: min-content !important;
     height: min-content !important;
 }
 
@@ -91,7 +85,7 @@
     border: rgb(25, 25, 30);
     background-color: rgb(55, 55, 65);
     border-radius: 10px;
-    width: 8vw;
+    width: fit-content;
     text-align: center;
 }
 
@@ -121,15 +115,6 @@
     padding-right: 0.5em;
     padding-left: 0.5em;
 }
-
-/*
-@media (min-width:320px)  { smartphones, iPhone, portrait 480x320 phones }
-@media (min-width:481px)  { portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. }
-@media (min-width:641px)  { portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones }
-@media (min-width:961px)  { tablet, landscape iPad, lo-res laptops ands desktops }
-@media (min-width:1025px) { big landscape tablets, laptops, and desktops }
-@media (min-width:1281px) { hi-res laptops and desktops }
-*/
 
 @media (max-width: 1281px) {
     .filter-tab {

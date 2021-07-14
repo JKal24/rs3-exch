@@ -15,25 +15,24 @@ export default function Filters() {
                     <InputGroup.Prepend>
                         <InputGroup.Text>Keywords</InputGroup.Text>
                     </InputGroup.Prepend>
-                </InputGroup>
-                <FormControl
+                    <FormControl
                     placeholder="Enter keywords separated by commas..."
                     aria-label="Keyword"
                     aria-describedby="basic-keyword"
                     className=""
                 />
+                </InputGroup>
             </Form.Group>
             <Form.Group className='filter-column'>
                 <InputGroup>
                     <InputGroup.Prepend>
                         <InputGroup.Text>Buylimit Max</InputGroup.Text>
                     </InputGroup.Prepend>
-                </InputGroup>
-                <FormControl
+                    <FormControl
                     placeholder="0, 100, 200, >500..."
-                    aria-label="Upvotes"
-                    aria-describedby="basic-upvote"
+                    aria-label="Buylimit"
                 />
+                </InputGroup>
             </Form.Group>
             {
                 loaded &&

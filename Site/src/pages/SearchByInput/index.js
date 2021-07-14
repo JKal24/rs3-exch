@@ -9,7 +9,7 @@ export default function SearchByInput() {
 
     return (
         <div className="contents">
-            <h2  className="contents-title">'{keyword}' Items</h2>
+            <h2 className="contents-title">'{keyword}' Items</h2>
             <Items filter={filter} keyword={keyword} />
         </div>
     );
