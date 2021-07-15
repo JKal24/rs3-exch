@@ -103,7 +103,14 @@ dist
 # TernJS port file
 .tern-port
 
-files/
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 .DS_Store
 .vscode
+.firebase
+/ServiceAccountKey.json

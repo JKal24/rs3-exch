@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { ExternalLink } from 'react-feather';
 import Items from '../../components/items';
 import '../../spreadsheets/info.css';
@@ -14,8 +13,8 @@ export default function LandingPage() {
                 <p>
                 This app was built to track items on the Grand Exchange in Runescape (Runescape 3, not Old School).
                 This app can be used for looking at statistics of various items, as well as their feasability in being traded for a profit. <br/> 
-                All data is collected through the official Runescape API and additionally, initial item descriptions are scraped from 
-                <Link to='https://runescape.wiki/'> https://runescape.wiki/<ExternalLink/></Link>. 
+                All data is collected through the official Runescape API and additionally, initial item descriptions are scraped from
+                <a href='https://runescape.wiki/'> https://runescape.wiki/ <ExternalLink/></a> 
                 This app is not intended for commercial use.<br/>
                 </p>
                 <div className="future-info">*Graphs for item prices will be implemented soon</div>

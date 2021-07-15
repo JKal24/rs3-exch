@@ -1,20 +1,11 @@
-.left-container {
-    display: flex;
-    flex-flow: column nowrap;
-    top: 0px;
-    left: 0px;
-    width: 20vw;
-    padding: 0%;
-    max-height: 100%;
-    height: auto;
-    overflow: auto;
-    float: left;
-}
-
 .header { 
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
+}
+
+.alternate-header {
+    display: none;
 }
 
 .link-nav, .link-nav>a, .searchText {
@@ -47,15 +38,31 @@
     color: white;
 }
 
+.smaller-nav {
+    display: none;
+}
+
 .search-box {
     width: 20vw;
-    border: rgb(25, 25, 30);
-    background-color: rgb(55, 55, 65);
+    border: rgb(205, 205, 205);
+    border-radius: 0.4em 0px 0px 0.4em;
+    background-color: rgb(205, 205, 205);
     margin-left: 1.0em;
 }
 
 .search-box::placeholder {
-    color: rgb(205, 205, 205);
+    color: rgb(55, 55, 55);
+}
+
+.search-box, .filter-tab, .search-button {
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+}
+
+.search-button {
+    border-radius: 0px 0.4em 0.4em 0px;
+    background-color: rgb(205, 205, 205);
+    border: rgb(205, 205, 205) solid;
 }
 
 .tab-content, .tab-content + div {
@@ -63,22 +70,12 @@
 }
 
 .input-group {
-    width: min-content !important;
     height: min-content !important;
 }
 
-.search-box, .filter-tab {
-    margin-top: 0.4em;
-    margin-bottom: 0.2em;
-    margin-right: 0.5em;
-}
 .filter-container {
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
+    width: 95%;
     margin-left: 0.5em;
-    flex-wrap: nowrap;
-    flex-direction: row;
 }
 
 .filter-column {
@@ -91,31 +88,42 @@
 }
 
 .filter-tab {
-    color: rgb(205, 205, 205);
-    border: rgb(25, 25, 30);
-    background-color: rgb(55, 55, 65);
+    color: rgb(25, 25, 25);
+    border: rgb(205, 205, 205) solid;
+    background-color: rgb(205, 205, 205);
     border-radius: 10px;
-    width: 8vw;
+    width: fit-content;
     text-align: center;
+    margin-left: 0.5em;
 }
 
-.end-contents {
-    position: relative;
-    height: 100%;
-    width: 100%;
+.filter-checkbox {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    margin-left: 1em;
+}
+
+.filter-type {
+    color: rgb(90, 90, 90);
+    flex-basis: 20%;
+}
+
+.input-group {
+    padding: 0.5em;
 }
 
 .footer-link-container {
-    position: fixed;
-    left: 0;
-    bottom: 0;
     width: 100%;
-    background-color: rgb(115, 115, 115);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: rgb(165, 165, 165);
     text-align: right;
 }
 
 .footer-link {
-    color: rgb(275, 275, 275);
+    color: rgb(235, 235, 235);
     padding-right: 0.5em;
     padding-left: 0.5em;
 }

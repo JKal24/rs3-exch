@@ -35,16 +35,3 @@ app.get('/RandomListing', randomHandler.createPage);
 app.get('/DefaultPageLimit', randomHandler.sendPageLimit);
 
 exports.api = functions.https.onRequest(app);
-
-const infoParser = require('./data/infoParser');
-const update = require('./data/update');
-const commands = require('./database/commands');
-
-async function fn() {
-    const day = (new Date()).getDate();
-    await update.update(day);
-    // await infoParser.fullUpdateItems();
-
-    console.log(await commands.get_update());
-}
-fn();

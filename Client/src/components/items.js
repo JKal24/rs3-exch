@@ -152,7 +152,7 @@ function Table({ columns, data, filter }) {
             </table>
 
             {
-                filter ? (
+                filter && (
                     <div>
                         <Container className="page-navigation">
                             <div className="nav-elements">
@@ -167,7 +167,7 @@ function Table({ columns, data, filter }) {
                             </div>
                         </Container>
                     </div>
-                ) : null
+                )
             }
         </div>
     )

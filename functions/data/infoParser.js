@@ -1,7 +1,6 @@
 const config = require('../utils/config');
 const priceDataParser = require('./priceDataParser');
 const commands = require('../database/commands');
-const { default: Logger } = require('js-logger');
 
 module.exports = {
 
@@ -12,6 +11,11 @@ module.exports = {
          * Records all the items by skill, looks for the exchange uri.
          */
         const titleHeaders = $('h3');
+
+        // Checks if the item list has yet to be populated entirely, assumes >20 items must exist
+        const ids = await commands.get_item_ids();
+        const checkID = ids.length <= 20;
+
         await Promise.all(titleHeaders.map(async (title, i) => {
             if ($(title).children().first().attr('id') === 'Items_by_skill') {
 
@@ -28,7 +32,7 @@ module.exports = {
                     const uri = $(tr).children('td:nth-child(2)').children().first().attr('href');
 
                     if (uri) {
-                        await parse_type_uris(config.runescapeWikiBaseLink(uri), type);
+                        await parseTypeUris(config.runescapeWikiBaseLink(uri), type, checkID);
                     }
                 }
             }
@@ -37,7 +41,7 @@ module.exports = {
         // Other items entry - Treasure Trails
 
         let t_trails_uri = config.runescapeWikiBaseLink($('a:contains("Treasure Trails")').attr('href'));
-        await parse_existing_uris(t_trails_uri, "Treasure Trails");
+        await parseTypeUris(t_trails_uri, "Treasure Trails");
     },
 
     async partialUpdateItems() {
@@ -49,14 +53,14 @@ module.exports = {
         }
 
         await Promise.all(ids.map(async (id, i) => {
-            const price_info = await parse_api(id);
+            const price_info = await parseAPI(id);
 
             await commands.update_item(id, price_info);
         }));
     }
 }
 
-async function parse_type_uris(uri, type) {
+async function parseTypeUris(uri, type, checkID) {
     const $ = await config.getCheerioPage(uri);
 
     // Initial first update and subsequent full updates
@@ -98,10 +102,10 @@ async function parse_type_uris(uri, type) {
                             $(row).children('td:nth-child(1)').children('a').first().children('img').attr('data-cfsrc');
                         const price = config.parseInteger($(row).children('td:nth-child(3)').text());
                         // Checks if item price is at least above 100 gold.
-                        if (item_image_uri && price > 100) {
+                        if (itemImageUri && price > 100) {
 
                             const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
-                            let attributes = await parse_exchange_uris(item_uri);
+                            let attributes = await parseExchangeUris(item_uri, checkID);
 
                             attributes = Object.assign(attributes, {
                                 item_name: $(columns[1]).text().toLowerCase(),
@@ -121,15 +125,18 @@ async function parse_type_uris(uri, type) {
     }
 }
 
-async function parse_exchange_uris(uri) {
+async function parseExchangeUris(uri, checkID) {
     const $ = await config.getCheerioPage(uri);
-    const item_id = $('#exchange-itemid').text();
+    const itemID = $('#exchange-itemid').text();
+
+    const apiData = checkID ? await commands.get_item_by_id(itemID) || await parseAPI(itemID) : await parseAPI(itemID);
+
     return Object.assign({
-        item_id,
-    }, await parse_api(item_id));
+        item_id: itemID,
+    }, apiData);
 }
 
-async function parse_api(id) {
+async function parseAPI(id) {
     let prices;
 
     /**
@@ -138,9 +145,9 @@ async function parse_api(id) {
      */
 
     try {
-        prices = await parse_prices(id);
+        prices = await parsePrices(id);
     } catch (error) {
-        prices = await parse_prices(id, 2500);
+        prices = await parsePrices(id, 2500);
     }
 
     /**
@@ -168,7 +175,7 @@ async function parse_api(id) {
 
 }
 
-async function parse_prices(id, ms = 5500) {
+async function parsePrices(id, ms = 5500) {
     // API is called
     const data = await config.parseHTTPS(config.apiItemGraph(id));
 
@@ -178,7 +185,7 @@ async function parse_prices(id, ms = 5500) {
             return json_data.slice(json_data.length - 90);
         })
     } catch (err) {
-        Logger.log('API is down & unstable or invalid ID inputted')
+        // API is down & unstable or invalid ID inputted
         return [];
     }
     // Data is throttled

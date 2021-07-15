@@ -40,6 +40,10 @@
     margin: 0.5em;
 }
 
+#types {
+    padding-bottom: 1em;
+}
+
 .nav-elements {
     flex-basis: 100%;
     text-align: center;

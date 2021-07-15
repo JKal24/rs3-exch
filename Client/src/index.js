@@ -5,16 +5,15 @@ import { Provider } from 'react-redux';
 import store from './app/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import firebase from 'firebase/app';
-require('dotenv').config();
 
 firebase.initializeApp({
-  apiKey: process.env.apiKey,
-  authDomain: process.env.authDomain,
-  projectId: process.env.projectId,
-  storageBucket: process.env.storageBucket,
-  messagingSenderId: process.env.messagingSenderId,
-  appId: process.env.appId,
-  measurementId: process.env.measurementId
+  apiKey: "AIzaSyD8M8CXzB4WIn6FyM4xeof3S57tb1Xnwww",
+  authDomain: "rs3exchange.firebaseapp.com",
+  projectId: "rs3exchange",
+  storageBucket: "rs3exchange.appspot.com",
+  messagingSenderId: "129153903172",
+  appId: "1:129153903172:web:212c99783c1592e34e2a11",
+  measurementId: "G-H0BXDS1KMY"
 })
 
 ReactDOM.render(

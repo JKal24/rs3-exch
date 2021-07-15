@@ -126,13 +126,6 @@ module.exports = {
             .get()).docs;
     },
 
-    async get_item_by_types_and_sub_type(item_type, item_sub_type) {
-        const items = db.collection('items');
-        return (await items.where('item_type', "==", item_type)
-            .where('item_sub_type', "==", item_sub_type)
-            .get()).docs;
-    },
-
     /**
      * @param {Requirement that must be higher or lower than the applicable values in the table} weeklyBound, monthlyBound 
      * @returns entries which satisfy the above requirements
