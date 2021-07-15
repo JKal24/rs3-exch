@@ -1,7 +1,7 @@
 {
   "name": "rs3merch",
   "version": "1.0.0",
-  "description": "![alt text](https://github.com/JKal24/RS3Merch/blob/master/Site/src/assets/rs3exch_logo_small.png)",
+  "description": "![alt text](https://github.com/JKal24/RS3Merch/blob/master/Client/src/assets/rs3exch_logo_small.png)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cd Server && npm start",

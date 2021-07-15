@@ -1,0 +1,27 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "valuation_week",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "valuation_month",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "cvar_long_term",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "buy_limit",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
