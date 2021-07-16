@@ -27,6 +27,11 @@ function parseHTTPS(uri) {
 
 // Scrape accessing functions
 
+async function getCheerioPage(uri) {
+    const data = await parseHTTPS(uri);
+    return cheerio.load(data);
+}
+
 function runescapeWikiBaseLink(str) {
     return 'https://runescape.wiki' + str;
 }
@@ -49,11 +54,6 @@ function baseToMarketExchange(uri) {
 
 function apiItemGraph(id) {
     return 'https://secure.runescape.com/m=itemdb_rs/api/graph/' + id + '.json';
-}
-
-async function getCheerioPage(uri) {
-    const data = await parseHTTPS(uri);
-    return cheerio.load(data);
 }
 
 function standardTypeColumn(uri) {

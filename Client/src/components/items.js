@@ -69,7 +69,7 @@ export default function Items(props) {
     return (
         <div>
             {
-                loaded && (<Table columns={columns} data={contents} filter={props.filter}></Table>)
+                loaded && (<Table columns={columns} data={contents || []} filter={props.filter}></Table>)
             }
         </div>
     );
@@ -152,7 +152,7 @@ function Table({ columns, data, filter }) {
             </table>
 
             {
-                filter ? (
+                filter && (
                     <div>
                         <Container className="page-navigation">
                             <div className="nav-elements">
@@ -167,7 +167,7 @@ function Table({ columns, data, filter }) {
                             </div>
                         </Container>
                     </div>
-                ) : null
+                )
             }
         </div>
     )

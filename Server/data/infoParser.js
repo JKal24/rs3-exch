@@ -1,18 +1,21 @@
 const config = require('../utils/config');
 const priceDataParser = require('./priceDataParser');
 const commands = require('../database/commands');
-const { can_be_updated, update, throttle } = require('./update');
-const { Logger } = require('js-logger');
 
 module.exports = {
 
-    async initializeItems() {
+    async fullUpdateItems() {
         const $ = await config.getCheerioPage(config.ITEM_BY_TYPE_URI);
 
         /**
-         * Records all the items by skill, looks for the exchange uri.
+         * Records the following items by skill, looks for the exchange uri.
          */
         const titleHeaders = $('h3');
+
+        // Checks if the item list has yet to be populated entirely, assumes >20 items must exist
+        const ids = await commands.get_item_ids();
+        const checkID = ids.length <= 20;
+
         await Promise.all(titleHeaders.map(async (title, i) => {
             if ($(title).children().first().attr('id') === 'Items_by_skill') {
 
@@ -26,10 +29,11 @@ module.exports = {
                     const type = config.capitalizeFirstLetter(
                         config.standardTypeColumn(
                             $(tr).children('td:nth-child(2)').children().first().text()));
+
                     const uri = $(tr).children('td:nth-child(2)').children().first().attr('href');
 
                     if (uri) {
-                        await parse_type_uris(config.runescapeWikiBaseLink(uri), type);
+                        await parse_type_uris(config.runescapeWikiBaseLink(uri), type, checkID);
                     }
                 }
             }
@@ -39,44 +43,13 @@ module.exports = {
 
         let t_trails_uri = config.runescapeWikiBaseLink($('a:contains("Treasure Trails")').attr('href'));
         await parse_type_uris(t_trails_uri, "Treasure Trails");
-
-        await update();
-    },
-
-    async fullUpdateItems() {
-        const $ = await config.getCheerioPage(config.ITEM_BY_TYPE_URI);
-
-        const titleHeaders = $('h3');
-        await Promise.all(titleHeaders.map(async (title, i) => {
-            if ($(title).children().first().attr('id') === 'Items_by_skill') {
-
-                for (const tr of $(title).next().children('dd').first().children('table').first().children('tbody').first().children('tr')) {
-
-                    const type = config.capitalizeFirstLetter(
-                        config.standardTypeColumn(
-                            $(tr).children('td:nth-child(2)').children().first().text()));
-
-                    const uri = $(tr).children('td:nth-child(2)').children().first().attr('href');
-
-                    if (uri) {
-                        await parse_type_uris(config.runescapeWikiBaseLink(uri), type);
-                    }
-                }
-            }
-        }));
-
-        await update();
     },
 
     async partialUpdateItems() {
-        const updateStatus = await can_be_updated();
-        if (!updateStatus) {
-            return;
-        }
         const ids = await commands.get_item_ids();
 
         if (ids.length == 0) {
-            await module.exports.initializeItems();
+            await module.exports.fullUpdateItems();
             return;
         }
 
@@ -85,12 +58,10 @@ module.exports = {
 
             await commands.update_item(price_info, id);
         }));
-
-        await update();
     }
 }
 
-async function parse_type_uris(uri, type) {
+async function parse_type_uris(uri, type, checkID) {
     const $ = await config.getCheerioPage(uri);
 
     const ids = await commands.get_item_ids();
@@ -139,7 +110,7 @@ async function parse_type_uris(uri, type) {
                             if (item_image_uri && config.parseInteger($(row).children('td:nth-child(3)').text()) > 100) {
 
                                 const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
-                                let attributes = await parse_exchange_uris(item_uri);
+                                let attributes = await parse_exchange_uris(item_uri, checkID);
 
                                 attributes = attributes.concat([
                                     $(columns[1]).text(),
@@ -155,65 +126,15 @@ async function parse_type_uris(uri, type) {
                 }
             }
         }
-    } else {
-        // Additional updates for adding items
-        for (const h2 of $('h2')) {
-            const sub_type = config.capitalizeFirstLetter($(h2).children('span').first().text());
-            if (sub_type) {
-
-                let node = $(h2).next()[0];
-                while (node != null && node.name != 'h2') {
-                    if (node.name == 'table') {
-
-                        const rows = $(node).children('tbody').first().children('tr');
-                        for (const row of rows) {
-                            const columns = $(row).children('td');
-                            const lastIndex = columns.length - 1;
-                            let detailsUri = $(columns[lastIndex - 1]).children('a').attr('href');
-
-                            if (detailsUri) {
-
-                                detailsUri = config.runescapeWikiBaseLink(detailsUri);
-                                // Adds a new items if a new ID is found
-                                const returnID = await checkForNewItem(detailsUri);
-                                if (!ids.includes(parseInt(returnID))) {
-
-                                    // Gathers all relevant item data
-                                    const itemImageUri = $(row).children('td:nth-child(1)').children('a').first().children('img').attr('src') ||
-                                        $(row).children('td:nth-child(1)').children('a').first().children('img').attr('data-cfsrc');
-                                    if (itemImageUri) {
-                                        // Will parse the same uri as checked however with every update, it isn't an expectation that many items will be added
-                                        // Therefore the data will not be collected when checked for new items
-                                        let attributes = await parse_exchange_uris(detailsUri);
-
-                                        attributes = attributes.concat([
-                                            $(columns[1]).text(),
-                                            config.runescapeWikiBaseLink(itemImageUri),
-                                            config.parseInteger($(columns[lastIndex - 3]).text()),
-                                            new Array(type), new Array(sub_type)]);
-
-                                        await commands.add_item(attributes);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    node = $(node).next()[0];
-                }
-            }
-        }
     }
 }
 
-async function checkForNewItem(uri) {
-    const $ = await config.getCheerioPage(uri);
-    return $('#exchange-itemid').text();
-}
-
-async function parse_exchange_uris(uri) {
+async function parse_exchange_uris(uri, checkID) {
     const $ = await config.getCheerioPage(uri);
     const item_id = $('#exchange-itemid').text();
-    return [config.parseInteger(item_id)].concat(await parse_api(item_id));
+
+    const item_data = checkID ? await commands.get_item_by_id(itemID) || await parseAPI(itemID) : await parseAPI(itemID);
+    return [config.parseInteger(item_id)].concat(item_data);
 }
 
 async function parse_api(id) {
@@ -239,9 +160,8 @@ async function parse_api(id) {
 
     try {
         let data_arr = priceDataParser.doCalculations(prices)
-        let concat_arr = [prices.slice(prices.length - 30)].concat(data_arr);
+        return [prices.slice(prices.length - 30)].concat(data_arr);
 
-        return concat_arr;
     } catch (exception) {
         // Catch the TypeError.
 
@@ -260,9 +180,12 @@ async function parse_prices(id, ms = 5500) {
             return json_data.slice(json_data.length - 90);
         })
     } catch (err) {
-        Logger.log('API is down & unstable or invalid ID inputted')
+        // API is down & unstable or invalid ID inputted
         return [];
     }
     // Data is throttled
 }
 
+async function throttle(ms) {
+    await new Promise((r) => setTimeout(r, ms));
+}

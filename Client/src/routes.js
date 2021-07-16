@@ -34,9 +34,9 @@ export default function Routes() {
                         <Route exact path='/Acknowledgements' render={() => (<Acknowledgements />)}></Route>
                         <Route exact path='/Questions' render={() => (<Questions />)}></Route>
                     </Switch>
-                    <Footer></Footer>
                 </div>
             </div>
+            <Footer></Footer>
         </BrowserRouter>
     )
 }

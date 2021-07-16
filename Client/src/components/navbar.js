@@ -1,8 +1,8 @@
 import React from 'react';
 import { Image, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom';
-import SelectType from './selectType';
-import SelectBuyLimit from './selectBuyLimit';
+import SelectType from './type';
+import SelectBuyLimit from './buylimit';
 import logoIcon from '../assets/rs3exch_nav_logo.png';
 import '../spreadsheets/nav.css';
 
