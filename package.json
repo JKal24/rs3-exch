@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cd Server && npm start",
-    "site": "cd Site && npm start",
-    "start": "concurrently \"npm run server\" \"npm run site\""
+    "client": "cd Client && npm start",
+    "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
