@@ -1,4 +1,3 @@
-require('dotenv').config();
 const commands = require('../database/commands');
 const pool = require('../database/index');
 const query = require('../database/query');

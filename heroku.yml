@@ -1,0 +1,3 @@
+build:
+  client: Client/Dockerfile
+  server: Server/Dockerfile
