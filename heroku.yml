@@ -1,7 +1,4 @@
 build:
-  client: Client/Dockerfile
-  server: Server/Dockerfile
-
-run:
-  client: 
-  server:
+  docker:
+    client: client/Dockerfile
+    server: server/Dockerfile
