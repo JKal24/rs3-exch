@@ -1,4 +1,4 @@
-# ![alt text](https://github.com/JKal24/RS3Merch/blob/master/Client/src/assets/rs3exch_logo_small.png) RS3Exch - A Grand Exchange Tool for Runescape 3
+# ![alt text](https://github.com/JKal24/RS3Merch/blob/main/Client/src/assets/rs3exch_logo_small.png) RS3Exch - A Grand Exchange Tool for Runescape 3
 
 # Introduction
 
