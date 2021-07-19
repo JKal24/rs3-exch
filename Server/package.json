@@ -3,7 +3,7 @@
   "description": "Server for rs3exch",
   "main": "server.js",
   "scripts": {
-    "server": "node server.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": "14"
@@ -22,6 +22,5 @@
   "devDependencies": {
     "jest": "^27.0.4",
     "nodemon": "^2.0.7"
-  },
-  "private": true
+  }
 }
