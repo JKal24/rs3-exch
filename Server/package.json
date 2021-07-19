@@ -3,7 +3,7 @@
   "description": "Server for rs3exch",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "server": "node server.js"
   },
   "engines": {
     "node": "14"
