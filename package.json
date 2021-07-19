@@ -4,8 +4,8 @@
   "description": "![alt text](https://github.com/JKal24/RS3Merch/blob/master/Site/src/assets/rs3exch_logo_small.png)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "cd server && npm server",
-    "client": "cd client && npm client",
+    "server": "cd server && npm run server",
+    "client": "cd client && npm run client",
     "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
