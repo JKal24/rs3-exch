@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "rs3exch_server",
   "description": "Server for rs3exch",
   "main": "server.js",
   "scripts": {
