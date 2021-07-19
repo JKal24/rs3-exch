@@ -6,5 +6,6 @@ COPY package.json /client
 RUN npm install
 
 COPY . /client
+RUN npm run build
 
 CMD ["npm", "run", "client"]
