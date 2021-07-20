@@ -4,7 +4,7 @@ services:
   server:
     build: ./Server
     ports:
-      - "5000:5000"
+      - "8000:8000"
 
   client:
     build: ./Client
