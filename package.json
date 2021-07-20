@@ -20,5 +20,8 @@
   "homepage": "https://github.com/JKal24/RS3Merch#readme",
   "dependencies": {
     "concurrently": "^6.2.0"
+  },
+  "engines": {
+    "yarn": "1.22.4"
   }
 }

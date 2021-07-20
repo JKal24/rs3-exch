@@ -1,10 +1,10 @@
 FROM node:14-alpine3.14
 
-WORKDIR /server
+WORKDIR /Server
 
-COPY package.json /server
+COPY package.json /Server
 RUN npm install
 
-COPY . /server
+COPY . /Server
 
 CMD ["npm", "run", "server"]
