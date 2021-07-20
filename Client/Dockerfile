@@ -1,13 +1,12 @@
 FROM node:14-alpine3.14
 
-WORKDIR /Client
+WORKDIR /client
 
-RUN npm install -g serve
-
-COPY package.json /Client
+COPY package.json .
 RUN npm install
 
-COPY . /Client
-RUN npm run build
+COPY . .
 
-CMD serve -p $PORT -s public
+EXPOSE 3000
+
+CMD ["npm", "run", "client"]
