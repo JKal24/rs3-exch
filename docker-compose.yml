@@ -4,11 +4,11 @@ services:
   server:
     build: ./Server
     ports:
-      - "8000:8000"
+      - 8000:8000
 
   client:
     build: ./Client
     ports:
-      - "3000:3000"
+      - 3000:3000
     links:
       - server

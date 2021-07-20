@@ -5,9 +5,7 @@ WORKDIR /Server
 COPY package.json .
 RUN npm install
 
-COPY . /Server
-
-RUN npm run build
+COPY . .
 
 EXPOSE 8000
 
