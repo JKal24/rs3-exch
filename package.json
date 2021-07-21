@@ -1,27 +1,33 @@
 {
-  "name": "rs3merch",
-  "version": "1.0.0",
-  "description": "![alt text](https://github.com/JKal24/RS3Merch/blob/master/Site/src/assets/rs3exch_logo_small.png)",
+  "name": "rs3exch",
+  "description": "RS3 Grand Exchange tool",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "cd server && npm run server",
-    "client": "cd client && npm run client",
-    "start": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JKal24/RS3Merch.git"
-  },
-  "author": "jask24",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JKal24/RS3Merch/issues"
-  },
-  "homepage": "https://github.com/JKal24/RS3Merch#readme",
-  "dependencies": {
-    "concurrently": "^6.2.0"
+    "client": "npm run start --prefix client",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "prestart": "npm run build --prefix client",
+    "start": "node server.js"
   },
   "engines": {
-    "yarn": "1.22.4"
+    "node": "14"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "concurrently": "^6.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "js-logger": "^1.6.1",
+    "JSONStream": "^1.3.5",
+    "pg": "^8.6.0",
+    "pg-query-stream": "^4.1.0",
+    "xmldom": "^0.6.0",
+    "xpath": "0.0.32"
+  },
+  "devDependencies": {
+    "jest": "^27.0.4",
+    "nodemon": "^2.0.7",
+    "concurrently": "^6.2.0"
   }
 }

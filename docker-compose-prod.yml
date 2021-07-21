@@ -1,20 +1,26 @@
-version: '3.7'
+version: "3.7"
 
 services:
+
   node-react-starter-app:
-    image: astro24/rs3-exch:dev
+    image: astro24/rs3-exch:prod
     build: 
       context: .
-      target: dev
+      target: prod
     container_name: node-react-starter-app
     restart: always
     volumes: 
       - .:/app
     ports:
-      - "5000:5000"
-      - "3000:3000"
+      - "80:5000"
+    depends_on:
+      - node-react-starter-db
     networks: 
       - node-react-starter-network
+
+volumes: 
+  node-react-starter-db:
+    name: node-react-starter-db
 
 networks: 
   node-react-starter-network:
