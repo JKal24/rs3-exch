@@ -1,21 +1,27 @@
 version: '3.7'
 
 services:
-  node-react-starter-app:
-    image: astro24/rs3-exch:dev
-    build: 
-      context: .
-      target: dev
-    container_name: node-react-starter-app
-    restart: always
-    volumes: 
-      - .:/app
+  web:
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile.web
+    image: "rs3exch-web"
+    ports:
+      - "3000:3000"
+    links:
+      - "worker"
+    networks: 
+      - node-react-network
+  worker:
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile.server
+    image: "rs3exch-worker"
     ports:
       - "5000:5000"
-      - "3000:3000"
     networks: 
-      - node-react-starter-network
+      - node-react-network
 
 networks: 
-  node-react-starter-network:
-    name: node-react-starter-network
+  node-react-network:
+    name: rs3exch-network

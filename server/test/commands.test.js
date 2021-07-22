@@ -1,6 +1,6 @@
-const commands = require('../database/commands');
-const pool = require('../database/index');
-const query = require('../database/query');
+const commands = require('../../database/commands');
+const pool = require('../../database/index');
+const query = require('../../database/query');
 
 test("Expects to receive a certain amount of items for each query based on types, buylimits, rising, falling and search", async () => {
     await commands.add_item([255, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "ohabcoh", "random.com", 499, ["type1"], ["w"]]);

@@ -7,6 +7,7 @@ const JSONStream = require('JSONStream')
 module.exports = {
 
     async showTypes(req, res) {
+        console.log('getting types');
         return res.json(config.standardTypes);
     },
 

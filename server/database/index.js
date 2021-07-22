@@ -14,7 +14,7 @@ if (process.env.MODE == 'Production') {
 } else {
     pool = new Pool({
         user: 'postgres',
-        password: 'brave99',
+        password: 'postgres',
         host: 'localhost',
         port: 5432,
         database: 'rs3items'

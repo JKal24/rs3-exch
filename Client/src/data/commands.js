@@ -1,26 +1,25 @@
-// import { api } from './api';
-import axios from 'axios';
+import { api } from './api';
 
 export async function getItems(filter, param = '') {
     let items;
     switch (filter) {
         case 'buylimit':
-            items = (await axios.get(`/BuyLimitSearch/${param}`, )).data;
+            items = (await api.get(`/BuyLimitSearch/${param}`, )).data;
             break;
         case 'type':
-            items = (await axios.get(`/SearchByTypes/${param}`)).data;
+            items = (await api.get(`/SearchByTypes/${param}`)).data;
             break;
         case 'rising':
-            items = (await axios.get('/RisingItemSearch')).data;
+            items = (await api.get('/RisingItemSearch')).data;
             break;
         case 'falling':
-            items = (await axios.get('/FallingItemSearch')).data;
+            items = (await api.get('/FallingItemSearch')).data;
             break;
         case 'input':
-            items = (await axios.get(`/SearchByKeyword/${param}`)).data;
+            items = (await api.get(`/SearchByKeyword/${param}`)).data;
             break;
         default:
-            items = (await axios.get('/RandomListing')).data;
+            items = (await api.get('/RandomListing')).data;
 
         return items || [];
     }
@@ -29,19 +28,19 @@ export async function getItems(filter, param = '') {
 // Nav handlers
 
 export async function getBuyLimits() {
-    return (await axios.get('/BuyLimitListing')).data;
+    return (await api.get('/BuyLimitListing')).data;
 }
 
 export async function getTypes() {
-    return (await axios.get('/TypeListing')).data;
+    return (await api.get('/TypeListing')).data;
 }
 
 export async function getPageLimit() {
-    return (await axios.get('/DefaultPageLimit')).data;
+    return (await api.get('/DefaultPageLimit')).data;
 }
 
 // Update data
 
 export async function doUpdate() {
-    axios.get('/Update');
+    api.get('/Update');
 }
