@@ -15,15 +15,13 @@ services:
       - node-react-network
   worker:
     build:
-      context: ./server
+      context: .
       dockerfile: ./Dockerfile.worker
     image: "rs3exch-worker"
     ports:
       - "5000:5000"
     networks: 
       - node-react-network
-    depends_on: 
-      - postgres
 
 networks: 
   node-react-network:

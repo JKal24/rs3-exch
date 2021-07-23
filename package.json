@@ -3,8 +3,12 @@
   "description": "RS3 Grand Exchange tool",
   "main": "server.js",
   "scripts": {
+    "build-client": "cd client && npm run build",
+    "install-client": "cd client && npm run install",
+    "heroku-postbuild": "npm run install-client && npm run build",
     "test": "jest",
-    "start": "node server.js"
+    "start": "node server.js",
+    "start-client": "cd client && npm run start"
   },
   "engines": {
     "node": "14"

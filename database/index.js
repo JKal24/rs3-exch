@@ -2,7 +2,7 @@ const Pool = require('pg').Pool;
 
 let pool;
 
-if (process.env.MODE == 'Production') {
+if (process.env.MODE == 'production') {
     pool = new Pool({
         connectionString: process.env.DATABASE_URL,
         user: process.env.PGUSER,
