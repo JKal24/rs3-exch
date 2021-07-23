@@ -3,7 +3,7 @@
   "description": "RS3 Grand Exchange tool",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server.js"
   },
   "engines": {
@@ -25,6 +25,6 @@
   "devDependencies": {
     "concurrently": "^6.2.0",
     "jest": "^27.0.4",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.12"
   }
 }

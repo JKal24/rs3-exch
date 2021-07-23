@@ -40,7 +40,7 @@ module.exports = {
     async get_random_items(ITEMS_PER_PAGE) {
         const update = await module.exports.get_update();
         const count = update ? update.item_count : await module.exports.get_current_items_count();
-        const percentage = Math.ceil((ITEMS_PER_PAGE / count) * 100);
+        const percentage = count == 0 ? ITEMS_PER_PAGE : Math.ceil((ITEMS_PER_PAGE / count) * 100);
         let attempt = 0;
         let data;
 
@@ -59,23 +59,24 @@ module.exports = {
     },
 
     async empty_items() {
-        if (process.env.mode == "Production") {
+        if (process.env.mode != "Production") {
             await pool.query("DELETE FROM items");
         }
     },
 
     async delete_item(item_id) {
-        if (process.env.mode == "Production") {
+        if (process.env.mode != "Production") {
             await pool.query("DELETE FROM items WHERE items.item_id = $1", [item_id]);
         }
     },
 
     async get_update() {
-        return (await pool.query("SELECT * FROM update_date")).rows[0];
+        const update = await pool.query("SELECT * FROM update_date");
+        return update.rows[0];
     },
 
-    async add_update(runedate, item_count) {
-        return await pool.query("INSERT INTO update_date (runedate, item_count) VALUES ($1, $2)", [runedate, item_count]);
+    async add_update(runedate, item_count, complete=false) {
+        return await pool.query("INSERT INTO update_date (runedate, item_count, complete) VALUES ($1, $2, $3) ON CONFLICT(runedate) DO UPDATE SET item_count = $2, complete = $3", [runedate, item_count, complete]);
     },
 
     // Clean and replace with updated date and count, previous counts do not need to be kept

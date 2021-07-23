@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ExternalLink } from 'react-feather';
+import { doUpdate } from '../../data/commands';
 import Items from '../../components/items';
 import '../../spreadsheets/info.css';
 
 export default function LandingPage() {
+
+    useEffect(() => {
+        const fetchUpdateData = async () => {
+            await doUpdate();
+        }
+
+        fetchUpdateData();
+    }, [])
 
     return (
         <div className="contents">

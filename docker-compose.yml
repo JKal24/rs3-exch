@@ -6,6 +6,7 @@ services:
       context: ./client
       dockerfile: ./Dockerfile.web
     image: "rs3exch-web"
+    stdin_open: true
     ports:
       - "3000:3000"
     links:
@@ -15,13 +16,16 @@ services:
   worker:
     build:
       context: ./server
-      dockerfile: ./Dockerfile.server
+      dockerfile: ./Dockerfile.worker
     image: "rs3exch-worker"
     ports:
       - "5000:5000"
     networks: 
       - node-react-network
+    depends_on: 
+      - postgres
 
 networks: 
   node-react-network:
     name: rs3exch-network
+    driver: bridge

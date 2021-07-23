@@ -21,6 +21,7 @@ CREATE TABLE items (
 );
 
 CREATE TABLE update_date (
-    runedate VARCHAR(255),
-    item_count VARCHAR(255)
+    runedate VARCHAR(255) UNIQUE,
+    item_count VARCHAR(255),
+    complete BOOLEAN
 );

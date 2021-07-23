@@ -14,9 +14,9 @@ module.exports = {
 
         // Checks if the item list has yet to be populated entirely, assumes >20 items must exist
         const ids = await commands.get_item_ids();
-        const checkID = ids.length <= 20;
+        const checkID = ids.length > 20;
 
-        await Promise.all(titleHeaders.map(async (title, i) => {
+        await Promise.all(titleHeaders.map(async (i, title) => {
             if ($(title).children().first().attr('id') === 'Items_by_skill') {
 
                 /**
@@ -26,13 +26,12 @@ module.exports = {
 
                 for (const tr of $(title).next().children('dd').first().children('table').first().children('tbody').first().children('tr')) {
 
-                    const type = config.capitalizeFirstLetter(
-                        config.standardTypeColumn(
-                            $(tr).children('td:nth-child(2)').children().first().text()));
-
                     const uri = $(tr).children('td:nth-child(2)').children().first().attr('href');
-
                     if (uri) {
+                        const type = config.capitalizeFirstLetter(
+                            config.standardTypeColumn(
+                                $(tr).children('td:nth-child(2)').children().first().text()
+                            ));
                         await parse_type_uris(config.runescapeWikiBaseLink(uri), type, checkID);
                     }
                 }
@@ -48,7 +47,7 @@ module.exports = {
     async partialUpdateItems() {
         const ids = await commands.get_item_ids();
 
-        if (ids.length == 0) {
+        if (ids.length <= 20) {
             await module.exports.fullUpdateItems();
             return;
         }
@@ -107,7 +106,7 @@ async function parse_type_uris(uri, type, checkID) {
                             const item_image_uri = $(row).children('td:nth-child(1)').children('a').first().children('img').attr('src');
                             const price = config.parseInteger($(row).children('td:nth-child(3)').text());
                             // Checks if item price is at least above 100 gold.
-                            if (item_image_uri && config.parseInteger($(row).children('td:nth-child(3)').text()) > 100) {
+                            if (item_image_uri && price > 100) {
 
                                 const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
                                 let attributes = await parse_exchange_uris(item_uri, checkID);
@@ -131,13 +130,13 @@ async function parse_type_uris(uri, type, checkID) {
 
 async function parse_exchange_uris(uri, checkID) {
     const $ = await config.getCheerioPage(uri);
-    const item_id = $('#exchange-itemid').text();
+    const itemID = $('#exchange-itemid').text();
 
-    const item_data = checkID ? await commands.get_item_by_id(itemID) || await parseAPI(itemID) : await parseAPI(itemID);
-    return [config.parseInteger(item_id)].concat(item_data);
+    const apiData = checkID ? await commands.get_item_by_id(itemID) || await parseAPI(itemID) : await parseAPI(itemID);
+    return [config.parseInteger(itemID)].concat(apiData);
 }
 
-async function parse_api(id) {
+async function parseAPI(id) {
     let prices;
 
     /**
@@ -146,9 +145,9 @@ async function parse_api(id) {
      */
 
     try {
-        prices = await parse_prices(id);
+        prices = await parsePrices(id);
     } catch (error) {
-        prices = await parse_prices(id, 2500);
+        prices = await parsePrices(id, 2500);
     }
 
     /**
@@ -159,8 +158,9 @@ async function parse_api(id) {
      */
 
     try {
-        let data_arr = priceDataParser.doCalculations(prices)
-        return [prices.slice(prices.length - 30)].concat(data_arr);
+        let dataObj = priceDataParser.doCalculations(prices)
+
+        return [prices.slice(prices.length - 30)].concat(dataObj);
 
     } catch (exception) {
         // Catch the TypeError.
@@ -170,7 +170,7 @@ async function parse_api(id) {
 
 }
 
-async function parse_prices(id, ms = 5500) {
+async function parsePrices(id, ms = 5500) {
     // API is called
     const data = await config.parseHTTPS(config.apiItemGraph(id));
 

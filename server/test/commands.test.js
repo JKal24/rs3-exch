@@ -1,31 +1,25 @@
-const commands = require('../../database/commands');
-const pool = require('../../database/index');
-const query = require('../../database/query');
+const commands = require('../database/commands');
+const pool = require('../database/index');
+const query = require('../database/query');
 
 test("Expects to receive a certain amount of items for each query based on types, buylimits, rising, falling and search", async () => {
     await commands.add_item([255, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "ohabcoh", "random.com", 499, ["type1"], ["w"]]);
-    await commands.add_item([256, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "hoabcho", "random.com", 499, ["type1"], ["w"]]);
     await commands.add_item([257, [10,11,12], 0.94, 0.92, 0.91, 1.1, 1.2, 1.4, 1000, 990, "random", "random.com", 499, ["type1"], ["w"]]);
     await commands.add_item([258, [10,11,12], 1.1, 1.2, 1.4, 1.1, 1.2, 1.4, 1000, 990, "random", "random.com", 4999, ["type2"], ["w"]]);
-    await commands.add_item([259, [10,11,12], 1.1, 1.2, 1.4, 1.1, 1.2, 1.4, 1000, 990, "random", "random.com", 4999, ["type2"], ["w"]]);
-    await commands.add_item([260, [10,11,12], 1.1, 1.2, 1.4, 1.1, 1.2, 1.4, 1000, 990, "random", "random.com", 4999, ["type2"], ["w"]]);
     await commands.add_item([261, [10,11,12], 0.94, 0.92, 0.91, 0.94, 0.92, 0.91, 1000, 990, "random", "random.com", 499, ["type1"], ["w"]]);
     await commands.add_item([262, [10,11,12], 0.94, 0.92, 0.91, 0.94, 0.92, 0.91, 1000, 990, "random", "random.com", 499, ["type1"], ["w"]]);
 
-    const buylimits = pool.query(query.get_item_by_buy_limit(0, 500));
-    const rising = pool.query(query.get_item_by_rising(1, 1));
-    const falling = pool.query(query.get_item_by_falling(1, 1));
+    const buylimits = await pool.query(query.get_item_by_buy_limit(0, 500));
+    const rising = await pool.query(query.get_item_by_rising(1, 1));
+    const falling = await pool.query(query.get_item_by_falling(1, 1));
 
-    expect(buylimits[0].length).toBe(5);
-    expect(rising[0].length).toBe(3);
-    expect(falling[0].length).toBe(5);
+    expect(buylimits[0].length).toBe(4);
+    expect(rising[0].length).toBe(1);
+    expect(falling[0].length).toBe(4);
 
     await commands.delete_item(255);
-    await commands.delete_item(256);
     await commands.delete_item(257);
     await commands.delete_item(258);
-    await commands.delete_item(259);
-    await commands.delete_item(260);
     await commands.delete_item(261);
     await commands.delete_item(262);
 })
@@ -44,4 +38,14 @@ test("checks to see if the entry is updated such that the type and sub types arr
 
     expect(data[0].item_type.length).toBe(1);
     expect(data[0].item_sub_type.length).toBe(1);
+})
+
+test("checks to see if updates are being sent and processed correctly", async () => {
+    await commands.add_update('5', '50', false);
+    await commands.add_update('5', '60', true);
+
+    const update = await commands.get_update();
+    expect(update.complete).toBe(true);
+
+    await commands.clean_update();
 })

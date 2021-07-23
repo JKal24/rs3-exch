@@ -1,13 +1,13 @@
 const { fullUpdateItems, partialUpdateItems } = require('../data/infoParser');
-const { update, canBeUpdated } = require('../data/update');
+const { startUpdate, canBeUpdated, finishUpdate } = require('../data/update');
 
 module.exports = {
     async updateAllItems(req, res) {
         try {
             await checkForUpdates();
-            return res.json({ status: 'updated' });
+            return res.json({ wasUpdated: true });
         } catch (err) {
-            return res.json({ status: 'error' });
+            return res.json({ wasUpdated: false });
         }
     }
 }
@@ -17,12 +17,15 @@ async function checkForUpdates() {
     if (!updateStatus) {
         return;
     }
-    const day = (new Date()).getDate();
-    await update(day);
 
-    if (day == 1) {
+    const count = await startUpdate();
+    const day = (new Date()).getDate();
+
+    if (day == 1 || count == 0) {
         await fullUpdateItems();
     } else {
         await partialUpdateItems();
     }
+    
+    await finishUpdate();
 }
