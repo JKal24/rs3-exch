@@ -12,10 +12,6 @@ module.exports = {
          */
         const titleHeaders = $('h3');
 
-        // Checks if the item list has yet to be populated entirely, assumes >20 items must exist
-        const ids = await commands.get_item_ids();
-        const checkID = ids.length > 20;
-
         await Promise.all(titleHeaders.map(async (i, title) => {
             if ($(title).children().first().attr('id') === 'Items_by_skill') {
 
@@ -32,7 +28,7 @@ module.exports = {
                             config.standardTypeColumn(
                                 $(tr).children('td:nth-child(2)').children().first().text()
                             ));
-                        await parse_type_uris(config.runescapeWikiBaseLink(uri), type, checkID);
+                        await parse_type_uris(config.runescapeWikiBaseLink(uri), type);
                     }
                 }
             }
@@ -60,79 +56,78 @@ module.exports = {
     }
 }
 
-async function parse_type_uris(uri, type, checkID) {
+async function parse_type_uris(uri, type) {
     const $ = await config.getCheerioPage(uri);
 
-    const ids = await commands.get_item_ids();
+    // Initial first update and subsequent full updates
+    for (const h2 of $('h2')) {
+        const subType = config.capitalizeFirstLetter($(h2).children('span').first().text());
+        if (subType) {
+            
+            let node = $(h2).next()[0];
+            while (node != null && node.name != 'h2') {
+                if (node.name == 'table') {
 
-    if (ids.length == 0) {
-        // Initial first update
-        for (const h2 of $('h2')) {
-            const sub_type = config.capitalizeFirstLetter($(h2).children('span').first().text());
-            if (sub_type) {
+                    const rows = $(node).children('tbody').first().children('tr');
+                    for (const row of rows) {
+                        /**
+                        * Array formulation.
+                        * 
+                        *item_id
+                        *prices
+                        *valuation_week
+                        *valuation_month
+                        *valuation_long_term
+                        *cvar_week
+                        *cvar_month
+                        *cvar_long_term
+                        *highest_price_week
+                        *lowest_price_week
+                        *item_name
+                        *item_image_uri
+                        *buy_limit
+                        *item_type
+                        *item_sub_type
+                        *
+                        * Creates an object for each item
+                        * with the array attributes.
+                        */
+                        const columns = $(row).children();
+                        const lastIndex = columns.length - 1;
 
-                let node = $(h2).next()[0];
-                while (node != null && node.name != 'h2') {
-                    if (node.name == 'table') {
+                        // Only valid rows contain images of items
+                        const itemImageUri = $(columns[0]).children('a').first().children('img').attr('src') ||
+                            $(columns[0]).children('a').first().children('img').attr('data-cfsrc');
+                        const price = config.parseInteger($(columns[2]).text());
+                        // Checks if item price is at least above 100 gold.
+                        if (itemImageUri && price > 100) {
 
-                        const rows = $(node).children('tbody').first().children('tr');
-                        for (const row of rows) {
-                            /**
-                            * Array formulation.
-                            * 
-                            *item_id
-                            *prices
-                            *valuation_week
-                            *valuation_month
-                            *valuation_long_term
-                            *cvar_week
-                            *cvar_month
-                            *cvar_long_term
-                            *highest_price_week
-                            *lowest_price_week
-                            *item_name
-                            *item_image_uri
-                            *buy_limit
-                            *item_type
-                            *item_sub_type
-                            *
-                            * Creates an object for each item
-                            * with the array attributes.
-                            */
-                            const columns = $(row).children('td');
-                            const lastIndex = columns.length - 1;
+                            const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
+                            let attributes = await parseExchangeUris(item_uri);
 
-                            // Only valid rows contain images of items
-                            const item_image_uri = $(row).children('td:nth-child(1)').children('a').first().children('img').attr('src');
-                            const price = config.parseInteger($(row).children('td:nth-child(3)').text());
-                            // Checks if item price is at least above 100 gold.
-                            if (item_image_uri && price > 100) {
+                            attributes = attributes.concat([
+                                $(columns[1]).text(),
+                                config.runescapeWikiBaseLink(itemImageUri),
+                                config.parseInteger($(columns[lastIndex - 3]).text()),
+                                new Array(type), new Array(subType)]);
 
-                                const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
-                                let attributes = await parse_exchange_uris(item_uri, checkID);
-
-                                attributes = attributes.concat([
-                                    $(columns[1]).text(),
-                                    config.runescapeWikiBaseLink(item_image_uri),
-                                    config.parseInteger($(columns[lastIndex - 3]).text()),
-                                    new Array(type), new Array(sub_type)]);
-
-                                await commands.add_item(attributes);
-                            }
+                            await commands.add_item(attributes);
                         }
                     }
-                    node = $(node).next()[0];
                 }
+                node = $(node).next()[0];
             }
         }
     }
 }
 
-async function parse_exchange_uris(uri, checkID) {
+async function parseExchangeUris(uri) {
     const $ = await config.getCheerioPage(uri);
     const itemID = $('#exchange-itemid').text();
 
-    const apiData = checkID ? await commands.get_item_by_id(itemID) || await parseAPI(itemID) : await parseAPI(itemID);
+    // The price data is not checked in our current database in order to ensure that the most recent data is collected.
+    // This was a tough decision because the throttle makes the running time abysmally slow.
+    const apiData = await parseAPI(itemID);
     return [config.parseInteger(itemID)].concat(apiData);
 }
 

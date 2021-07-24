@@ -18,10 +18,10 @@ async function checkForUpdates() {
         return;
     }
 
-    const count = await startUpdate();
+    const lastUpdateCount = await startUpdate();
     const day = (new Date()).getDate();
 
-    if (day == 1 || count == 0) {
+    if (day == 1 || lastUpdateCount == 0) {
         await fullUpdateItems();
     } else {
         await partialUpdateItems();

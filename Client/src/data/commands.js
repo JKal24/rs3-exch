@@ -1,4 +1,3 @@
-import { api } from './api';
 import axios from 'axios';
 
 export async function getItems(filter, param = '') {

@@ -40,7 +40,11 @@ module.exports = {
     async get_random_items(ITEMS_PER_PAGE) {
         const update = await module.exports.get_update();
         const count = update ? update.item_count : await module.exports.get_current_items_count();
-        const percentage = count == 0 ? ITEMS_PER_PAGE : Math.ceil((ITEMS_PER_PAGE / count) * 100);
+
+        let percentage = Math.ceil(ITEMS_PER_PAGE / count) * 100;
+        percentage = Math.min(100, percentage);
+        percentage = Math.max(0, percentage);
+        
         let attempt = 0;
         let data;
 
