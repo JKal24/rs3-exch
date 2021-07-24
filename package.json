@@ -8,7 +8,6 @@
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "build-client": "cd client && npm run build",
     "install-client": "cd client && npm install",
-    "heroku-postbuild": "cd ./client && npm install && npm run build",
     "test": "jest",
     "server": "nodemon server.js",
     "develop": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix client\"",
