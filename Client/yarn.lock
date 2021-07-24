@@ -7891,6 +7891,18 @@
     "parseurl" "~1.3.3"
     "send" "0.17.1"
 
+"server@file:..":
+  "resolved" "file:.."
+  dependencies:
+    "cheerio" "^1.0.0-rc.10"
+    "concurrently" "^6.2.0"
+    "cors" "^2.8.5"
+    "express" "^4.17.1"
+    "js-logger" "^1.6.1"
+    "JSONStream" "^1.3.5"
+    "pg" "^8.6.0"
+    "pg-query-stream" "^4.1.0"
+
 "serviceworker-cache-polyfill@^4.0.0":
   "integrity" "sha1-3hnuc77yGrPAdAo3sz22JGS6ves="
   "resolved" "https://registry.npmjs.org/serviceworker-cache-polyfill/-/serviceworker-cache-polyfill-4.0.0.tgz"
