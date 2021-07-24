@@ -12,7 +12,8 @@
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix client\""
   },
   "engines": {
-    "node": "14"
+    "node": "14.17.0",
+    "npm": "7.17.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
