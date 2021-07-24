@@ -3,17 +3,14 @@
   "description": "RS3 Grand Exchange tool",
   "main": "server.js",
   "scripts": {
-    "build-client": "cd client && npm run build",
-    "install-client": "cd client && npm install",
+    
+    "build-client": "cd ./client && npm run build",
+    "install-client": "cd ./client && npm install",
     "heroku-postbuild": "npm run install-client && npm run build-client",
     "test": "jest",
     "server": "nodemon server.js",
     "develop": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix client\"",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix client\""
-  },
-  "engines": {
-    "node": "14.17.0",
-    "npm": "7.17.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
