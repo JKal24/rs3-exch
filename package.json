@@ -3,10 +3,12 @@
   "description": "RS3 Grand Exchange tool",
   "main": "server.js",
   "scripts": {
-    
-    "build-client": "cd ./client && npm run build",
-    "install-client": "cd ./client && npm install",
-    "heroku-postbuild": "npm run install-client && npm run build-client",
+    "build:ui": "cd ./client && npm install && npm run build",
+    "deploy": "git push heroku main",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
+    "build-client": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "cd ./client && npm install && npm run build",
     "test": "jest",
     "server": "nodemon server.js",
     "develop": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix client\"",
