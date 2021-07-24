@@ -6,9 +6,9 @@ const routes = require('./routes');
 app.use(cors());
 app.use(express.json());
 
-// if (process.env.MODE == 'production') {
+if (process.env.MODE == 'production') {
     app.use(express.static('client/build'));
-// }
+}
 
 app.use(routes);
 
