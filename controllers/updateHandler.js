@@ -6,9 +6,9 @@ module.exports = {
     async updateAllItems(req, res) {
         try {
             await checkForUpdates();
-            return res.json({ wasUpdated: true });
+            return res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
         } catch (err) {
-            return res.json({ wasUpdated: false });
+            return res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
         }
     }
 }
