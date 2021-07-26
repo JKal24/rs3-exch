@@ -4,7 +4,7 @@ export async function getItems(filter, param = '') {
     let items;
     switch (filter) {
         case 'buylimit':
-            items = (await axios.get(`/BuyLimitSearch/${param}`, )).data;
+            items = (await axios.get(`/BuyLimitSearch/${param}`)).data;
             break;
         case 'type':
             items = (await axios.get(`/SearchByTypes/${param}`)).data;
