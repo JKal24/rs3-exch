@@ -7,9 +7,9 @@ module.exports = {
     async updateAllItems(req, res) {
         try {
             await checkForUpdates();
-            return res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+            res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
         } catch (err) {
-            return res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+            res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
         }
     }
 }

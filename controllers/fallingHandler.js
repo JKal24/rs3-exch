@@ -20,7 +20,7 @@ module.exports = {
             
             stream.pipe(JSONStream.stringify()).pipe(res);
             stream.on('end', () => {
-                res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+                res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
             });
         })
     }

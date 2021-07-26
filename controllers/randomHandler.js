@@ -5,7 +5,8 @@ const ITEMS_PER_PAGE = 10;
 
 module.exports = {
     async createPage(req, res) {
-        return res.json(await get_random_items(ITEMS_PER_PAGE));
+        res.json(await get_random_items(ITEMS_PER_PAGE));
+        res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
     },
 
     sendPageLimit(req, res) {
