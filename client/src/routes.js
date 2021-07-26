@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Navigation from './components/navbar';
 import Searchbar from './components/searchbar';
 import SearchBuyLimit from './pages/SearchBuyLimit';
-import SearchInvestments from './pages/SearchRising';
+import SearchRising from './pages/SearchRising';
 import SearchByInput from './pages/SearchByInput';
 import SearchFalling from './pages/SearchFalling';
 import SearchType from './pages/SearchType';
@@ -26,7 +26,7 @@ export default function Routes() {
                     <Navigation className="alternate-nav"></Navigation>
                     <Switch>
                         <Route exact path='/' render={() => (<LandingPage />)}></Route>
-                        <Route exact path='/rising' render={() => (<SearchInvestments />)}></Route>
+                        <Route exact path='/rising' render={() => (<SearchRising />)}></Route>
                         <Route exact path='/falling' render={() => (<SearchFalling />)}></Route>
                         <Route exact path='/type/:type' render={() => (<SearchType />)}></Route>
                         <Route exact path='/buylimit/:buylimit' render={() => (<SearchBuyLimit />)}></Route>
