@@ -126,7 +126,7 @@ async function parseExchangeUris(uri) {
     const itemID = $('#exchange-itemid').text();
 
     // The price data is not checked in our current database in order to ensure that the most recent data is collected.
-    // This was a tough decision because the throttle makes the running time abysmally slow.
+    // This was a hard decision because the throttle makes the running time abysmally slow.
     const apiData = await parseAPI(itemID);
     return [config.parseInteger(itemID)].concat(apiData);
 }

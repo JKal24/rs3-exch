@@ -83,7 +83,11 @@ module.exports = {
         return await pool.query("INSERT INTO update_date (runedate, item_count, complete) VALUES ($1, $2, $3) ON CONFLICT(runedate) DO UPDATE SET item_count = $2, complete = $3", [runedate, item_count, complete]);
     },
 
-    // Clean and replace with updated date and count, previous counts do not need to be kept
+    async get_count_updates() {
+        return await pool.query("SELECT COUNT(*) FROM update_date").rows[0].count;
+    },
+
+    // Clean and replace with updated dates and counts, only up to 30 days are kept
 
     async clean_update() {
         await pool.query("DELETE FROM update_date");

@@ -1,5 +1,6 @@
 const { fullUpdateItems, partialUpdateItems } = require('../data/infoParser');
-const { startUpdate, canBeUpdated, finishUpdate } = require('../data/update');
+const { startUpdate, getUpdateCount, canBeUpdated, finishUpdate } = require('../data/update');
+const { get_count_updates } = require('../database/commands');
 
 module.exports = {
     async updateAllItems(req, res) {
@@ -18,13 +19,17 @@ async function checkForUpdates() {
         return;
     }
 
-    const lastUpdateCount = await startUpdate();
-    const day = (new Date()).getDate();
+    const updateCount = await get_count_updates();
+    const lastUpdateCount = await getUpdateCount();
 
-    if (day == 1 || lastUpdateCount == 0) {
+    if (updateCount >= 30 || lastUpdateCount == 0) {
+        await startUpdate(true);
         await fullUpdateItems();
+
     } else {
+        await startUpdate(false);
         await partialUpdateItems();
+        
     }
     
     await finishUpdate();
