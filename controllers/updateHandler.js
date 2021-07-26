@@ -1,6 +1,7 @@
 const { fullUpdateItems, partialUpdateItems } = require('../data/infoParser');
 const { startUpdate, getUpdateCount, canBeUpdated, finishUpdate } = require('../data/update');
 const { get_count_updates } = require('../database/commands');
+const path = require('path');
 
 module.exports = {
     async updateAllItems(req, res) {
