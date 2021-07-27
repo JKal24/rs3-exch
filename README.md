@@ -1,4 +1,4 @@
-# ![alt text](https://github.com/JKal24/RS3Merch/blob/main/Client/src/assets/rs3exch_logo_small.png) RS3Exch - A Grand Exchange Tool for Runescape 3
+# ![alt text](https://github.com/JKal24/RS3Merch/blob/main/client/src/assets/rs3exch_logo_small.png) RS3Exch - A Grand Exchange Tool for Runescape 3
 
 # Introduction
 
@@ -20,8 +20,9 @@ OSRS has a custom client which can track player data but this is not the case fo
 
 # Technologies Used
 
-* Frontend: ReactJS, Redux, Axios, React-Router, React-Redux toolkit and React-Bootstrap
-* Backend: NodeJS, Express, Cheerio, Node-postgres
+* Frontend: ReactJS, Axios, React-Router, Redux, React-Redux toolkit and React-Bootstrap
+* Backend: NodeJS, Express, Cheerio, Node-Postgres
+* Testing & Deployment: Docker, Heroku and Jest
 
 # Acknowledgements
 
