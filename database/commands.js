@@ -1,4 +1,5 @@
 const pool = require("./index");
+const { parseInteger } = require('../utils/config');
 
 module.exports = {
     /**
@@ -38,15 +39,25 @@ module.exports = {
      */
 
     async get_random_items(ITEMS_PER_PAGE) {
-        const update = await module.exports.get_update();
-        const count = update ? update.item_count : await module.exports.get_current_items_count();
 
-        let percentage = Math.ceil(ITEMS_PER_PAGE / count) * 100;
+        // Tries to get the most recent item count where possible
+
+        const update = await module.exports.get_update();
+        const count = update ? 
+        (update.item_count == 0 ? await module.exports.get_current_items_count() : update.item_count)
+        : await module.exports.get_current_items_count();
+
+        let percentage = (ITEMS_PER_PAGE / parseInteger(count)) * 100;
+        percentage = Math.ceil(percentage);
         percentage = Math.min(100, percentage);
         percentage = Math.max(0, percentage);
         
         let attempt = 0;
         let data;
+
+        // Data is constantly retrieved but is not stored unless we have the appropriate item per page.
+        // This is because duplicate items are not wanted, the BERNOULLI sample return an approximate percentage
+        // which may be low than the items per page.
 
         do {
             data = (await pool.query("SELECT * FROM items TABLESAMPLE BERNOULLI($1)", [percentage])).rows;
@@ -59,7 +70,8 @@ module.exports = {
     },
 
     async get_current_items_count() {
-        return (await pool.query("SELECT COUNT(*) FROM items")).rows[0].count;
+        const count = (await pool.query("SELECT COUNT(*) FROM items")).rows;
+        return count ? count[0].count : 0;
     },
 
     async empty_items() {
@@ -75,16 +87,17 @@ module.exports = {
     },
 
     async get_update() {
-        const update = await pool.query("SELECT * FROM update_date");
-        return update.rows[0];
+        const update = (await pool.query("SELECT * FROM update_date")).rows;
+        return update ? update[0] : null;
     },
 
-    async add_update(runedate, item_count, complete=false) {
-        return await pool.query("INSERT INTO update_date (runedate, item_count, complete) VALUES ($1, $2, $3) ON CONFLICT(runedate) DO UPDATE SET item_count = $2, complete = $3", [runedate, item_count, complete]);
+    async add_update(runedate, item_count) {
+        await pool.query("INSERT INTO update_date (runedate, item_count) VALUES ($1, $2) ON CONFLICT(runedate) DO UPDATE SET item_count = $2", [runedate, item_count]);
     },
 
     async get_count_updates() {
-        return await pool.query("SELECT COUNT(*) FROM update_date").rows[0].count;
+        const update_count = (await pool.query("SELECT COUNT(*) FROM update_date")).rows;
+        return update_count ? update_count[0].count : 0;
     },
 
     // Clean and replace with updated dates and counts, only up to 30 days are kept

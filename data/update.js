@@ -1,27 +1,31 @@
-const { get_update, clean_update, add_update, get_current_items_count } = require('../database/commands');
-const { parseHTTPS } = require('../utils/config');
+const commands = require('../database/commands');
+const { getRunedate } = require('../utils/config');
 
 module.exports = {
     async canBeUpdated() {
-        const update = await get_update();
-        return update ? !update.complete : true;
+        const update = await commands.get_update();
+        const runedate = await getRunedate();
+
+        return update ? runedate != update.runedate && runedate != -1 : true;
     },
 
     async getUpdateCount() {
-        const update = await get_update();
+        const update = await commands.get_update();
         return update ? update.item_count : 0;
     },
 
-    async startUpdate(clean) {
-        if (clean) await clean_update();
-        const runedate = JSON.parse(await parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json')).lastConfigUpdateRuneday;
-        await add_update(runedate, count);
+    async startUpdate(clean, count) {
+        if (clean) await commands.clean_update();
+        const runedate = await getRunedate();
+        await commands.add_update(runedate, count);
     },
 
-    async finishUpdate() {
-        const update = await get_update();
-        const newCount = await get_current_items_count();
+    // Updates a new value for the item count
 
-        await add_update(update.runedate, newCount, true);
+    async finishUpdate() {
+        const update = await commands.get_update();
+        const newCount = await commands.get_current_items_count();
+
+        await commands.add_update(update.runedate, newCount);
     }
 }

@@ -109,9 +109,16 @@ const standardTypes = [
     'Treasure_Trails'
 ]
 
+// Program specific constants
+
 const BATCH_READ = 100;
+
+const getRunedate = async () => {
+    const runedate = JSON.parse(await parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json'));
+    return runedate ? runedate.lastConfigUpdateRuneday : -1;
+}
 
 module.exports = {
     buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS, parseInteger, removeArrElement, BATCH_READ, getCheerioPage, capitalizeFirstLetter,
-    normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph
+    normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph, getRunedate
 };

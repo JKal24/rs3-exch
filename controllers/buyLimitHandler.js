@@ -3,7 +3,6 @@ const pool = require('../database');
 const { get_item_by_buy_limit } = require('../database/query');
 const logger = require('js-logger');
 const JSONStream = require('JSONStream')
-const path = require('path');
 
 module.exports = {
 
@@ -25,7 +24,6 @@ module.exports = {
             stream.pipe(JSONStream.stringify()).pipe(res);
             stream.on('end', () => {
                 res.end();
-                // res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
             });
         })
     }

@@ -1,15 +1,14 @@
 const { fullUpdateItems, partialUpdateItems } = require('../data/infoParser');
 const { startUpdate, getUpdateCount, canBeUpdated, finishUpdate } = require('../data/update');
 const { get_count_updates } = require('../database/commands');
-const path = require('path');
 
 module.exports = {
     async updateAllItems(req, res) {
         try {
             await checkForUpdates();
-            res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+            return res.json({ wasUpdated: true });
         } catch (err) {
-            res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+            return res.json({ wasUpdated: false });
         }
     }
 }
@@ -20,15 +19,15 @@ async function checkForUpdates() {
         return;
     }
 
-    const updateCount = await get_count_updates();
+    const dayUpdateCount = await get_count_updates();
     const lastUpdateCount = await getUpdateCount();
 
-    if (updateCount >= 30 || lastUpdateCount == 0) {
-        await startUpdate(true);
+    if (dayUpdateCount >= 30 || lastUpdateCount == 0) {
+        await startUpdate(true, lastUpdateCount);
         await fullUpdateItems();
 
     } else {
-        await startUpdate(false);
+        await startUpdate(false, lastUpdateCount);
         await partialUpdateItems();
         
     }

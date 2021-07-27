@@ -20,6 +20,9 @@
     "pg": "^8.6.0",
     "pg-query-stream": "^4.1.0"
   },
+  "engines": {
+    "node": "14"
+  },
   "devDependencies": {
     "concurrently": "^6.2.0",
     "jest": "^27.0.4",
