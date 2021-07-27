@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === "production") {
 } 
 else 
 {
-    app.use(express.static(path.join(__dirname, 'client/build')));
+    app.use(express.static(path.join(__dirname, 'client/public')));
 }
 
 app.use(routes);
