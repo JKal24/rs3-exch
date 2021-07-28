@@ -1,31 +1,19 @@
 import axios from 'axios';
 
-export const api = axios.create({
-    baseURL: 'http://localhost:5000'
-})
-
 export async function getItems(filter, param = '') {
-    let items;
     switch (filter) {
         case 'buylimit':
-            items = (await api.get(`/BuyLimitSearch/${param}`)).data;
-            break;
+            return (await axios.get(`/BuyLimitSearch/${param}`)).data || [];
         case 'type':
-            items = (await api.get(`/SearchByTypes/${param}`)).data;
-            break;
+            return (await axios.get(`/SearchByTypes/${param}`)).data || [];
         case 'rising':
-            items = (await api.get('/RisingItemSearch')).data;
-            break;
+            return (await axios.get('/RisingItemSearch')).data || [];
         case 'falling':
-            items = (await api.get('/FallingItemSearch')).data;
-            break;
+            return (await axios.get('/FallingItemSearch')).data || [];
         case 'input':
-            items = (await api.get(`/SearchByKeyword/${param}`)).data;
-            break;
+            return (await axios.get(`/SearchByKeyword/${param}`)).data || [];
         default:
-            items = (await api.get('/RandomListing')).data;
-
-        return items || [];
+            return (await axios.get('/RandomListing')).data || [];
     }
 }
 
