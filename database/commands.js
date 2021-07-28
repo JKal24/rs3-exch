@@ -24,6 +24,10 @@ module.exports = {
         })
     },
 
+    async get_item_by_type(item_type) {
+        return (await pool.query("SELECT * FROM items WHERE item_type @> ARRAY[$1]", [item_type])).rows;
+    },
+
     async get_item_by_id(item_id) {
         return (await pool.query("SELECT * FROM items WHERE item_id = $1", [item_id])).rows;
     },

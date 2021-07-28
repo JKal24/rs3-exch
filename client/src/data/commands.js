@@ -1,25 +1,29 @@
 import axios from 'axios';
 
+export const api = axios.create({
+    baseURL: 'http://localhost:5000'
+})
+
 export async function getItems(filter, param = '') {
     let items;
     switch (filter) {
         case 'buylimit':
-            items = (await axios.get(`/BuyLimitSearch/${param}`)).data;
+            items = (await api.get(`/BuyLimitSearch/${param}`)).data;
             break;
         case 'type':
-            items = (await axios.get(`/SearchByTypes/${param}`)).data;
+            items = (await api.get(`/SearchByTypes/${param}`)).data;
             break;
         case 'rising':
-            items = (await axios.get('/RisingItemSearch')).data;
+            items = (await api.get('/RisingItemSearch')).data;
             break;
         case 'falling':
-            items = (await axios.get('/FallingItemSearch')).data;
+            items = (await api.get('/FallingItemSearch')).data;
             break;
         case 'input':
-            items = (await axios.get(`/SearchByKeyword/${param}`)).data;
+            items = (await api.get(`/SearchByKeyword/${param}`)).data;
             break;
         default:
-            items = (await axios.get('/RandomListing')).data;
+            items = (await api.get('/RandomListing')).data;
 
         return items || [];
     }
@@ -42,5 +46,5 @@ export async function getPageLimit() {
 // Update data
 
 export async function doUpdate() {
-    axios.get('/Update');
+    await axios.get('/Update');
 }

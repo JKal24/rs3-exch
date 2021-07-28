@@ -1,7 +1,7 @@
 import React from 'react';
 import Items from '../../components/items';
 
-export default function SearchInvestments() {
+export default function SearchRising() {
 
     const filter = "rising";
 

@@ -3,6 +3,7 @@ const pool = require('../database/index');
 const { get_item_by_types } = require('../database/query');
 const logger = require('js-logger');
 const JSONStream = require('JSONStream')
+const { get_item_by_type } = require('../database/commands');
 
 module.exports = {
 
@@ -11,19 +12,22 @@ module.exports = {
     },
 
     async createPage(req, res) {
-        pool.connect((err, client, ret) => {
-            if (err) {
-                logger.error(err.message);
-                throw new Error('Could not search item');
-            } 
+        const type = req.params.type;
+        const data = await get_item_by_type(type);
+        return res.send(data);
+        // pool.connect((err, client, ret) => {
+        //     if (err) {
+        //         logger.error(err.message);
+        //         throw new Error('Could not search item');
+        //     } 
 
-            const query = get_item_by_types(req.params.type);
-            const stream = client.query(query);
+        //     const query = get_item_by_types(req.params.type);
+        //     const stream = client.query(query);
 
-            stream.pipe(JSONStream.stringify()).pipe(res);
-            stream.on('end', () => {
-                res.end();
-            });
-        })
+        //     stream.pipe(JSONStream.stringify()).pipe(res);
+        //     stream.on('end', () => {
+        //         res.end();
+        //     });
+        // })
     }
 } 
