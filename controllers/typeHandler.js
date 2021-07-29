@@ -2,7 +2,8 @@ const config = require('../utils/config');
 const pool = require('../database/index');
 const { get_item_by_types } = require('../database/query');
 const logger = require('js-logger');
-const JSONStream = require('JSONStream')
+const JSONStream = require('JSONStream');
+const path = require('path');
 
 module.exports = {
 
