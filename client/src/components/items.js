@@ -128,7 +128,7 @@ function Table({ columns, data, filter }) {
                                 </td>
                                 <td className="val">{values.item_name}</td>
                                 <td className="val">{values.buy_limit}</td>
-                                <td className="val">{values.prices ? values.prices[values.prices.length - 1].toLocaleString() : ''}</td>
+                                <td className="val">{values.prices[values.prices.length - 1]}</td>
                                 <td className="val">{variation(values.cvar_week)}</td>
                                 <td className="val">{variation(values.cvar_month)}</td>
                                 <td className="val">{variation(values.cvar_long_term)}</td>
