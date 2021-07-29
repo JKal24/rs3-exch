@@ -1,19 +1,31 @@
 import axios from 'axios';
 
-export async function getItems(filter, param = '') {
+export async function getItems(filter, param = '', cancelToken) {
     switch (filter) {
         case 'buylimit':
-            return (await axios.get(`/BuyLimitSearch/${param}`)).data || [];
+            return (await axios.get(`/BuyLimitSearch/${param}`, {
+                cancelToken
+            })).data || [];
         case 'type':
-            return (await axios.get(`/SearchByTypes/${param}`)).data || [];
+            return (await axios.get(`/SearchByTypes/${param}`, {
+                cancelToken
+            })).data || [];
         case 'rising':
-            return (await axios.get('/RisingItemSearch')).data || [];
+            return (await axios.get('/RisingItemSearch', {
+                cancelToken
+            })).data || [];
         case 'falling':
-            return (await axios.get('/FallingItemSearch')).data || [];
+            return (await axios.get('/FallingItemSearch', {
+                cancelToken
+            })).data || [];
         case 'input':
-            return (await axios.get(`/SearchByKeyword/${param}`)).data || [];
+            return (await axios.get(`/SearchByKeyword/${param}`, {
+                cancelToken
+            })).data || [];
         default:
-            return (await axios.get('/RandomListing')).data || [];
+            return (await axios.get('/RandomListing', {
+                cancelToken
+            })).data || [];
     }
 }
 
@@ -33,6 +45,8 @@ export async function getPageLimit() {
 
 // Update data
 
-export async function doUpdate() {
-    await axios.get('/Update');
+export async function doUpdate(cancelToken) {
+    await axios.get('/Update', {
+        cancelToken
+    });
 }

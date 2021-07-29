@@ -24,8 +24,8 @@ export default function Navigation(props) {
                 <a href='/falling'>Falling in Price</a>
             </Button>
 
-            <SelectBuyLimit />
-            <SelectType />
+            <SelectBuyLimit/>
+            <SelectType/>
         </div>
     )
 }

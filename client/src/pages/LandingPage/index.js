@@ -1,17 +1,23 @@
 import React, { useEffect } from 'react';
 import { ExternalLink } from 'react-feather';
-import { doUpdate } from '../../data/commands';
+import { useDispatch } from 'react-redux';
+import { updateItems } from '../../app/reducers/items';
+import axios from 'axios';
 import Items from '../../components/items';
 import '../../spreadsheets/info.css';
 
 export default function LandingPage() {
 
-    useEffect(() => {
-        const fetchUpdateData = async () => {
-            await doUpdate();
-        }
+    const dispatch = useDispatch();
 
-        fetchUpdateData();
+    useEffect(() => {
+        const cancelToken = axios.CancelToken.source();
+
+        dispatch(updateItems(cancelToken.token));
+
+        return () => {
+            cancelToken.cancel('Cancel item request');
+        }
     }, [])
 
     return (

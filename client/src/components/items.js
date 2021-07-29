@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { Container, Button, Image } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { refresh, readItems, refreshItems, readDefaultPageLimit } from '../app/reducers/items';
+import { refresh, readItems, readDefaultPageLimit } from '../app/reducers/items';
 import { useTable, usePagination } from 'react-table';
 import { valuation, variation } from './utils/num';
+import axios from 'axios';
 import '../spreadsheets/items.css';
 
 export default function Items(props) {
@@ -14,11 +15,13 @@ export default function Items(props) {
     const loaded = useSelector(state => state.items.loaded);
 
     useEffect(() => {
+        const cancelToken = axios.CancelToken.source();
+
         dispatch(readDefaultPageLimit());
-        dispatch(readItems({ filter: props.filter, param: props.keyword }));
+        dispatch(readItems({ filter: props.filter, param: props.keyword, cancelToken: cancelToken.token }));
 
         return () => {
-            dispatch(refreshItems());
+            cancelToken.cancel('Cancel item request');
             dispatch(refresh());
         }
     }, [props.filter, props.keyword, dispatch])
@@ -125,7 +128,7 @@ function Table({ columns, data, filter }) {
                                 </td>
                                 <td className="val">{values.item_name}</td>
                                 <td className="val">{values.buy_limit}</td>
-                                <td className="val">{values.prices[values.prices.length - 1].toLocaleString()}</td>
+                                <td className="val">{values.prices ? values.prices[values.prices.length - 1].toLocaleString() : ''}</td>
                                 <td className="val">{variation(values.cvar_week)}</td>
                                 <td className="val">{variation(values.cvar_month)}</td>
                                 <td className="val">{variation(values.cvar_long_term)}</td>

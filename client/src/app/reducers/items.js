@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getItems, getPageLimit } from "../../data/commands";
-import axios from 'axios';
+import { getItems, getPageLimit, doUpdate } from "../../data/commands";
 
 const DEFAULT_LIMIT = 10;
 
@@ -15,22 +14,18 @@ export const readDefaultPageLimit = createAsyncThunk('items/limits',
 )
 
 export const readItems = createAsyncThunk('items/read',
-    async ( { filter, param }, { signal, rejectWithValue }) => {
+    async ( { filter, param, cancelToken }, { rejectWithValue }) => {
         try {
-            const source = axios.CancelToken.source();
-            signal.addEventListener("abort", () => {
-                source.cancel();
-            })
-            return await getItems(filter, param);
+            return await getItems(filter, param, cancelToken);
         } catch (err) {
             rejectWithValue(err.message);
         }
     }
 )
 
-export const refreshItems = createAsyncThunk('items/refresh',
-    async () => {
-        axios.CancelToken.source().cancel();
+export const updateItems = createAsyncThunk('items/update',
+    async (cancelToken) => {
+        await doUpdate(cancelToken);
     }
 )
 
@@ -61,9 +56,8 @@ const itemSlice = createSlice({
         [readItems.rejected]: (state, action) => {
             state.error = action.error;
         },
-        [refreshItems.fulfilled]: (state) => {
+        [updateItems.fulfilled]: (state) => {
             state.error = '';
-            state.contents = [];
         },
         [readDefaultPageLimit.fulfilled]: (state, action) => {
             state.itemsPerPage = action.payload;
