@@ -142,7 +142,7 @@ async function parseAPI(id) {
     try {
         prices = await parsePrices(id);
     } catch (error) {
-        prices = await parsePrices(id, 2500);
+        prices = await parsePrices(id, 2750);
     }
 
     /**
@@ -165,7 +165,7 @@ async function parseAPI(id) {
 
 }
 
-async function parsePrices(id, ms = 5500) {
+async function parsePrices(id, ms = 5750) {
     // API is called
     const data = await config.parseHTTPS(config.apiItemGraph(id));
 
