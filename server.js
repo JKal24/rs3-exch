@@ -28,5 +28,5 @@ else
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`running on ${PORT}`);
+    console.log(`running on ${PORT} dev mode`);
 });
