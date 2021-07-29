@@ -3,18 +3,14 @@ const pool = require('../database/index');
 const { get_item_by_types } = require('../database/query');
 const logger = require('js-logger');
 const JSONStream = require('JSONStream')
-const { get_item_by_type } = require('../database/commands');
 
 module.exports = {
 
-    async showTypes(req, res) {
+    showTypes(req, res) {
         return res.json(config.standardTypes);
     },
 
-    async createPage(req, res) {
-        // const type = req.params.type;
-        // const data = await get_item_by_type(type);
-        // return res.send(data);
+    createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
                 logger.error(err.message);
@@ -26,7 +22,7 @@ module.exports = {
 
             stream.pipe(JSONStream.stringify()).pipe(res);
             stream.on('end', () => {
-                res.end();
+                res.sendFile(path.join(__dirname + '/client/build/index.html'));
             });
         })
     }

@@ -6,11 +6,11 @@ const JSONStream = require('JSONStream')
 
 module.exports = {
 
-    async showBuyLimits(req, res) {
+    showBuyLimits(req, res) {
         return res.json(Object.keys(config.buyLimits));
     },
 
-    async createPage(req, res) {
+    createPage(req, res) {
         pool.connect((err, client, ret) => {
             if (err) {
                 logger.error(err.message);
@@ -23,7 +23,7 @@ module.exports = {
 
             stream.pipe(JSONStream.stringify()).pipe(res);
             stream.on('end', () => {
-                res.end();
+                res.sendFile(path.join(__dirname + '/client/build/index.html'));
             });
         })
     }

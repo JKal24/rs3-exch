@@ -11,18 +11,10 @@ app.use(routes);
 
 if (process.env.MODE === "production") {
     app.use(express.static(path.join(__dirname, 'client/build')));
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, '/client' , 'build', 'index.html'));
-    });
 } 
 else 
 {
-    app.use(express.static(path.join(__dirname, 'client/build')));
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, '/client' , 'build', 'index.html'));
-    });
+    app.use(express.static(path.join(__dirname, 'client/public')));
 }
 
 const PORT = process.env.PORT || 5000;
