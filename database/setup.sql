@@ -22,5 +22,6 @@ CREATE TABLE items (
 
 CREATE TABLE update_date (
     runedate VARCHAR(255) UNIQUE,
+    update_epoch VARCHAR(255) UNIQUE,
     item_count VARCHAR(255)
 );

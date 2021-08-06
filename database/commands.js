@@ -95,16 +95,10 @@ module.exports = {
         return update ? update[0] : null;
     },
 
-    async add_update(runedate, item_count) {
-        await pool.query("INSERT INTO update_date (runedate, item_count) VALUES ($1, $2) ON CONFLICT(runedate) DO UPDATE SET item_count = $2", [runedate, item_count]);
+    async add_update(runedate, update_epoch, item_count) {
+        await pool.query("INSERT INTO update_date (runedate, update_epoch, item_count) VALUES ($1, $2, $3) ON CONFLICT(runedate) DO UPDATE SET update_epoch = $2, item_count = $3", 
+        [runedate, update_epoch, item_count]);
     },
-
-    async get_count_updates() {
-        const update_count = (await pool.query("SELECT COUNT(*) FROM update_date")).rows;
-        return update_count ? update_count[0].count : 0;
-    },
-
-    // Clean and replace with updated dates and counts, only up to 30 days are kept
 
     async clean_update() {
         await pool.query("DELETE FROM update_date");

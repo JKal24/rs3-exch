@@ -25,6 +25,11 @@ function parseHTTPS(uri) {
     });
 }
 
+const getRunedate = async () => {
+    const runedate = JSON.parse(await parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json'));
+    return runedate ? runedate.lastConfigUpdateRuneday : -1;
+}
+
 // Scrape accessing functions
 
 async function getCheerioPage(uri) {
@@ -113,12 +118,11 @@ const standardTypes = [
 
 const BATCH_READ = 100;
 
-const getRunedate = async () => {
-    const runedate = JSON.parse(await parseHTTPS('https://secure.runescape.com/m=itemdb_rs/api/info.json'));
-    return runedate ? runedate.lastConfigUpdateRuneday : -1;
+const customDate = () => {
+    return Date.now() / 1000;
 }
 
 module.exports = {
     buyLimits, standardTypes, BUY_LIMIT_URI, ITEM_BY_TYPE_URI, parseHTTPS, parseInteger, removeArrElement, BATCH_READ, getCheerioPage, capitalizeFirstLetter,
-    normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph, getRunedate
+    normalToExchange, exchangeToModuleData, moduleToBaseName, baseToMarketExchange, standardTypeColumn, runescapeWikiBaseLink, apiItemGraph, getRunedate, customDate
 };

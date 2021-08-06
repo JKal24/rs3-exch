@@ -41,11 +41,13 @@ test("checks to see if the entry is updated such that the type and sub types arr
 })
 
 test("checks to see if updates are being sent and processed correctly", async () => {
-    await commands.add_update('5', '50', false);
-    await commands.add_update('5', '60', true);
+    const dateNow = new Date();
+    const date = dateNow.getUTCMonth() + '-' + dateNow.getUTCDate() + '-' + dateNow.getUTCHours();
+    await commands.add_update('5', date, '50');
+    await commands.add_update('5', date, '60');
 
     const update = await commands.get_update();
-    expect(update.complete).toBe(true);
+    expect(update.item_count).toBe('60');
 
     await commands.clean_update();
 })
