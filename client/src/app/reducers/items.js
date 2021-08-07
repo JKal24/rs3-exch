@@ -14,9 +14,9 @@ export const readDefaultPageLimit = createAsyncThunk('items/limits',
 )
 
 export const readItems = createAsyncThunk('items/read',
-    async ( { filter, param, cancelToken }, { rejectWithValue }) => {
+    async ( { filter, param }, { rejectWithValue }) => {
         try {
-            return await getItems(filter, param, cancelToken);
+            return await getItems(filter, param);
         } catch (err) {
             rejectWithValue(err.message);
         }
@@ -24,8 +24,8 @@ export const readItems = createAsyncThunk('items/read',
 )
 
 export const updateItems = createAsyncThunk('items/update',
-    async (cancelToken) => {
-        await doUpdate(cancelToken);
+    async _ => {
+        await doUpdate();
     }
 )
 

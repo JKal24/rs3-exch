@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { refresh, readItems, readDefaultPageLimit } from '../app/reducers/items';
 import { useTable, usePagination } from 'react-table';
 import { valuation, variation } from './utils/num';
-import axios from 'axios';
 import '../spreadsheets/items.css';
 
 export default function Items(props) {
@@ -15,13 +14,10 @@ export default function Items(props) {
     const loaded = useSelector(state => state.items.loaded);
 
     useEffect(() => {
-        const cancelToken = axios.CancelToken.source();
-
         dispatch(readDefaultPageLimit());
-        dispatch(readItems({ filter: props.filter, param: props.keyword, cancelToken: cancelToken.token }));
+        dispatch(readItems({ filter: props.filter, param: props.keyword }));
 
         return () => {
-            cancelToken.cancel('Cancel item request');
             dispatch(refresh());
         }
     }, [props.filter, props.keyword, dispatch])
