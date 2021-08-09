@@ -7,24 +7,34 @@ const JSONStream = require('JSONStream');
 module.exports = {
 
     showBuyLimits(req, res) {
-        return res.json(Object.keys(config.buyLimits));
+        try {
+            return res.json(Object.keys(config.buyLimits));
+        } catch ({ message }) {
+            res.status(500).json({ message })
+        }
     },
 
     createPage(req, res) {
-        pool.connect((err, client, ret) => {
-            if (err) {
-                logger.error(err.message);
-                throw new Error('Could not search item');
-            } 
+        try {
+            pool.connect((err, client, ret) => {
+                if (err) {
+                    logger.error(err.message);
+                    throw new Error('Could not search item');
+                }
 
-            const limits = config.buyLimits[req.params.buylimit]
-            const query = get_item_by_buy_limit(limits[0], limits[limits.length - 1]);
-            const stream = client.query(query);
+                const limits = config.buyLimits[req.params.buylimit]
+                const query = get_item_by_buy_limit(limits[0], limits[limits.length - 1]);
+                const stream = client.query(query);
 
-            stream.pipe(JSONStream.stringify()).pipe(res);
-            stream.on('end', () => {
-                res.end();
-            });
-        })
+                stream.pipe(JSONStream.stringify()).pipe(res);
+                stream.on('end', () => {
+                    ret();
+                    res.end();
+                });
+            })
+        } catch ({ message }) {
+
+            res.status(500).json({ message })
+        }
     }
 }

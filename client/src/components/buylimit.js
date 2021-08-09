@@ -15,9 +15,14 @@ export default function SelectBuyLimit() {
         dispatch(createBuyLimits());
     }, [dispatch])
 
+    function handleBuyLimits(e) {
+        e.preventDefault();
+        dispatch(toggleOpenBuylimits());
+    }
+
     return (
         <div>
-            <Button className='link-nav' variant="dark" onClick={() => dispatch(toggleOpenBuylimits())} aria-controls="buy-limits" aria-expanded={open}>
+            <Button className='link-nav' variant="dark" onClick={handleBuyLimits} aria-controls="buy-limits" aria-expanded={open}>
                 Buy Limits
             </Button>
             {

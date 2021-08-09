@@ -8,19 +8,24 @@ const monthlyBound = 1.015;
 
 module.exports = {
     createPage(req, res) {
-        pool.connect((err, client, ret) => {
-            if (err) {
-                logger.error(err.message);
-                throw new Error('Could not search item');
-            } 
+        try {
+            pool.connect((err, client, ret) => {
+                if (err) {
+                    logger.error(err.message);
+                    throw new Error('Could not search item');
+                }
 
-            const query = get_item_by_rising(weeklyBound, monthlyBound);
-            const stream = client.query(query);
+                const query = get_item_by_rising(weeklyBound, monthlyBound);
+                const stream = client.query(query);
 
-            stream.pipe(JSONStream.stringify()).pipe(res);
-            stream.on('end', () => {
-                res.end();
-            });
-        })
+                stream.pipe(JSONStream.stringify()).pipe(res);
+                stream.on('end', () => {
+                    ret();
+                    res.end();
+                });
+            })
+        } catch ({ message }) {
+            res.status(500).json({ message })
+        }
     }
 }

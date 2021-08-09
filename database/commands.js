@@ -24,6 +24,10 @@ module.exports = {
         })
     },
 
+    async get_item_by_rising(weeklyBound, monthlyBound) {
+        return (await pool.query("SELECT * FROM items WHERE valuation_week >= $1 AND valuation_month >= $2 AND cvar_month > 0", [weeklyBound, monthlyBound])).rows;
+    },
+
     async get_item_by_type(item_type) {
         return (await pool.query("SELECT * FROM items WHERE item_type @> ARRAY[$1]", [item_type])).rows;
     },

@@ -7,23 +7,24 @@ module.exports = {
     async updateAllItems(req, res) {
         try {
             await checkForUpdates();
-            return res.json({ wasUpdated: true });
-        } catch (err) {
-            return res.json({ wasUpdated: false });
+            return res.json({ message: true });
+        } catch ({ message }) {
+            res.status(500).json({ message })
         }
     }
 }
 
 async function checkForUpdates() {
     const update = await get_update();
-    if (!canBeUpdated(update)) {
+    if (update && !canBeUpdated(update)) {
         return;
     }
 
     const runedate = await getRunedate();
+    const updateRundate = update ? update.runedate : -1;
     const itemCount = update ? update.item_count : 0;
 
-    if (runedate != update.runedate || itemCount == 0) {
+    if (runedate != updateRundate || itemCount == 0) {
         await startUpdate(runedate, itemCount);
         await fullUpdateItems();
 

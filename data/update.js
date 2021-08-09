@@ -1,4 +1,4 @@
-const commands = require('../database/commands');
+const { add_update, get_current_items_count } = require('../database/commands');
 const { customDate } = require('../utils/config');
 
 const twelveHoursInSeconds = 43200;
@@ -12,14 +12,14 @@ module.exports = {
     },
 
     async startUpdate(runedate, count) {
-        await commands.add_update(runedate, count);
+        await add_update(runedate, Date.now(), count);
     },
 
     // Updates a new value for the item count
 
     async finishUpdate(runedate) {
-        const newCount = await commands.get_current_items_count();
+        const newCount = await get_current_items_count();
 
-        await commands.add_update(runedate, Date.now(), newCount);
+        await add_update(runedate, Date.now(), newCount);
     }
 }

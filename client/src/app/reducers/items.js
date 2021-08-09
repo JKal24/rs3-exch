@@ -14,9 +14,11 @@ export const readDefaultPageLimit = createAsyncThunk('items/limits',
 )
 
 export const readItems = createAsyncThunk('items/read',
-    async ( { filter, param }, { rejectWithValue }) => {
+    async ( itemData, { rejectWithValue }) => {
+        const { filter, param } = itemData;
         try {
-            return await getItems(filter, param);
+            const response = await getItems(filter, param);
+            return response;
         } catch (err) {
             rejectWithValue(err.message);
         }

@@ -15,9 +15,14 @@ export default function SelectType() {
         dispatch(createTypes());
     }, [dispatch])
 
+    function handleTypes(e) {
+        e.preventDefault();
+        dispatch(toggleOpenTypes());
+    }
+
     return (
         <div>
-            <Button className='link-nav' variant="dark" onClick={() => dispatch(toggleOpenTypes())} aria-controls="types" aria-expanded={open}>
+            <Button className='link-nav' variant="dark" onClick={handleTypes} aria-controls="types" aria-expanded={open}>
                 Types
             </Button>
             {

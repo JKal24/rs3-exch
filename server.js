@@ -14,7 +14,7 @@ if (process.env.MODE === "production") {
 } 
 else 
 {
-    app.use(express.static(path.join(__dirname, 'client/build')));
+    app.use(express.static(path.join(__dirname, 'client/public')));
 }
 
 app.get("*", (req, res) => {
