@@ -1,132 +1,64 @@
 import axios from 'axios';
 
-let CancelToken = axios.CancelToken;
-let itemCancelToken;
-
 export async function getItems(filter, param = '') {
-    itemCancelToken && itemCancelToken();
+    // Shuffle only the non-input and random arrays
+    switch (filter) {
+        case 'buylimit':
+            return shuffle((await axios.get(`/BuyLimitSearch/${param}`)).data || []);
+            
+        case 'type':
+            return shuffle((await axios.get(`/SearchByTypes/${param}`)).data || []);
+            
+        case 'rising':
+            return shuffle((await axios.get('/RisingItemSearch')).data || []);
+            
+        case 'falling':
+            return shuffle((await axios.get('/FallingItemSearch')).data || []);
 
-    if (filter === 'buylimit') {
-        return (await axios.get(`/BuyLimitSearch/${param}`, {
-            cancelToken: new CancelToken(function executor(c) {
-                itemCancelToken = c;
-            })
-        })).data || [];
-    } else if (filter === 'type') {
-        return (await axios.get(`/SearchByTypes/${param}`, {
-            cancelToken: new CancelToken(function executor(c) {
-                itemCancelToken = c;
-            })
-        })).data || [];
-    } else if (filter === 'rising') {
-        const data = (await axios.get('/RisingItemSearch'));
-        const dataData = data.data;
-        return dataData || [];
-    } else if (filter === 'falling') {
-        return (await axios.get('/FallingItemSearch', {
-            cancelToken: new CancelToken(function executor(c) {
-                itemCancelToken = c;
-            })
-        })).data || [];
-    } else if (filter === 'input') {
-        return (await axios.get(`/SearchByKeyword/${param}`, {
-            cancelToken: new CancelToken(function executor(c) {
-                itemCancelToken = c;
-            })
-        })).data || [];
-    } else {
-        return (await axios.get('/RandomListing', {
-            cancelToken: new CancelToken(function executor(c) {
-                itemCancelToken = c;
-            })
-        })).data || [];
+        case 'input':
+            return (await axios.get(`/SearchByKeyword/${param}`)).data || [];
+
+        default:
+            return (await axios.get('/RandomListing')).data || [];
     }
-    // switch (filter) {
-    //     case 'buylimit':
-    //         return (await axios.get(`/BuyLimitSearch/${param}`, {
-    //             cancelToken: new CancelToken(function executor(c) {
-    //                 itemCancelToken = c;
-    //             })
-    //         })).data || [];
-    //     case 'type':
-    //         return (await axios.get(`/SearchByTypes/${param}`, {
-    //             cancelToken: new CancelToken(function executor(c) {
-    //                 itemCancelToken = c;
-    //             })
-    //         })).data || [];
-    //     case 'rising':
-    //         return (await axios.get('/RisingItemSearch', {
-    //             cancelToken: new CancelToken(function executor(c) {
-    //                 itemCancelToken = c;
-    //             })
-    //         })).data || [];
-    //     case 'falling':
-    //         return (await axios.get('/FallingItemSearch', {
-    //             cancelToken: new CancelToken(function executor(c) {
-    //                 itemCancelToken = c;
-    //             })
-    //         })).data || [];
-    //     case 'input':
-    //         return (await axios.get(`/SearchByKeyword/${param}`, {
-    //             cancelToken: new CancelToken(function executor(c) {
-    //                 itemCancelToken = c;
-    //             })
-    //         })).data || [];
-    //     default:
-    //         return (await axios.get('/RandomListing', {
-    //             cancelToken: new CancelToken(function executor(c) {
-    //                 itemCancelToken = c;
-    //             })
-    //         })).data || [];
-    // }
+}
+
+// Shuffle items
+
+function shuffle(array) {
+    var currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
 }
 
 // Nav handlers
 
-let buyLimitCancelToken;
-let typeCancelToken;
-let pageLimitCancelToken;
-
 export async function getBuyLimits() {
-    buyLimitCancelToken && buyLimitCancelToken();
-
-    return (await axios.get('/BuyLimitListing', {
-        cancelToken: new CancelToken(function executor(c) {
-            buyLimitCancelToken = c;
-        })
-    })).data;
+    return (await axios.get('/BuyLimitListing')).data;
 }
 
 export async function getTypes() {
-    typeCancelToken && typeCancelToken();
-
-    return (await axios.get('/TypeListing', {
-        cancelToken: new CancelToken(function executor(c) {
-            typeCancelToken = c;
-        })
-    })).data;
+    return (await axios.get('/TypeListing')).data;
 }
 
 export async function getPageLimit() {
-    pageLimitCancelToken && pageLimitCancelToken();
-
-    return (await axios.get('/DefaultPageLimit', {
-        cancelToken: new CancelToken(function executor(c) {
-            pageLimitCancelToken = c;
-        })
-    })).data;
+    return (await axios.get('/DefaultPageLimit')).data;
 }
 
 // Update data
 
-let updateCancelToken;
-
 export async function doUpdate() {
-    updateCancelToken && updateCancelToken();
-
-    await axios.get('/Update', {
-        cancelToken: new CancelToken(function executor(c) {
-            updateCancelToken = c;
-        })
-    });
+    await axios.get('/Update');
 }
