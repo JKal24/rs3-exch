@@ -8,30 +8,25 @@ body {
 
 .view {
     display: flex;
+    flex-flow: row wrap;
+}
+
+.contents-container {
+    display: flex;
     flex-flow: row nowrap;
 }
 
-.left-container {
-    display: flex;
-    flex-flow: column nowrap;
-    top: 0px;
-    left: 0px;
-    width: 20vw;
-    padding: 0%;
-    max-height: 100%;
-    height: fit-content;
-    overflow: auto;
-    float: left;
-}
-
-.right-container {
-    display: flex;
-    flex-flow: column nowrap;
-    width: 100%;
-}
-
+/* Will use an alternate nav when screen is smaller... */
 .alternate-nav {
     display: none;
+}
+
+#left {
+    width: 15%;
+}
+
+#right {
+    width: 85%;
 }
 
 .contents {

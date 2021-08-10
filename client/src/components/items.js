@@ -103,7 +103,7 @@ function Table({ columns, data, filter }) {
     }, [itemsPerPage])
 
     return (
-        <div className="items">
+        <div className="items" id="right">
             <table {...getTableProps()}>
                 <thead>
                     {headerGroups.map(headerGroup => (

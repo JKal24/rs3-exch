@@ -18,12 +18,10 @@ export default function Routes() {
     return (
         <BrowserRouter>
             <div className="view">
-                <div className="left-container">
+                <Searchbar></Searchbar>
+
+                <div className="contents-container">
                     <Navigation></Navigation>
-                </div>
-                <div className="right-container">
-                    <Searchbar></Searchbar>
-                    <Navigation className="alternate-nav"></Navigation>
                     <Switch>
                         <Route exact path='/' render={() => (<LandingPage />)}></Route>
                         <Route exact path='/rising' render={() => (<SearchRising />)}></Route>

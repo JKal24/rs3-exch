@@ -1,21 +1,13 @@
 import React from 'react';
-import { Image, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap'
 import SelectType from './type';
 import SelectBuyLimit from './buylimit';
-import logoIcon from '../assets/rs3exch_nav_logo.png';
 import '../spreadsheets/nav.css';
 
-export default function Navigation(props) {
+export default function Navigation() {
 
     return (
-        <div className={props.className}>
-            <div className="header">
-                <Link to='/'>
-                    <Image src={logoIcon} className="header-image" />
-                </Link>
-            </div>
-
+        <div id="left">
             <Button variant="dark" className='link-nav'>
                 <a href='/rising'>Rising in Price</a>
             </Button>

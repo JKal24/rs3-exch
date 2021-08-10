@@ -1,11 +1,11 @@
 .header { 
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
+    width: 100%;
 }
 
 .alternate-header {
-    display: none;
+    display: none !important;
 }
 
 .link-nav, .link-nav>a, .searchText {
