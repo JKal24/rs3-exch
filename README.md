@@ -1,5 +1,7 @@
 # ![alt text](https://github.com/JKal24/RS3Merch/blob/main/client/src/assets/rs3exch_logo_small.png) RS3Exch - A Grand Exchange Tool for Runescape 3
 
+**Current deployed at:** https://rs3exch.herokuapp.com/
+
 # Introduction
 
 This project was made in a similar vain as ge-tracker where the main purpose is to feed the user with information about various items. 
@@ -28,5 +30,3 @@ OSRS has a custom client which can track player data but this is not the case fo
 
 * [Jean Rauwers MERN Tutorial](https://github.com/jeanrauwers/mern-course-bootcamp)
 * [Ge-Tracker](https://www.ge-tracker.com/)
-
-**Current deployed at:** https://rs3exch.herokuapp.com/
