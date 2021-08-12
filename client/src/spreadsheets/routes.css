@@ -1,32 +1,35 @@
 body {
+    margin: 0;
+    padding: 0;
+    position: relative;
     background-color: rgb(225, 225, 225) !important;
 }
 
 #root, .view {
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .view {
+    height: fit-content;
     display: flex;
     flex-flow: row wrap;
 }
 
-.contents-container {
+.left-container {
+    width: 15%;
+    padding: 0;
+    float: left;
+}
+
+.right-container {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
+    width: 85%;
 }
 
 /* Will use an alternate nav when screen is smaller... */
 .alternate-nav {
     display: none;
-}
-
-#left {
-    width: 15%;
-}
-
-#right {
-    width: 85%;
 }
 
 .contents {

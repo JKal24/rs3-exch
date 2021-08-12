@@ -22,38 +22,29 @@ export default function Searchbar() {
     }
 
     return (
-        <div className="header">
-            <Link to='/' id="left">
-                <Image src={logoIcon} className="header-image" />
-            </Link>
-
-            <div className="search" id="right">
-                <Tab.Container defaultActiveKey="" activeKey={tabKey} onSelect={key => dispatch(changeTab(key))}>
-                    <Row>
-                        <div className="alternate-header">
-                            <Link to='/'>
-                                <Image src={logoIcon} className="header-image" />
-                            </Link>
-                        </div>
-                        <input type="text" className='search-box' placeholder="Search for an item..."
-                            onKeyUp={handleSearchLink} onFocus={() => dispatch(toggleFocus())} onBlur={() => dispatch(toggleFocus())} />
-                        <button className="search-button" onClick={handleSearchLink}><Search /></button>
-                        <Nav>
-                            <Nav.Item>
-                                <Nav.Link eventKey="filter" className='filter-tab'><Menu></Menu></Nav.Link>
-                            </Nav.Item>
-                        </Nav>
-                    </Row>
-                    <Row>
-                        <Tabs defaultActiveKey="" activeKey={tabKey} onSelect={key => dispatch(changeTab(key))}>
-                            <Tab eventKey="filter">
-                                <Filters />
-                            </Tab>
-                        </Tabs>
-                    </Row>
-                </Tab.Container>
-            </div>
+        <div className="search" id="right">
+            <Tab.Container defaultActiveKey="" activeKey={tabKey} onSelect={key => dispatch(changeTab(key))}>
+                <Row>
+                    <Link to='/' className="alternate-header">
+                        <Image src={logoIcon} className="header-image" />
+                    </Link>
+                    <input type="text" className='search-box' placeholder="Search for an item..."
+                        onKeyUp={handleSearchLink} onFocus={() => dispatch(toggleFocus())} onBlur={() => dispatch(toggleFocus())} />
+                    <button className="search-button" onClick={handleSearchLink}><Search /></button>
+                    <Nav>
+                        <Nav.Item>
+                            <Nav.Link eventKey="filter" className='filter-tab'><Menu></Menu></Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                </Row>
+                <Row>
+                    <Tabs defaultActiveKey="" activeKey={tabKey} onSelect={key => dispatch(changeTab(key))}>
+                        <Tab eventKey="filter">
+                            <Filters />
+                        </Tab>
+                    </Tabs>
+                </Row>
+            </Tab.Container>
         </div>
-
     )
 }
