@@ -29,4 +29,4 @@ OSRS has a custom client which can track player data but this is not the case fo
 * [Jean Rauwers MERN Tutorial](https://github.com/jeanrauwers/mern-course-bootcamp)
 * [Ge-Tracker](https://www.ge-tracker.com/)
 
-** Current deployed at: ** https://rs3exch.herokuapp.com/
+**Current deployed at:** https://rs3exch.herokuapp.com/
