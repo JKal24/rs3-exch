@@ -5,15 +5,24 @@ export async function getItems(filter, param = '') {
     switch (filter) {
         case 'buylimit':
             return shuffle((await axios.get(`/BuyLimitSearch/${param}`)).data || []);
-            
+
         case 'type':
             return shuffle((await axios.get(`/SearchByTypes/${param}`)).data || []);
-            
+
         case 'rising':
             return shuffle((await axios.get('/RisingItemSearch')).data || []);
-            
+
         case 'falling':
             return shuffle((await axios.get('/FallingItemSearch')).data || []);
+
+        case 'input-filter':
+            const { keyword, filterKeywords, filterPrice, filterTypes, filterMaxBuyLimit, filterMinBuyLimit } = param;
+
+            const fullKeywords = filterKeywords.split(/,\s*/);
+            fullKeywords.unshift(keyword);
+            const fullBuylimits = [filterMinBuyLimit, filterMaxBuyLimit];
+
+            return (await axios.get(`/SearchByKeyword/${fullKeywords}/${filterPrice}/${filterTypes}/${fullBuylimits}`));
 
         case 'input':
             return (await axios.get(`/SearchByKeyword/${param}`)).data || [];

@@ -1,9 +1,11 @@
 import React from 'react';
 import { InputGroup, FormControl, Form } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { filterKeywords, filterPrice, filterTypes, filterMaxBuyLimit, filterMinBuyLimit } from '../app/reducers/search';
 
 export default function Filters() {
 
+    const dispatch = useDispatch();
     const types = useSelector(state => state.nav.types);
     const loaded = useSelector(state => state.nav.loadedTypes);
 
@@ -17,6 +19,7 @@ export default function Filters() {
                     <FormControl
                         placeholder="Enter extra keywords separated by commas..."
                         aria-label="Keyword"
+                        onChange={e => dispatch(filterKeywords(e.target.value))}
                     />
                 </InputGroup>
 
@@ -27,6 +30,7 @@ export default function Filters() {
                     <FormControl
                         placeholder="Price greater than 0, 500, >1000..."
                         aria-label="Price"
+                        onChange={e => dispatch(filterPrice(e.target.value))}
                     />
                 </InputGroup>
             </Form.Group>
@@ -38,6 +42,7 @@ export default function Filters() {
                     <FormControl
                         placeholder="0, 100, 200, >500..."
                         aria-label="Buylimit"
+                        onChange={e => dispatch(filterMaxBuyLimit(e.target.value))}
                     />
                 </InputGroup>
 
@@ -48,6 +53,7 @@ export default function Filters() {
                     <FormControl
                         placeholder="500, 200, 100, <0..."
                         aria-label="Buylimit"
+                        onChange={e => dispatch(filterMinBuyLimit(e.target.value))}
                     />
                 </InputGroup>
             </Form.Group>
@@ -60,9 +66,10 @@ export default function Filters() {
                                 <Form.Check
                                     key={index}
                                     type={'checkbox'}
-                                    id={`custom-${type}`}
+                                    id={`${type}`}
                                     label={`${type.replace('_', ' ')}`}
                                     className="filter-type"
+                                    onClick={e => dispatch(filterTypes({id: e.target.id, checked: e.currentTarget.checked}))}
                                 />
                             )
                         })

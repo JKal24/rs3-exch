@@ -4,13 +4,13 @@ import Items from '../../components/items';
 
 export default function SearchByInput() {
 
-    const { keyword } = useParams();
+    const data = useParams();
     const filter = "input";
 
     return (
         <div className="contents">
-            <h2 className="contents-title">'{keyword}' Items</h2>
-            <Items filter={filter} data={keyword} />
+            <h2 className="contents-title">'{data.keyword}' Items</h2>
+            <Items filter={filter} data={data} />
         </div>
     );
 }

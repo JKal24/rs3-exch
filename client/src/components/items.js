@@ -15,12 +15,12 @@ export default function Items(props) {
 
     useEffect(() => {
         dispatch(readDefaultPageLimit());
-        dispatch(readItems({ filter: props.filter, param: props.keyword }));
+        dispatch(readItems({ filter: props.filter, param: props.data }));
 
         return () => {
             dispatch(refresh());
         }
-    }, [props.filter, props.keyword, dispatch])
+    }, [props.filter, props.data, dispatch])
 
     const typeString = (props.filter === 'type' ? 'item_sub_type' : 'item_type');
 

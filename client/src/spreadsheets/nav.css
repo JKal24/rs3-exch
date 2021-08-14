@@ -63,9 +63,13 @@
 }
 
 .search-button {
-    border-radius: 0px 0.4em 0.4em 0px;
+    display: flex;
+    align-items: center;
     background-color: rgb(205, 205, 205);
-    border: rgb(205, 205, 205) solid;
+    border: rgb(205, 205, 205) 1px solid;
+    color: rgb(35, 35, 35);
+    padding-right: 0.7vw;
+    padding-left: 0.7vw;
 }
 
 .tab-content, .tab-content + div {
@@ -138,8 +142,7 @@
         width: 6.4vw;
     }
     .search-box {
-        border-radius: 15px;
-        width: 8vw;
+        width: 15vw;
     }
 }
 
@@ -149,19 +152,17 @@
         width: 4.8vw;
     }
     .search-box {
-        border-radius: 15px;
-        width: 6vw;
+        width: 12vw;
     }
 }
 
 @media (max-width: 481px) {
     .filter-tab, .search-box {
-        border-radius: 10px;
         margin-top: 0.2em;
         margin-bottom: 0.1em;
         margin-left: 0.3em;   
         margin-right: 0.3em;
-        width: 4vw;
+        width: 8vw;
     }
     
 }

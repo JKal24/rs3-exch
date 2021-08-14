@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Nav, Tab, Row, Tabs, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -10,14 +10,30 @@ import '../spreadsheets/nav.css';
 
 export default function Searchbar() {
 
+    const [keyword, setKeyword] = useState('');
+
     const focus = useSelector(state => state.search.focus);
     const tabKey = useSelector(state => state.search.key);
 
     const dispatch = useDispatch();
 
+    const filterKeywords = useSelector(state => state.search.filterKeywords);
+    const filterPrice = useSelector(state => state.search.filterPrice);
+    const filterTypes = useSelector(state => state.search.filterTypes);
+    const filterMaxBuyLimit = useSelector(state => state.search.filterMaxBuyLimit);
+    const filterMinBuyLimit = useSelector(state => state.search.filterMinBuyLimit);
+
     const handleSearchLink = (e) => {
         if (e.key === 'Enter' && focus) {
-            window.location.assign(`/search/${e.target.value}`)
+            handleManualLink();
+        }
+    }
+
+    const handleManualLink = () => {
+        if (tabKey === 'filter') {
+            window.location.assign(`/search/${keyword}/${filterKeywords}/${filterPrice}/${filterMaxBuyLimit}/${filterMinBuyLimit}/${filterTypes}`);
+        } else {
+            window.location.assign(`/search/${keyword}`);
         }
     }
 
@@ -28,9 +44,14 @@ export default function Searchbar() {
                     <Link to='/' className="alternate-header">
                         <Image src={logoIcon} className="header-image" />
                     </Link>
+
                     <input type="text" className='search-box' placeholder="Search for an item..."
-                        onKeyUp={handleSearchLink} onFocus={() => dispatch(toggleFocus())} onBlur={() => dispatch(toggleFocus())} />
-                    <button className="search-button" onClick={handleSearchLink}><Search /></button>
+                        onKeyUp={handleSearchLink} onChange={e => setKeyword(e.target.value)}
+                        onFocus={() => dispatch(toggleFocus())} onBlur={() => dispatch(toggleFocus())} />
+
+                    <button className="search-button" onClick={handleManualLink}>
+                        <Search /> 
+                    </button>
                     <Nav>
                         <Nav.Item>
                             <Nav.Link eventKey="filter" className='filter-tab'><Menu></Menu></Nav.Link>

@@ -10,7 +10,7 @@ export default function SearchBuyLimit() {
     return (
         <div className="contents">
             <h2 className="contents-title">{buylimit.replace('_', ' ')} Buy Limit Items</h2>
-            <Items filter={filter} keyword={buylimit} />
+            <Items filter={filter} data={buylimit} />
         </div>
     );
 }

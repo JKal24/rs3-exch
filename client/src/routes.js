@@ -5,6 +5,7 @@ import Searchbar from './components/searchbar';
 import SearchBuyLimit from './pages/SearchBuyLimit';
 import SearchRising from './pages/SearchRising';
 import SearchByInput from './pages/SearchByInput';
+import SearchByInputFiltered from './pages/SearchByInput/filter';
 import SearchFalling from './pages/SearchFalling';
 import SearchType from './pages/SearchType';
 import LandingPage from './pages/LandingPage';
@@ -29,6 +30,7 @@ export default function Routes() {
                         <Route exact path='/falling' render={() => (<SearchFalling />)}></Route>
                         <Route exact path='/type/:type' render={() => (<SearchType />)}></Route>
                         <Route exact path='/buylimit/:buylimit' render={() => (<SearchBuyLimit />)}></Route>
+                        <Route exact path='/search/:keyword/:filterKeywords/:filterPrice/:filterMaxBuyLimit/:filterMinBuyLimit/:filterTypes' component={SearchByInputFiltered}></Route>
                         <Route exact path='/search/:keyword' component={SearchByInput}></Route>
                         <Route exact path='/Acknowledgements' render={() => (<Acknowledgements />)}></Route>
                         <Route exact path='/Questions' render={() => (<Questions />)}></Route>
