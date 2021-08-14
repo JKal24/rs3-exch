@@ -98,9 +98,8 @@ async function parse_type_uris(uri, type) {
                         // Only valid rows contain images of items
                         const itemImageUri = $(columns[0]).children('a').first().children('img').attr('src') ||
                             $(columns[0]).children('a').first().children('img').attr('data-cfsrc');
-                        const price = config.parseInteger($(columns[2]).text());
-                        // Checks if item price is at least above 100 gold.
-                        if (itemImageUri && price > 100) {
+
+                        if (itemImageUri) {
 
                             const item_uri = config.runescapeWikiBaseLink($(columns[lastIndex - 1]).children('a').attr('href'));
                             let attributes = await parseExchangeUris(item_uri);
@@ -142,7 +141,7 @@ async function parseAPI(id) {
     try {
         prices = await parsePrices(id);
     } catch (error) {
-        prices = await parsePrices(id, 2750);
+        prices = await parsePrices(id);
     }
 
     /**
@@ -165,7 +164,7 @@ async function parseAPI(id) {
 
 }
 
-async function parsePrices(id, ms = 5750) {
+async function parsePrices(id, ms = 5500) {
     // API is called
     const data = await config.parseHTTPS(config.apiItemGraph(id));
 
