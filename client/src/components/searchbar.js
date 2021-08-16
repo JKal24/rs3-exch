@@ -31,7 +31,14 @@ export default function Searchbar() {
 
     const handleManualLink = () => {
         if (tabKey === 'filter') {
-            window.location.assign(`/search/${keyword}/${filterKeywords}/${filterPrice}/${filterMaxBuyLimit}/${filterMinBuyLimit}/${filterTypes}`);
+            let keywords;
+            if (filterKeywords != '') {
+                keywords = keyword + "," + filterKeywords;
+            } else {
+                keywords = keyword;
+            }
+            
+            window.location.assign(`/filter/${keywords}/${filterPrice}/${filterMaxBuyLimit}/${filterMinBuyLimit}/${filterTypes}`);
         } else {
             window.location.assign(`/search/${keyword}`);
         }

@@ -23,6 +23,8 @@ module.exports = {
             })
         })
     },
+    
+    // These are depracated methods, query-stream accesses are now used to get bulk data
 
     async get_item_by_rising(weeklyBound, monthlyBound) {
         return (await pool.query("SELECT * FROM items WHERE valuation_week >= $1 AND valuation_month >= $2 AND cvar_month > 0", [weeklyBound, monthlyBound])).rows;
@@ -75,6 +77,26 @@ module.exports = {
         while (data.length < ITEMS_PER_PAGE);
 
         return data;
+    },
+
+    /**
+     * 
+     * @param {The list of keywords that need to be matched} keywords 
+     * @param {The lower bound of the price that needs to be matched} priceBound 
+     * @param {The list of types that need to be matched} types 
+     * @param {The upper and lower bounds of buylimits contained in an array which need to be matched} buylimits 
+     */
+
+    get_filtered_data(keywords, priceBound, types, buylimitLowerBound, buylimitUpperBound) {
+        const totalData = [];
+        keywords.forEach(async keyword => {
+            const data = (await pool.query("SELECT * FROM items WHERE item_name ILIKE $1 AND lowest_price_week > $2 AND item_type && $3 AND buy_limit <= $4 AND buy_limit >= $5", 
+            ['%' + keyword + '%', priceBound, types, buylimitLowerBound, buylimitUpperBound])).rows;
+
+            totalData.concat(data);
+        })
+        const newData = [...new Set(totalData)];
+        return newData;
     },
 
     async get_current_items_count() {

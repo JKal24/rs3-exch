@@ -4,6 +4,7 @@ import '../../spreadsheets/info.css';
 export default function Acknowledgements() {
     return (
         <div className='info-data'>
+            ---
             <h2>
                 runescape.wiki ...
             </h2>

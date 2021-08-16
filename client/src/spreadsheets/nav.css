@@ -46,7 +46,7 @@
 }
 
 .search-box {
-    width: 20vw;
+    width: 25vw;
     border: rgb(205, 205, 205);
     border-radius: 0.4em 0px 0px 0.4em;
     background-color: rgb(205, 205, 205);
@@ -67,6 +67,7 @@
     align-items: center;
     background-color: rgb(205, 205, 205);
     border: rgb(205, 205, 205) 1px solid;
+    border-radius: 0px 0.4em 0.4em 0px;
     color: rgb(35, 35, 35);
     padding-right: 0.7vw;
     padding-left: 0.7vw;
@@ -137,22 +138,14 @@
 }
 
 @media (max-width: 1281px) {
-    .filter-tab {
-        border-radius: 15px;
-        width: 6.4vw;
-    }
     .search-box {
-        width: 15vw;
+        width: 20vw;
     }
 }
 
 @media (max-width: 961px) {
-    .filter-tab {
-        border-radius: 15px;
-        width: 4.8vw;
-    }
     .search-box {
-        width: 12vw;
+        width: 15vw;
     }
 }
 
@@ -162,7 +155,7 @@
         margin-bottom: 0.1em;
         margin-left: 0.3em;   
         margin-right: 0.3em;
-        width: 8vw;
+        width: 10vw;
     }
     
 }

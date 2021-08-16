@@ -1,6 +1,9 @@
 module.exports = {
     doCalculations(prices) {
         const len = prices.length;
+        if (len == 0) {
+            console.log("Error in API");
+        }
         return [
             valuation(prices.slice(len - 7)),
             valuation(prices.slice(len - 30)),

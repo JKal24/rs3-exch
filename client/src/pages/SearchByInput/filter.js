@@ -2,10 +2,10 @@ import React from 'react';
 import { useParams } from 'react-router-dom'
 import Items from '../../components/items';
 
-export default function SearchByInput() {
+export default function SearchByFilter() {
 
     const data = useParams();
-    const filter = "input";
+    const filter = "input-filter";
 
     return (
         <div className="contents">

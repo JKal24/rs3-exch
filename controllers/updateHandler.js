@@ -3,11 +3,19 @@ const { startUpdate, canBeUpdated, finishUpdate } = require('../data/update');
 const { get_update } = require('../database/commands');
 const { getRunedate } = require('../utils/config');
 
+/**
+ * Cron jobs with heroku scheduler can be paused if dyno hours need to be preserved.
+ * 
+ * Set status to 'inactive'.
+ */
+
 module.exports = {
     async updateAllItems(req, res) {
         try {
+            if (process.env.STATUS == "inactive") return res.json();
+            
             await checkForUpdates();
-            return res.json({ message: true });
+            return res.json();
         } catch ({ message }) {
             res.status(500).json({ message })
         }

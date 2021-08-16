@@ -25,7 +25,7 @@ export default function LandingPage() {
                 <a href='https://runescape.wiki/'> https://runescape.wiki/ <ExternalLink/></a><br/>
                 This app is not intended for commercial use.<br/>
                 </p>
-                <div className="future-info">*Graphs for item prices will be implemented soon</div>
+                <div className="future-info">*Graphs for item prices may be implemented at a later date</div>
             </div>
             <Items />
         </div>

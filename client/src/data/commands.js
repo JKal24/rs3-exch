@@ -16,13 +16,11 @@ export async function getItems(filter, param = '') {
             return shuffle((await axios.get('/FallingItemSearch')).data || []);
 
         case 'input-filter':
-            const { keyword, filterKeywords, filterPrice, filterTypes, filterMaxBuyLimit, filterMinBuyLimit } = param;
-
-            const fullKeywords = filterKeywords.split(/,\s*/);
-            fullKeywords.unshift(keyword);
+            const { keywords, filterPrice, filterTypes, filterMaxBuyLimit, filterMinBuyLimit } = param;
+            
             const fullBuylimits = [filterMinBuyLimit, filterMaxBuyLimit];
 
-            return (await axios.get(`/SearchByKeyword/${fullKeywords}/${filterPrice}/${filterTypes}/${fullBuylimits}`));
+            return (await axios.get(`/SearchByFilter/${keywords}/${filterPrice}/${filterTypes}/${fullBuylimits}`));
 
         case 'input':
             return (await axios.get(`/SearchByKeyword/${param}`)).data || [];

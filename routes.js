@@ -16,7 +16,8 @@ routes.get('/FallingItemSearch', fallingHandler.createPage);
 
 routes.get('/RisingItemSearch', risingHandler.createPage);
 
-routes.get('/SearchByKeyword/:keywords/:filterPrice/:filterTypes/:filterBuylimits', searchHandler.createPage);
+routes.get('/SearchByFilter/:keywords/:filterPrice/:filterTypes/:filterBuylimits', searchHandler.createFilterPage);
+routes.get('/SearchByKeyword/:keyword', searchHandler.createPage);
 
 routes.get('/TypeListing', typeHandler.showTypes);
 routes.get('/SearchByTypes/:type', typeHandler.createPage);

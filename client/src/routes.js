@@ -30,7 +30,7 @@ export default function Routes() {
                         <Route exact path='/falling' render={() => (<SearchFalling />)}></Route>
                         <Route exact path='/type/:type' render={() => (<SearchType />)}></Route>
                         <Route exact path='/buylimit/:buylimit' render={() => (<SearchBuyLimit />)}></Route>
-                        <Route exact path='/search/:keyword/:filterKeywords/:filterPrice/:filterMaxBuyLimit/:filterMinBuyLimit/:filterTypes' component={SearchByInputFiltered}></Route>
+                        <Route exact path='/filter/:keywords/:filterPrice/:filterMaxBuyLimit/:filterMinBuyLimit/:filterTypes' component={SearchByInputFiltered}></Route>
                         <Route exact path='/search/:keyword' component={SearchByInput}></Route>
                         <Route exact path='/Acknowledgements' render={() => (<Acknowledgements />)}></Route>
                         <Route exact path='/Questions' render={() => (<Questions />)}></Route>

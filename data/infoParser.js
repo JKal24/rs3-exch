@@ -135,14 +135,12 @@ async function parseAPI(id) {
 
     /**
      * If a connection error occurs here then just try connecting to the API again.
-     * A new throttle will be made to allow a buffer for connecting to API.
+     * A new throttle will be made to allow an additional buffer for connecting to API.
      */
 
-    try {
+    prices = await parsePrices(id);
+    if (prices.length == 0)
         prices = await parsePrices(id);
-    } catch (error) {
-        prices = await parsePrices(id);
-    }
 
     /**
      * If the prices data could not be properly accessed then an array with empty values

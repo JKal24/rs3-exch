@@ -1,5 +1,6 @@
 const pool = require('../database');
 const { get_item_by_search } = require('../database/query');
+const { get_filtered_data } = require('../database/commands');
 const logger = require('js-logger');
 const JSONStream = require('JSONStream');
 
@@ -24,5 +25,11 @@ module.exports = {
         } catch ({ message }) {
             res.status(500).json({ message })
         }
+    },
+
+    createFilterPage(req, res) {
+        const { keywords, filterPrice, filterTypes, filterBuylimits} = req.params;
+        const buylimits = filterBuylimits.split(",");
+        return res.json(get_filtered_data(keywords.split(","), parseInt(filterPrice), filterTypes, parseInt(buylimits[0]), parseInt(buylimits[1])));
     }
 }
