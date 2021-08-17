@@ -27,9 +27,13 @@ module.exports = {
         }
     },
 
-    createFilterPage(req, res) {
+    async createFilterPage(req, res) {
         const { keywords, filterPrice, filterTypes, filterBuylimits} = req.params;
         const buylimits = filterBuylimits.split(",");
-        return res.json(get_filtered_data(keywords.split(","), parseInt(filterPrice), filterTypes, parseInt(buylimits[0]), parseInt(buylimits[1])));
+        const keywordsList = keywords.split(",");
+
+        const data = await get_filtered_data(keywordsList, parseInt(filterPrice), filterTypes.split(','), parseInt(buylimits[0]), parseInt(buylimits[1]));
+
+        res.json(data);
     }
 }

@@ -140,7 +140,7 @@ async function parseAPI(id) {
 
     prices = await parsePrices(id);
     if (prices.length == 0)
-        prices = await parsePrices(id);
+        prices = await parsePrices(id, 3500);
 
     /**
      * If the prices data could not be properly accessed then an array with empty values

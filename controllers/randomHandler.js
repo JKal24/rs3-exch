@@ -6,7 +6,8 @@ const ITEMS_PER_PAGE = 10;
 module.exports = {
     async createPage(req, res) {
         try {
-            res.json(await get_random_items(ITEMS_PER_PAGE));
+            const data = await get_random_items(ITEMS_PER_PAGE)
+            res.json(data);
         } catch ({ message }) {
             res.status(500).json({ message })
         }

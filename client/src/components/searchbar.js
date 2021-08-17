@@ -31,14 +31,9 @@ export default function Searchbar() {
 
     const handleManualLink = () => {
         if (tabKey === 'filter') {
-            let keywords;
-            if (filterKeywords != '') {
-                keywords = keyword + "," + filterKeywords;
-            } else {
-                keywords = keyword;
-            }
+            const concatKeywords = [keyword].concat(filterKeywords);
             
-            window.location.assign(`/filter/${keywords}/${filterPrice}/${filterMaxBuyLimit}/${filterMinBuyLimit}/${filterTypes}`);
+            window.location.assign(`/filter/${concatKeywords}/${filterPrice}/${filterMaxBuyLimit}/${filterMinBuyLimit}/${filterTypes}`);
         } else {
             window.location.assign(`/search/${keyword}`);
         }

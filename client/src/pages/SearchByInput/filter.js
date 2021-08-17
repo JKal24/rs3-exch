@@ -9,7 +9,7 @@ export default function SearchByFilter() {
 
     return (
         <div className="contents">
-            <h2 className="contents-title">'{data.keyword}' Items</h2>
+            <h2 className="contents-title">Filtered Items</h2>
             <Items filter={filter} data={data} />
         </div>
     );

@@ -18,10 +18,12 @@ const searchSlice = createSlice({
             else state.key = action.payload
         },
         filterKeywords: (state, action) => {
-            state.filterKeywords = action.payload.split(",");
+            state.filterKeywords = action.payload.split(",").map(keyword => keyword.replace(/\s/g,''));
         },
         filterPrice: (state, action) => {
-            state.filterPrice = action.payload;
+            const givenPrice = action.payload;
+            if (isNaN(givenPrice)) { state.filterPrice = 0; }
+            else { state.filterPrice = givenPrice; }
         },
         filterTypes: (state, action) => {
             const typeData = action.payload;
@@ -32,10 +34,14 @@ const searchSlice = createSlice({
             }
         },
         filterMaxBuyLimit: (state, action) => {
-            state.filterMaxBuyLimit = action.payload;
+            const givenLimit = action.payload;
+            if (isNaN(givenLimit)) { state.filterMaxBuyLimit = 30000; }
+            else { state.filterMaxBuyLimit = givenLimit; }
         },
         filterMinBuyLimit: (state, action) => {
-            state.filterMinBuyLimit = action.payload;
+            const givenLimit = action.payload;
+            if (isNaN(givenLimit)) { state.filterMinBuyLimit = 0; }
+            else { state.filterMinBuyLimit = givenLimit; }
         }
     }
 });

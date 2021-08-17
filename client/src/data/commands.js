@@ -20,7 +20,7 @@ export async function getItems(filter, param = '') {
             
             const fullBuylimits = [filterMinBuyLimit, filterMaxBuyLimit];
 
-            return (await axios.get(`/SearchByFilter/${keywords}/${filterPrice}/${filterTypes}/${fullBuylimits}`));
+            return (await axios.get(`/SearchByFilter/${keywords}/${filterPrice}/${filterTypes}/${fullBuylimits}`)).data || [];
 
         case 'input':
             return (await axios.get(`/SearchByKeyword/${param}`)).data || [];

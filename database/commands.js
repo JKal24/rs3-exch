@@ -10,7 +10,7 @@ module.exports = {
         const queryString = 'INSERT INTO items (item_id, prices, valuation_week, valuation_month, valuation_long_term, cvar_week, cvar_month, cvar_long_term, ' +
             'highest_price_week, lowest_price_week, item_name, item_image_uri, buy_limit, item_type, item_sub_type)' +
             ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)' +
-            ' ON CONFLICT (item_id) DO UPDATE SET item_type = ARRAY(SELECT DISTINCT UNNEST(items.item_type || $14)),' + 
+            ' ON CONFLICT (item_id) DO UPDATE SET item_type = ARRAY(SELECT DISTINCT UNNEST(items.item_type || $14)),' +
             ' item_sub_type = ARRAY(SELECT DISTINCT UNNEST(items.item_sub_type || $15))' +
             ' WHERE NOT items.item_type @> $14 AND NOT items.item_sub_type @> $15';
         await pool.query(queryString, arr);
@@ -23,7 +23,7 @@ module.exports = {
             })
         })
     },
-    
+
     // These are depracated methods, query-stream accesses are now used to get bulk data
 
     async get_item_by_rising(weeklyBound, monthlyBound) {
@@ -53,15 +53,15 @@ module.exports = {
         // Tries to get the most recent item count where possible
 
         const update = await module.exports.get_update();
-        const count = update ? 
-        (update.item_count == 0 ? await module.exports.get_current_items_count() : update.item_count)
-        : await module.exports.get_current_items_count();
+        const count = update ?
+            (update.item_count == 0 ? await module.exports.get_current_items_count() : update.item_count)
+            : await module.exports.get_current_items_count();
 
         let percentage = (ITEMS_PER_PAGE / parseInteger(count)) * 100;
         percentage = Math.ceil(percentage);
         percentage = Math.min(100, percentage);
         percentage = Math.max(0, percentage);
-        
+
         let attempt = 0;
         let data;
 
@@ -87,16 +87,17 @@ module.exports = {
      * @param {The upper and lower bounds of buylimits contained in an array which need to be matched} buylimits 
      */
 
-    get_filtered_data(keywords, priceBound, types, buylimitLowerBound, buylimitUpperBound) {
-        const totalData = [];
-        keywords.forEach(async keyword => {
-            const data = (await pool.query("SELECT * FROM items WHERE item_name ILIKE $1 AND lowest_price_week > $2 AND item_type && $3 AND buy_limit <= $4 AND buy_limit >= $5", 
-            ['%' + keyword + '%', priceBound, types, buylimitLowerBound, buylimitUpperBound])).rows;
+    async get_filtered_data(keywords, priceBound, types, buylimitLowerBound, buylimitUpperBound) {
+        let totalData = [];
 
-            totalData.concat(data);
-        })
-        const newData = [...new Set(totalData)];
-        return newData;
+        for (let parseKeywords = 0; parseKeywords < keywords.length; parseKeywords++) {
+            const keyword = keywords[parseKeywords];
+            
+            let data = (await pool.query("SELECT * FROM items WHERE item_name ILIKE $1 AND lowest_price_week > $2 AND item_type && $3 AND buy_limit >= $4 AND buy_limit <= $5",
+            ['%' + keyword + '%', priceBound, types, buylimitLowerBound, buylimitUpperBound])).rows;
+            totalData = totalData.concat(data);
+        }
+        return [...new Set(totalData)];
     },
 
     async get_current_items_count() {
@@ -122,8 +123,8 @@ module.exports = {
     },
 
     async add_update(runedate, update_epoch, item_count) {
-        await pool.query("INSERT INTO update_date (runedate, update_epoch, item_count) VALUES ($1, $2, $3) ON CONFLICT(runedate) DO UPDATE SET update_epoch = $2, item_count = $3", 
-        [runedate, update_epoch, item_count]);
+        await pool.query("INSERT INTO update_date (runedate, update_epoch, item_count) VALUES ($1, $2, $3) ON CONFLICT(runedate) DO UPDATE SET update_epoch = $2, item_count = $3",
+            [runedate, update_epoch, item_count]);
     },
 
     async clean_update() {
