@@ -21,7 +21,6 @@ module.exports = {
                  */
 
                 for (const tr of $(title).next().children('dd').first().children('table').first().children('tbody').first().children('tr')) {
-
                     const uri = $(tr).children('td:nth-child(2)').children().first().attr('href');
                     if (uri) {
                         const type = config.capitalizeFirstLetter(
@@ -140,7 +139,7 @@ async function parseAPI(id) {
 
     prices = await parsePrices(id);
     if (prices.length == 0)
-        prices = await parsePrices(id, 3500);
+        prices = await parsePrices(id, 3750);
 
     /**
      * If the prices data could not be properly accessed then an array with empty values

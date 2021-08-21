@@ -20,7 +20,7 @@ export default function Routes() {
         <BrowserRouter>
             <div className="view">
                 <div className="left-container">
-                    <Navigation></Navigation>
+                    <Navigation class="searchbar"></Navigation>
                 </div>
                 <div className="right-container">
                     <Searchbar></Searchbar>

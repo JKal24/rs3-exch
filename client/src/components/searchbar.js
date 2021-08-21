@@ -6,6 +6,7 @@ import { toggleFocus, changeTab } from '../app/reducers/search';
 import { Menu, Search } from 'react-feather';
 import Filters from './filter';
 import logoIcon from '../assets/rs3exch_nav_logo.png';
+import Navigation from './navbar';
 import '../spreadsheets/nav.css';
 
 export default function Searchbar() {
@@ -59,6 +60,7 @@ export default function Searchbar() {
                             <Nav.Link eventKey="filter" className='filter-tab'><Menu></Menu></Nav.Link>
                         </Nav.Item>
                     </Nav>
+                <Navigation class="alternate-nav"></Navigation>
                 </Row>
                 <Row>
                     <Tabs defaultActiveKey="" activeKey={tabKey} onSelect={key => dispatch(changeTab(key))}>

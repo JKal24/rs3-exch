@@ -1,5 +1,8 @@
 .sidebar {
     height: 100%;
+    display: flex;
+    flex-flow: column;
+    flex-wrap: nowrap;
 }
 
 .alternate-header {
@@ -33,8 +36,16 @@
     color: black;
 }
 
+.navbar-title {
+    text-align: center;
+    background-color: rgb(205, 205, 205);
+    color: rgb(60, 100, 153);
+    border-radius: 0.5vw;
+}
+
 .alternate-nav {
     display: none;
+    padding: 1vw 0px 0px 1vw ;
 }
 
 /* searcbar contents */
@@ -46,7 +57,7 @@
 }
 
 .search-box {
-    width: 25vw;
+    width: 28vw;
     border: rgb(205, 205, 205);
     border-radius: 0.4em 0px 0px 0.4em;
     background-color: rgb(205, 205, 205);
@@ -139,13 +150,35 @@
 
 @media (max-width: 1281px) {
     .search-box {
-        width: 20vw;
+        width: 24vw;
     }
 }
 
 @media (max-width: 961px) {
     .search-box {
-        width: 15vw;
+        width: 18vw;
+    }
+
+    .sidebar, .header, .navbar-title {
+        display: none !important;
+    }
+
+    .alternate-nav {
+        display: flex !important;
+        flex-flow: row;
+        flex-wrap: wrap;
+        padding-bottom: 1vh !important;
+    }
+
+    .alternate-nav > *, .link-nav {
+        height: 100%;
+    }
+
+    .link-nav {
+        width: auto;
+        border-radius: 1vw !important;
+        margin-left: 0.5vw;
+        margin-right: 0.5vw;
     }
 }
 
@@ -155,7 +188,7 @@
         margin-bottom: 0.1em;
         margin-left: 0.3em;   
         margin-right: 0.3em;
-        width: 10vw;
+        width: 12vw;
     }
     
 }
