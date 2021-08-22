@@ -1,8 +1,14 @@
-.info-data {
+.question-data, .acknowledgement-data {
     background-color: rgb(215, 215, 215);
     border: 0.05em solid black;
     padding: 1em;
     margin: 1em;
+}
+
+.acknowledgement-data {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-flow: row;
 }
 
 .welcome-title {
@@ -11,4 +17,13 @@
 
 .future-info {
     font-style: italic;
+}
+
+.acknowledgement {
+    flex: 1;
+}
+
+.acknowledgement-details {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
