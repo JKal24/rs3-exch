@@ -2,7 +2,7 @@
 
 **Current deployed at:** https://rs3exch.herokuapp.com/
 
-This is a demo version which isn't being updated. At the moment I am looking to reduce the time it takes to update the app everyday as it normally can take a few hours. This is primarily due to the throttling which is present in the Runescape API. More information about this can be read on the app.
+This is a demo version which isn't being updated.  This is primarily due to the throttling which is present in the Runescape API and slows down update times. More information about this can be read on the app.
 
 # Introduction
 
